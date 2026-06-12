@@ -165,6 +165,7 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            cursor: pointer; /* Añadido para indicar que es interactivo */
         }
         .game-mini-box .p-num { color: #64748b; font-weight: bold; margin-bottom: 2px;}
         .game-mini-box .p-pred { font-weight: bold; font-size: 0.75rem; }
@@ -340,7 +341,10 @@
                 const row = document.createElement("tr");
                 row.id = `pc-fila-${p.nombre.replace(/\s+/g, '-')}`;
                 let html = `<td>${p.nombre.trim()}</td>`;
-                p.pronosticos.forEach(pron => { html += `<td>${pron}</td>`; });
+                // Añadido el atributo title con el nombre del partido en cada celda de escritorio
+                p.pronosticos.forEach((pron, i) => { 
+                    html += `<td title="${partidos[i]}">${pron}</td>`; 
+                });
                 row.innerHTML = html;
                 matrixBody.appendChild(row);
             });
@@ -361,9 +365,10 @@
                     <div class="user-games-grid">
                 `;
                 
+                // Añadido el atributo title con el nombre del partido en el contenedor mini box móvil
                 p.pronosticos.forEach((pron, i) => {
                     html += `
-                        <div class="game-mini-box" data-game-index="${i}">
+                        <div class="game-mini-box" data-game-index="${i}" title="${partidos[i]}">
                             <span class="p-num">P${i+1}</span>
                             <span class="p-pred ${pron.toLowerCase()}">${pron}</span>
                         </div>
