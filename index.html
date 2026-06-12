@@ -262,7 +262,8 @@
     <script>
         const partidos = ['Mexico vs Sudafrica', 'Corea vs Chequia', 'Chequia vs Sudafrica', 'Mexico vs Corea', 'Chequia vs Mexico', 'Sudafrica vs Corea', 'Canada vs Bosnia', 'Catar vs Suiza', 'Suiza vs Bosnia', 'Canada vs Catar', 'Suiza vs Canada', 'Bosnia vs Catar', 'Brasil vs Marruecos', 'Haiti vs Escocia', 'Escocia vs Marruecos', 'Brasil vs Haiti', 'Brasil vs Escocia', 'Marruecos vs Haiti', 'EEUU vs Paraguay', 'Australia vs Turquia', 'EEUU vs Australia', 'Turquia vs Paraguay', 'Turquia vs EEUU', 'Paraguay vs Australia', 'Alemania vs Curazao', 'Costa de Marfil vs Ecuador', 'Alemania vs Costa de Marfil', 'Ecuador vs Curazao', 'Curazao vs Costa de Marfil', 'Ecuador vs Alemania', 'Paises Bajos vs Japon', 'Suecia vs Tunez', 'Paises Bajos vs Suecia', 'Tunez vs Japon', 'Japon vs Suecia', 'Tunez vs Paises Bajos', 'Belgica vs Egipto', 'Iran vs Nueva Zelanda', 'Belgica vs Iran', 'Nueva Zelanda vs Egipto', 'Egipto vs Iran', 'Nueva Zelanda vs Belgica', 'Espana vs Cabo Verde', 'Arabia Saudi vs Uruguay', 'Espana vs Arabia Saudi', 'Uruguay vs Cabo Verde', 'Cabo Verde vs Arabia Saudi', 'Uruguay vs Espana', 'Francia vs Senegal', 'Irak vs Noruega', 'Francia vs Irak', 'Noruega vs Senegal', 'Noruega vs Francia', 'Senegal vs Irak', 'Argentina vs Argelia', 'Austria vs Jordania', 'Argentina vs Austria', 'Jordania vs Argelia', 'Argelia vs Austria', 'Jordania vs Argentina', 'Portugal vs RD Congo', 'Uzbekistan vs Colombia', 'Portugal vs Uzbekistan', 'Colombia vs RD Congo', 'Colombia vs Portugal', 'RD Congo vs Uzbekistan', 'Inglaterra vs Croacia', 'Ghana vs Panama', 'Inglaterra vs Ghana', 'Panama vs Croacia', 'Panama vs Inglaterra', 'Croacia vs Ghana'];
 
-        const resultadosReales = Array(partidos.length).fill("-");
+        // Cambio aquí: Registra automáticamente el primer partido como "Local" y rellena el resto con "-"
+        const resultadosReales = ["Local", ...Array(partidos.length - 1).fill("-")];
 
         const participantes = [
             { nombre: 'Chuma', pronosticos: ['Local', 'Empate', 'Local', 'Local', 'Empate', 'Local', 'Local', 'Visita', 'Empate', 'Local', 'Local', 'Empate', 'Local', 'Empate', 'Visita', 'Local', 'Local', 'Local', 'Local', 'Visita', 'Empate', 'Visita', 'Empate', 'Local', 'Local', 'Empate', 'Local', 'Local', 'Empate', 'Visita', 'Local', 'Local', 'Local', 'Visita', 'Empate', 'Visita', 'Local', 'Empate', 'Local', 'Visita', 'Local', 'Visita', 'Local', 'Visita', 'Local', 'Local', 'Visita', 'Visita', 'Local', 'Visita', 'Local', 'Local', 'Visita', 'Empate', 'Local', 'Local', 'Local', 'Empate', 'Visita', 'Visita', 'Local', 'Visita', 'Local', 'Local', 'Visita', 'Empate', 'Local', 'Local', 'Local', 'Visita', 'Visita', 'Local'] },
@@ -285,16 +286,20 @@
         ];
 
         function initQuiniela() {
-            // 1. Crear Panel Admin de selectores (funciona igual en móvil y PC)
+            // 1. Crear Panel Admin de selectores
             const adminGrid = document.getElementById("admin-panel-grid");
             partidos.forEach((partido, index) => {
                 const item = document.createElement("div");
                 item.className = "admin-item";
+                
+                // Si es el primer partido, dejamos seleccionado "Local" por defecto en la interfaz gráfica
+                const esPrimerPartido = index === 0;
+
                 item.innerHTML = `
                     <span style="font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">P${index+1}: ${partido}</span>
                     <select class="select-resultado" data-index="${index}" onchange="procesarCambioResultado(this)">
-                        <option value="-">-</option>
-                        <option value="Local">Local</option>
+                        <option value="-" ${!esPrimerPartido ? 'selected' : ''}>-</option>
+                        <option value="Local" ${esPrimerPartido ? 'selected' : ''}>Local</option>
                         <option value="Empate">Empate</option>
                         <option value="Visita">Visita</option>
                     </select>
