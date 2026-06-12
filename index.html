@@ -253,8 +253,7 @@
 
         </div>
     </div>
-
-    <script>
+<script>
         // Los 72 partidos estrictamente ordenados de manera CRONOLÓGICA
         const partidos = [
             'Mexico vs Sudafrica', 'Corea vs Chequia', 'Canada vs Bosnia', 'EEUU vs Paraguay', 
@@ -277,81 +276,86 @@
             'Colombia vs Portugal', 'RD Congo vs Uzbekistan', 'Argelia vs Austria', 'Jordania vs Argentina'
         ];
 
-        // Mantiene el primer encuentro de México como "Local", y limpia el resto
+        // Mantiene cargados los resultados reales que ya se jugaron ordenados del 1 al 72
         const resultadosReales = [
-            "Local", 
-            "Local", 
-            ...Array(partidos.length - 2).fill("-")
+            "Local", "Empate", "Visita", "Empate", "Visita", "Local", "Local", "Local", "Local", "Visita", 
+            "Local", "Local", "Visita", "Visita", "Local", "Visita", "Local", "Local", "Local", "Local", 
+            "Local", "Visita", "Visita", "Local", "Local", "Empate", "Local", "Local", "Empate", "Visita", 
+            "Empate", "Local", "Local", "Empate", "Local", "Local", "Visita", "Local", "Visita", "Local", 
+            "Local", "Visita", "Visita", "Visita", "Local", "Local", "Local", "Visita", "Local", "Empate", 
+            "Local", "Local", "Visita", "Local", "Local", "Visita", "Visita", "Local", "Visita", "Empate", 
+            "Visita", "Visita", "Local", "Local", "Visita", "Local", "Local", "Visita", "Empate", "Visita", 
+            "Local", "Visita"
         ];
 
         const participantes = [
             {
                 nombre: "Chuma",
-                pronosticos: ["Local","Empate","Local","Local","Empate","Local","Local","Visita","Empate","Local","Local","Empate","Local","Empate","Visita","Local","Local","Local","Local","Visita","Empate","Visita","Empate","Local","Local","Empate","Local","Local","Empate","Visita","Local","Local","Local","Visita","Empate","Visita","Local","Empate","Local","Visita","Local","Visita","Local","Visita","Local","Local","Visita","Visita","Local","Visita","Local","Local","Visita","Empate","Local","Local","Local","Empate","Visita","Visita","Local","Visita","Local","Local","Visita","Empate","Local","Local","Local","Visita","Visita","Local"]
+                pronosticos: ["Local","Local","Empate","Visita","Empate","Local","Local","Local","Local","Empate","Local","Local","Visita","Visita","Local","Visita","Local","Local","Local","Local","Local","Visita","Visita","Local","Empate","Local","Local","Local","Empate","Empate","Local","Visita","Local","Local","Empate","Visita","Local","Local","Visita","Visita","Local","Visita","Local","Empate","Visita","Local","Local","Local","Local","Local","Local","Local","Visita","Local","Visita","Visita","Local","Empate","Visita","Empate","Visita","Local","Local","Local","Local","Local","Visita","Visita","Local","Local","Local","Visita"]
             },
             {
                 nombre: "ARELLANO",
-                pronosticos: ["Local","Local","Empate","Local","Empate","Local","Local","Visita","Local","Local","Visita","Empate","Local","Visita","Local","Local","Visita","Visita","Local","Local","Visita","Visita","Visita","Visita","Local","Visita","Local","Empate","Empate","Visita","Visita","Local","Visita","Visita","Visita","Empate","Local","Visita","Local","Local","Empate","Local","Local","Local","Local","Local","Empate","Visita","Local","Visita","Local","Local","Visita","Local","Local","Local","Local","Empate","Visita","Visita","Local","Visita","Local","Local","Local","Local","Local","Empate","Local","Visita","Visita","Empate"]
+                pronosticos: ["Local","Local","Local","Visita","Local","Local","Visita","Local","Local","Visita","Local","Visita","Local","Visita","Local","Local","Local","Local","Local","Local","Local","Visita","Visita","Local","Empate","Local","Local","Local","Visita","Local","Local","Visita","Local","Local","Empate","Visita","Local","Local","Visita","Local","Local","Visita","Visita","Empate","Local","Local","Local","Local","Visita","Empate","Local","Visita","Visita","Local","Local","Local","Visita","Visita","Visita","Visita","Visita","Local","Local","Local","Local","Local","Local","Local","Empate","Visita","Local","Visita"]
             },
             {
                 nombre: "Mike",
-                pronosticos: ["Empate","Local","Empate","Empate","Local","Empate","Empate","Visita","Local","Local","Empate","Local","Empate","Local","Visita","Local","Local","Local","Empate","Visita","Local","Visita","Visita","Local","Local","Local","Local","Empate","Visita","Visita","Local","Visita","Local","Visita","Local","Visita","Empate","Empate","Local","Visita","Local","Visita","Local","Visita","Local","Empate","Local","Local","Local","Visita","Local","Local","Visita","Empate","Visita","Empate","Local","Visita","Local","Visita","Local","Visita","Local","Local","Local","Local","Empate","Local","Local","Visita","Visita","Local"]
+                pronosticos: ["Empate","Local","Empate","Visita","Local","Local","Empate","Local","Local","Local","Empate","Local","Local","Visita","Local","Visita","Local","Local","Local","Local","Local","Visita","Local","Local","Empate","Local","Local","Empate","Local","Visita","Local","Visita","Local","Local","Local","Visita","Local","Local","Visita","Local","Local","Visita","Visita","Local","Visita","Local","Local","Local","Empate","Local","Local","Local","Local","Empate","Visita","Local","Visita","Visita","Visita","Visita","Local","Local","Visita","Local","Visita","Local","Visita","Local","Empate","Local","Local","Visita"]
             },
             {
                 nombre: "Cokis Fuentes Valverde",
-                pronosticos: ["Local","Visita","Visita","Empate","Empate","Local","Local","Local","Empate","Empate","Visita","Visita","Local","Visita","Local","Local","Local","Empate","Local","Local","Local","Local","Visita","Visita","Local","Local","Local","Empate","Empate","Visita","Visita","Empate","Empate","Visita","Empate","Empate","Empate","Visita","Empate","Local","Empate","Empate","Local","Local","Local","Empate","Visita","Visita","Empate","Visita","Local","Empate","Empate","Empate","Local","Local","Empate","Local","Visita","Visita","Local","Empate","Local","Empate","Visita","Empate","Empate","Local","Local","Visita","Visita","Empate"]
+                pronosticos: ["Local","Visita","Empate","Visita","Empate","Local","Local","Local","Local","Empate","Local","Visita","Local","Empate","Local","Local","Local","Empate","Local","Local","Local","Empate","Visita","Local","Visita","Empate","Empate","Empate","Visita","Visita","Local","Empate","Empate","Local","Empate","Empate","Empate","Empate","Visita","Empate","Local","Visita","Empate","Local","Empate","Local","Empate","Empate","Visita","Visita","Local","Local","Local","Local","Visita","Visita","Visita","Empate","Visita","Empate","Empate","Empate","Local","Local","Visita","Empate","Empate","Visita","Empate","Visita","Empate","Empate"]
             },
             {
                 nombre: "Daniela Fuentes Guido",
-                pronosticos: ["Local","Local","Local","Local","Visita","Visita","Local","Visita","Local","Local","Visita","Empate","Local","Empate","Local","Local","Local","Empate","Local","Local","Local","Visita","Visita","Empate","Local","Empate","Local","Local","Visita","Visita","Local","Local","Local","Visita","Local","Visita","Local","Empate","Local","Local","Empate","Visita","Local","Visita","Local","Local","Local","Visita","Local","Visita","Local","Local","Empate","Visita","Local","Local","Local","Empate","Visita","Visita","Local","Visita","Local","Local","Visita","Empate","Local","Local","Local","Visita","Visita","Empate"]
+                pronosticos: ["Local","Local","Local","Visita","Local","Local","Local","Visita","Local","Local","Local","Local","Local","Visita","Local","Local","Local","Local","Local","Local","Local","Visita","Visita","Local","Local","Local","Local","Local","Local","Local","Local","Visita","Local","Local","Empate","Visita","Local","Local","Visita","Visita","Local","Visita","Local","Empate","Local","Local","Local","Local","Visita","Empate","Local","Local","Local","Visita","Visita","Local","Local","Visita","Visita","Visita","Visita","Local","Local","Local","Local","Local","Visita","Visita","Empate","Visita","Local","Visita"]
             },
             {
                 nombre: "Cristian Dior",
-                pronosticos: ["Local","Local","Local","Local","Visita","Visita","Local","Visita","Visita","Local","Local","Empate","Local","Visita","Visita","Local","Local","Local","Visita","Visita","Local","Local","Local","Local","Local","Visita","Local","Local","Visita","Visita","Visita","Local","Visita","Visita","Local","Visita","Local","Empate","Local","Visita","Empate","Visita","Local","Visita","Local","Local","Visita","Visita","Local","Visita","Local","Local","Visita","Local","Local","Local","Local","Visita","Local","Visita","Local","Visita","Local","Local","Visita","Visita","Local","Local","Local","Visita","Visita","Local"]
+                pronosticos: ["Local","Local","Local","Visita","Visita","Local","Local","Visita","Local","Local","Local","Local","Visita","Local","Local","Local","Local","Local","Local","Local","Local","Visita","Visita","Local","Local","Visita","Local","Local","Visita","Visita","Visita","Local","Local","Local","Local","Visita","Local","Local","Visita","Visita","Local","Visita","Visita","Visita","Visita","Local","Local","Visita","Visita","Empate","Local","Local","Local","Visita","Local","Visita","Visita","Visita","Visita","Visita","Visita","Local","Local","Visita","Local","Local","Local","Local","Visita","Local","Local","Visita"]
             },
             {
                 nombre: "Adrian Fuentes Güido",
-                pronosticos: ["Local","Local","Empate","Local","Empate","Empate","Visita","Empate","Local","Local","Empate","Visita","Local","Empate","Visita","Local","Local","Empate","Empate","Visita","Local","Empate","Local","Empate","Local","Empate","Local","Local","Empate","Visita","Empate","Empate","Visita","Visita","Local","Visita","Empate","Empate","Local","Visita","Empate","Visita","Local","Visita","Local","Local","Visita","Local","Local","Empate","Local","Local","Visita","Empate","Local","Empate","Empate","Local","Visita","Visita","Local","Visita","Local","Local","Empate","Empate","Local","Empate","Local","Visita","Visita","Local"]
+                pronosticos: ["Local","Local","Local","Visita","Local","Local","Empate","Empate","Local","Local","Local","Empate","Visita","Local","Local","Local","Local","Local","Local","Local","Local","Empate","Visita","Local","Empate","Local","Local","Local","Empate","Visita","Local","Empate","Local","Local","Local","Visita","Local","Local","Visita","Visita","Local","Visita","Empate","Local","Visita","Local","Local","Local","Visita","Visita","Local","Empate","Local","Empate","Local","Local","Empate","Empate","Visita","Visita","Visita","Empate","Local","Local","Visita","Local","Empate","Visita","Local","Local","Local","Visita"]
             },
             {
                 nombre: "Gina",
-                pronosticos: ["Local","Local","Empate","Visita","Empate","Visita","Local","Visita","Empate","Visita","Local","Empate","Local","Empate","Empate","Local","Local","Visita","Local","Empate","Visita","Empate","Empate","Visita","Local","Empate","Local","Local","Empate","Visita","Empate","Empate","Visita","Visita","Local","Visita","Local","Empate","Local","Local","Empate","Empate","Local","Empate","Local","Empate","Empate","Visita","Local","Visita","Local","Visita","Visita","Local","Local","Empate","Local","Empate","Visita","Visita","Local","Visita","Visita","Local","Visita","Empate","Local","Empate","Local","Visita","Visita","Local"]
+                pronosticos: ["Local","Local","Empate","Visita","Empate","Local","Local","Visita","Local","Local","Local","Local","Empate","Local","Local","Local","Local","Visita","Local","Local","Local","Empate","Visita","Local","Empate","Empate","Visita","Visita","Empate","Empate","Local","Empate","Local","Local","Local","Visita","Local","Local","Visita","Empate","Local","Visita","Empate","Empate","Visita","Local","Local","Visita","Visita","Empate","Local","Local","Visita","Visita","Empate","Visita","Visita","Empate","Visita","Visita","Visita","Local","Local","Visita","Empate","Local","Local","Visita","Empate","Visita","Local","Visita"]
             },
             {
                 nombre: "Oliver García García",
-                pronosticos: ["Local","Local","Empate","Local","Empate","Visita","Empate","Visita","Local","Local","Empate","Local","Local","Visita","Visita","Local","Local","Local","Local","Visita","Local","Visita","Empate","Local","Local","Visita","Local","Local","Visita","Visita","Local","Empate","Empate","Visita","Empate","Visita","Local","Empate","Local","Visita","Local","Visita","Local","Visita","Local","Local","Visita","Local","Local","Visita","Local","Visita","Visita","Local","Local","Local","Local","Empate","Empate","Visita","Local","Visita","Local","Local","Visita","Visita","Local","Local","Empate","Visita","Visita","Empate"]
+                pronosticos: ["Local","Local","Local","Visita","Local","Local","Empate","Visita","Local","Local","Local","Local","Visita","Local","Local","Local","Local","Local","Local","Local","Local","Visita","Local","Local","Empate","Local","Local","Local","Local","Visita","Local","Visita","Local","Local","Local","Visita","Local","Local","Visita","Visita","Local","Visita","Local","Local","Local","Local","Visita","Local","Empate","Local","Local","Local","Visita","Empate","Local","Visita","Visita","Visita","Visita","Visita","Visita","Local","Local","Visita","Local","Local","Empate","Visita","Empate","Local","Local","Visita"]
             },
             {
                 nombre: "Alejandra",
-                pronosticos: ["Local","Visita","Visita","Local","Visita","Local","Local","Local","Local","Visita","Visita","Visita","Local","Visita","Local","Local","Local","Empate","Local","Local","Empate","Local","Visita","Visita","Local","Local","Local","Empate","Empate","Visita","Local","Visita","Local","Local","Local","Visita","Local","Local","Visita","Visita","Visita","Visita","Local","Local","Visita","Empate","Visita","Visita","Local","Empate","Visita","Local","Empate","Visita","Local","Local","Local","Empate","Visita","Visita","Local","Empate","Local","Local","Visita","Empate","Local","Empate","Local","Visita","Visita","Local"]
+                pronosticos: ["Local","Visita","Local","Visita","Local","Local","Local","Visita","Local","Local","Local","Local","Visita","Visita","Local","Local","Local","Local","Local","Local","Local","Visita","Visita","Local","Visita","Local","Local","Local","Empate","Visita","Local","Local","Local","Local","Local","Visita","Local","Local","Visita","Visita","Local","Visita","Local","Empate","Visita","Local","Local","Local","Visita","Visita","Local","Local","Local","Visita","Local","Visita","Visita","Visita","Visita","Visita","Visita","Local","Local","Visita","Empate","Local","Empate","Visita","Empate","Visita","Local","Visita"]
             },
             {
                 nombre: "OSA MAYORA",
-                pronosticos: ["Local","Visita","Local","Empate","Visita","Visita","Local","Visita","Local","Local","Visita","Visita","Local","Empate","Visita","Local","Local","Empate","Local","Local","Empate","Visita","Visita","Local","Local","Visita","Local","Empate","Local","Visita","Local","Visita","Local","Local","Visita","Local","Empate","Visita","Empate","Visita","Visita","Local","Visita","Visita","Local","Visita","Visita","Visita","Local","Visita","Local","Local","Local","Visita","Local","Visita","Local","Empate","Visita","Local","Local","Visita","Empate","Local","Visita","Local","Empate","Visita","Local","Empate","Visita","Local"]
+                pronosticos: ["Local","Visita","Local","Visita","Local","Local","Local","Visita","Local","Local","Local","Local","Local","Local","Local","Local","Local","Visita","Local","Local","Local","Visita","Visita","Local","Local","Local","Visita","Empate","Local","Visita","Local","Local","Visita","Local","Local","Visita","Local","Local","Visita","Visita","Local","Visita","Local","Local","Visita","Local","Local","Local","Visita","Visita","Local","Visita","Local","Visita","Visita","Visita","Visita","Visita","Visita","Visita","Visita","Local","Local","Visita","Empate","Local","Empate","Visita","Empate","Visita","Local","Visita"]
             },
             {
                 nombre: "Mangas.",
-                pronosticos: ["Local","Visita","Empate","Empate","Visita","Visita","Local","Visita","Local","Empate","Visita","Visita","Local","Empate","Local","Local","Local","Visita","Visita","Local","Local","Local","Visita","Visita","Local","Empate","Local","Local","Visita","Visita","Visita","Local","Empate","Empate","Local","Visita","Local","Local","Local","Visita","Visita","Visita","Local","Visita","Local","Local","Empate","Empate","Empate","Visita","Local","Empate","Visita","Local","Local","Local","Local","Empate","Empate","Visita","Local","Visita","Local","Local","Empate","Empate","Empate","Visita","Local","Empate","Visita","Local"]
+                pronosticos: ["Local","Visita","Local","Visita","Local","Local","Local","Visita","Local","Local","Local","Local","Local","Empate","Local","Local","Local","Visita","Local","Local","Local","Visita","Visita","Local","Empate","Local","Empate","Empate","Local","Visita","Local","Visita","Local","Local","Local","Visita","Local","Local","Visita","Visita","Local","Visita","Empate","Empate","Visita","Local","Local","Local","Visita","Visita","Local","Local","Visita","Visita","Local","Visita","Visita","Empate","Visita","Visita","Visita","Local","Local","Visita","Empate","Local","Local","Visita","Empate","Visita","Local","Local"]
             },
             {
                 nombre: "Rayo",
-                pronosticos: ["Local","Empate","Local","Local","Empate","Visita","Local","Visita","Local","Local","Local","Empate","Local","Visita","Visita","Local","Local","Local","Local","Empate","Empate","Empate","Empate","Local","Local","Local","Local","Empate","Visita","Visita","Empate","Local","Visita","Visita","Local","Visita","Local","Visita","Local","Local","Visita","Visita","Local","Visita","Local","Local","Empate","Empate","Local","Visita","Local","Empate","Visita","Local","Local","Empate","Local","Empate","Visita","Visita","Local","Visita","Local","Local","Empate","Visita","Empate","Local","Local","Visita","Visita","Local"]
+                pronosticos: ["Local","Empate","Local","Visita","Local","Local","Local","Visita","Local","Local","Local","Local","Local","Empate","Local","Local","Local","Empate","Local","Local","Local","Empate","Visita","Local","Local","Local","Local","Local","Empate","Visita","Local","Visita","Local","Local","Local","Visita","Local","Local","Visita","Visita","Local","Visita","Empate","Empate","Local","Local","Local","Local","Empate","Local","Local","Local","Visita","Visita","Local","Visita","Visita","Visita","Visita","Visita","Visita","Local","Local","Local","Local","Local","Empate","Visita","Empate","Visita","Local","Visita"]
             },
             {
                 nombre: "Laloquera",
-                pronosticos: ["Local","Visita","Empate","Local","Visita","Local","Local","Visita","Empate","Local","Empate","Local","Visita","Local","Visita","Local","Local","Local","Local","Local","Local","Empate","Visita","Empate","Local","Visita","Local","Local","Empate","Visita","Visita","Empate","Local","Local","Visita","Visita","Visita","Local","Local","Visita","Local","Visita","Local","Visita","Visita","Local","Local","Visita","Local","Visita","Local","Local","Visita","Empate","Local","Visita","Local","Empate","Local","Visita","Local","Visita","Local","Local","Local","Visita","Visita","Visita","Local","Visita","Visita","Local"]
+                pronosticos: ["Local","Visita","Local","Visita","Empate","Local","Local","Visita","Local","Local","Local","Local","Local","Empate","Local","Local","Local","Local","Local","Local","Local","Visita","Visita","Local","Empate","Local","Local","Local","Empate","Visita","Local","Visita","Local","Local","Local","Visita","Local","Local","Visita","Visita","Local","Visita","Local","Visita","Visita","Local","Local","Visita","Local","Visita","Local","Local","Visita","Empate","Local","Visita","Local","Empate","Local","Visita","Local","Visita","Local","Local","Local","Visita","Visita","Visita","Local","Visita","Visita","Local"]
             },
             {
                 nombre: "Luis García Carrasco",
-                pronosticos: ["Local","Empate","Local","Local","Visita","Visita","Local","Visita","Visita","Local","Empate","Local","Local","Visita","Visita","Local","Local","Local","Empate","Visita","Local","Visita","Empate","Local","Local","Visita","Local","Local","Visita","Visita","Local","Local","Empate","Visita","Visita","Visita","Local","Visita","Local","Visita","Local","Visita","Local","Visita","Local","Local","Visita","Empate","Local","Visita","Local","Visita","Visita","Local","Local","Local","Local","Visita","Empate","Visita","Local","Visita","Local","Local","Empate","Visita","Local","Local","Local","Visita","Visita","Local"]
+                pronosticos: ["Local","Empate","Local","Visita","Visita","Local","Local","Visita","Local","Local","Local","Local","Local","Local","Local","Local","Local","Visita","Local","Local","Local","Visita","Visita","Local","Local","Visita","Local","Local","Local","Visita","Local","Visita","Local","Local","Local","Visita","Local","Local","Visita","Visita","Local","Visita","Local","Empate","Visita","Local","Local","Local","Visita","Visita","Local","Local","Local","Visita","Local","Visita","Visita","Visita","Visita","Visita","Visita","Local","Local","Local","Empate","Local","Visita","Visita","Empate","Visita","Local","Visita"]
             },
             {
                 nombre: "Aldo David Siles Zaragoza",
-                pronosticos: ["Local","Empate","Local","Local","Visita","Visita","Local","Visita","Visita","Local","Empate","Local","Local","Visita","Visita","Local","Empate","Local","Empate","Visita","Local","Visita","Visita","Local","Local","Visita","Local","Visita","Empate","Local","Visita","Local","Local","Visita","Empate","Visita","Local","Empate","Local","Visita","Local","Visita","Local","Visita","Local","Local","Visita","Empate","Local","Visita","Local","Visita","Empate","Local","Local","Visita","Local","Empate","Local","Visita","Local","Visita","Local","Local","Visita","Empate","Visita","Local","Local","Visita","Visita","Empate"]
+                pronosticos: ["Local","Empate","Local","Visita","Visita","Local","Local","Visita","Local","Local","Local","Local","Local","Visita","Local","Local","Local","Visita","Local","Local","Local","Visita","Visita","Local","Local","Visita","Local","Visita","Empate","Local","Visita","Local","Local","Visita","Empate","Visita","Local","Empate","Local","Visita","Local","Visita","Local","Visita","Local","Local","Visita","Empate","Local","Visita","Local","Visita","Empate","Local","Local","Visita","Local","Empate","Local","Visita","Local","Visita","Local","Local","Visita","Empate","Visita","Local","Local","Visita","Visita","Empate"]
             },
             {
                 nombre: "Zaid Goodman",
-                pronosticos: ["Local","Local","Local","Local","Visita","Empate","Local","Visita","Local","Local","Empate","Empate","Local","Visita","Visita","Local","Local","Local","Local","Visita","Local","Local","Visita","Empate","Local","Empate","Local","Local","Visita","Visita","Local","Local","Local","Visita","Empate","Visita","Local","Local","Local","Visita","Empate","Visita","Local","Visita","Local","Local","Empate","Visita","Local","Visita","Local","Local","Visita","Local","Local","Local","Local","Empate","Local","Visita","Local","Visita","Local","Empate","Visita","Empate","Local","Empate","Local","Visita","Visita","Empate"]
+                pronosticos: ["Local","Local","Local","Visita","Local","Local","Local","Visita","Local","Local","Local","Local","Local","Empate","Local","Local","Local","Visita","Local","Local","Local","Visita","Visita","Local","Local","Local","Local","Local","Visita","Visita","Local","Visita","Local","Local","Local","Visita","Local","Local","Visita","Visita","Local","Visita","Local","Empate","Visita","Local","Local","Local","Empate","Visita","Local","Local","Visita","Visita","Local","Visita","Visita","Visita","Visita","Empate","Visita","Local","Local","Local","Empate","Local","Visita","Visita","Empate","Visita","Local","Local"]
             }
         ];
 
@@ -367,71 +371,83 @@
         function initQuiniela() {
             // 1. Panel de Control Admin
             const adminGrid = document.getElementById("admin-panel-grid");
-            partidos.forEach((partido, index) => {
-                const item = document.createElement("div");
-                item.className = "admin-item";
-                
-                const esPrimerPartido = index === 0;
+            if (adminGrid) {
+                adminGrid.innerHTML = ""; // Limpiar por si acaso
+                partidos.forEach((partido, index) => {
+                    const item = document.createElement("div");
+                    item.className = "admin-item";
+                    
+                    const resActual = resultadosReales[index] || "-";
 
-                item.innerHTML = `
-                    <span style="font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">P${index+1}: ${partido}</span>
-                    <select class="select-resultado" data-index="${index}" onchange="procesarCambioResultado(this)">
-                        <option value="-" ${!esPrimerPartido ? 'selected' : ''}>-</option>
-                        <option value="Local" ${esPrimerPartido ? 'selected' : ''}>Local</option>
-                        <option value="Empate">Empate</option>
-                        <option value="Visita">Visita</option>
-                    </select>
-                `;
-                adminGrid.appendChild(item);
-            });
+                    item.innerHTML = `
+                        <span style="font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">P${index+1}: ${partido}</span>
+                        <select class="select-resultado" data-index="${index}" onchange="procesarCambioResultado(this)">
+                            <option value="-" ${resActual === '-' ? 'selected' : ''}>-</option>
+                            <option value="Local" ${resActual === 'Local' ? 'selected' : ''}>Local</option>
+                            <option value="Empate" ${resActual === 'Empate' ? 'selected' : ''}>Empate</option>
+                            <option value="Visita" ${resActual === 'Visita' ? 'selected' : ''}>Visita</option>
+                        </select>
+                    `;
+                    adminGrid.appendChild(item);
+                });
+            }
 
             // 2. Construir Matriz Desktop
             const headerRow = document.getElementById("matrix-header");
-            partidos.forEach(p => {
-                const th = document.createElement("th");
-                th.innerText = p;
-                headerRow.appendChild(th);
-            });
+            if (headerRow) {
+                headerRow.innerHTML = "<th>Participante</th>"; // Reset con la columna base
+                partidos.forEach(p => {
+                    const th = document.createElement("th");
+                    th.innerText = p;
+                    headerRow.appendChild(th);
+                });
+            }
 
             const matrixBody = document.getElementById("matrix-body");
-            participantes.forEach(p => {
-                const row = document.createElement("tr");
-                row.id = `pc-fila-${limpiarId(p.nombre)}`;
-                let html = `<td>${p.nombre.trim()}</td>`;
-                p.pronosticos.forEach(pron => { html += `<td>${pron}</td>`; });
-                row.innerHTML = html;
-                matrixBody.appendChild(row);
-            });
+            if (matrixBody) {
+                matrixBody.innerHTML = "";
+                participantes.forEach(p => {
+                    const row = document.createElement("tr");
+                    row.id = `pc-fila-${limpiarId(p.nombre)}`;
+                    let html = `<td>${p.nombre.trim()}</td>`;
+                    p.pronosticos.forEach(pron => { html += `<td>${pron}</td>`; });
+                    row.innerHTML = html;
+                    matrixBody.appendChild(row);
+                });
+            }
 
             // 3. Construir Vista Móvil
             const movilContainer = document.getElementById("pronosticos-movil-container");
-            participantes.forEach(p => {
-                const userCard = document.createElement("div");
-                userCard.className = "user-card";
-                userCard.setAttribute("data-name", p.nombre.trim().toLowerCase());
-                userCard.id = `movil-card-${limpiarId(p.nombre)}`;
-                
-                let html = `
-                    <div class="user-card-header">
-                        <span>${p.nombre.trim()}</span>
-                        <span class="badge score-badge">0 pts</span>
-                    </div>
-                    <div class="user-games-grid">
-                `;
-                
-                p.pronosticos.forEach((pron, i) => {
-                    html += `
-                        <div class="game-mini-box" data-game-index="${i}">
-                            <span class="p-num">P${i+1}</span>
-                            <span class="p-pred ${pron.toLowerCase()}">${pron}</span>
+            if (movilContainer) {
+                movilContainer.innerHTML = "";
+                participantes.forEach(p => {
+                    const userCard = document.createElement("div");
+                    userCard.className = "user-card";
+                    userCard.setAttribute("data-name", p.nombre.trim().toLowerCase());
+                    userCard.id = `movil-card-${limpiarId(p.nombre)}`;
+                    
+                    let html = `
+                        <div class="user-card-header">
+                            <span>${p.nombre.trim()}</span>
+                            <span class="badge score-badge">0 pts</span>
                         </div>
+                        <div class="user-games-grid">
                     `;
+                    
+                    p.pronosticos.forEach((pron, i) => {
+                        html += `
+                            <div class="game-mini-box" data-game-index="${i}">
+                                <span class="p-num">P${i+1}</span>
+                                <span class="p-pred ${pron.toLowerCase()}">${pron}</span>
+                            </div>
+                        `;
+                    });
+                    
+                    html += `</div>`;
+                    userCard.innerHTML = html;
+                    movilContainer.appendChild(userCard);
                 });
-                
-                html += `</div>`;
-                userCard.innerHTML = html;
-                movilContainer.appendChild(userCard);
-            });
+            }
 
             recalcularTodo();
         }
@@ -525,6 +541,4 @@
         }
 
         document.addEventListener("DOMContentLoaded", initQuiniela);
-    </script>
-</body>
-</html>
+</script>
