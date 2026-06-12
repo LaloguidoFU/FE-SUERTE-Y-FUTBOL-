@@ -99,30 +99,6 @@
             border-radius: 8px;
             padding: 12px;
         }
-        .admin-header-box {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-        .btn-toggle-admin {
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-        .btn-toggle-admin.editing {
-            background-color: #d32f2f;
-        }
         .admin-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
@@ -149,12 +125,6 @@
             font-weight: bold;
             font-size: 0.8rem;
             background: #fff;
-        }
-        .select-resultado:disabled {
-            background: #f1f5f9;
-            color: #64748b;
-            border-color: #cbd5e1;
-            cursor: not-allowed;
         }
 
         /* CONTENEDOR DE PRONÓSTICOS EN MÓVIL (TARJETAS) */
@@ -195,7 +165,6 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            cursor: pointer;
         }
         .game-mini-box .p-num { color: #64748b; font-weight: bold; margin-bottom: 2px;}
         .game-mini-box .p-pred { font-weight: bold; font-size: 0.75rem; }
@@ -243,7 +212,7 @@
     </header>
 
     <div class="container">
-        <!-- BLOQUE 1: RANKING -->
+        <!-- BLOQUE 1: RANKING (SIEMPRE ARRIBA EN MÓVIL) -->
         <div class="card">
             <h2>Tabla de Posiciones</h2>
             <table class="ranking-table">
@@ -262,14 +231,9 @@
         <div class="card">
             <h2>Control de Partidos y Pronósticos</h2>
             
-            <!-- PANEL DEL ADMINISTRADOR SEGURIZADO -->
+            <!-- PANEL DEL ADMINISTRADOR (INGRESAR GANADORES) -->
             <div class="admin-section" style="margin-bottom: 15px;">
-                <div class="admin-header-box">
-                    <b style="color: #1b5e20; font-size: 0.9rem;">🛠️ PANEL DE CONTROL: RESULTADOS REALES</b>
-                    <button class="btn-toggle-admin" id="btn-lock" onclick="toggleEdicionAdmin()">
-                        <span>🔒</span> Bloqueado
-                    </button>
-                </div>
+                <b style="color: #1b5e20; font-size: 0.9rem; display: block; margin-bottom: 8px;">🛠️ PANEL DE CONTROL: RESULTADOS REALES</b>
                 <div class="admin-grid" id="admin-panel-grid"></div>
             </div>
 
@@ -278,7 +242,7 @@
             <!-- VISTA MÓVIL: Tarjetas dinámicas -->
             <div class="pronosticos-movil" id="pronosticos-movil-container"></div>
 
-            <!-- VISTA ESCRITORIO: Matriz tradicional -->
+            <!-- VISTA ESCRITORIO: Matriz tradicional (Oculta en celulares) -->
             <div class="matrix-desktop-wrapper">
                 <div class="table-responsive">
                     <table class="matrix-table">
@@ -296,6 +260,7 @@
     </div>
 
     <script>
+        // Los 72 partidos estrictamente ordenados de manera CRONOLÓGICA (Del 11 de junio al 27 de junio)
         const partidos = [
             'Mexico vs Sudafrica', 'Corea vs Chequia', 'Canada vs Bosnia', 'EEUU vs Paraguay', 
             'Catar vs Suiza', 'Brasil vs Marruecos', 'Haiti vs Escocia', 'Australia vs Turquia', 
@@ -317,9 +282,10 @@
             'Colombia vs Portugal', 'RD Congo vs Uzbekistan', 'Argelia vs Austria', 'Jordania vs Argentina'
         ];
 
+        // Mantiene el primer encuentro de México como "Local", y limpia el resto en el nuevo orden cronológico
         const resultadosReales = ["Local", ...Array(partidos.length - 1).fill("-")];
-        let modoEdicionActivo = false;
 
+        // Todos los pronósticos de los participantes fueron reorganizados uno por uno para seguir al partido correspondiente sin alterar su predicción original
         const participantes = [
             { nombre: 'Chuma', pronosticos: ['Local', 'Empate', 'Local', 'Local', 'Visita', 'Local', 'Empate', 'Visita', 'Local', 'Local', 'Empate', 'Local', 'Local', 'Local', 'Visita', 'Empate', 'Local', 'Visita', 'Local', 'Local', 'Local', 'Local', 'Local', 'Visita', 'Local', 'Empate', 'Local', 'Local', 'Empate', 'Visita', 'Local', 'Visita', 'Local', 'Local', 'Local', 'Visita', 'Local', 'Local', 'Local', 'Visita', 'Local', 'Local', 'Local', 'Visita', 'Local', 'Local', 'Visita', 'Local', 'Local', 'Empate', 'Local', 'Local', 'Empate', 'Local', 'Empate', 'Visita', 'Empate', 'Visita', 'Empate', 'Local', 'Visita', 'Empate', 'Visita', 'Visita', 'Local', 'Visita', 'Visita', 'Local', 'Visita', 'Empate', 'Visita', 'Visita'] },
             { nombre: 'ARELLANO', pronosticos: ['Local', 'Local', 'Local', 'Local', 'Visita', 'Local', 'Visita', 'Local', 'Local', 'Visita', 'Visita', 'Local', 'Local', 'Local', 'Local', 'Visita', 'Local', 'Visita', 'Local', 'Local', 'Local', 'Local', 'Empate', 'Visita', 'Empate', 'Local', 'Local', 'Local', 'Visita', 'Local', 'Local', 'Visita', 'Visita', 'Local', 'Empate', 'Visita', 'Local', 'Local', 'Local', 'Local', 'Local', 'Local', 'Local', 'Visita', 'Local', 'Local', 'Visita', 'Local', 'Visita', 'Empate', 'Visita', 'Visita', 'Empate', 'Local', 'Empate', 'Visita', 'Visita', 'Empate', 'Visita', 'Visita', 'Visita', 'Local', 'Empate', 'Visita', 'Empate', 'Local', 'Local', 'Empate', 'Local', 'Local', 'Visita', 'Visita'] },
@@ -341,18 +307,17 @@
         ];
 
         function initQuiniela() {
-            // 1. Panel Admin de selectores con tooltip y estado DESHABILITADO por defecto
+            // 1. Panel de Control Admin
             const adminGrid = document.getElementById("admin-panel-grid");
             partidos.forEach((partido, index) => {
                 const item = document.createElement("div");
                 item.className = "admin-item";
-                item.setAttribute("title", partido);
                 
                 const esPrimerPartido = index === 0;
 
                 item.innerHTML = `
                     <span style="font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">P${index+1}: ${partido}</span>
-                    <select class="select-resultado" data-index="${index}" onchange="procesarCambioResultado(this)" disabled>
+                    <select class="select-resultado" data-index="${index}" onchange="procesarCambioResultado(this)">
                         <option value="-" ${!esPrimerPartido ? 'selected' : ''}>-</option>
                         <option value="Local" ${esPrimerPartido ? 'selected' : ''}>Local</option>
                         <option value="Empate">Empate</option>
@@ -367,7 +332,6 @@
             partidos.forEach(p => {
                 const th = document.createElement("th");
                 th.innerText = p;
-                th.setAttribute("title", p);
                 headerRow.appendChild(th);
             });
 
@@ -376,14 +340,12 @@
                 const row = document.createElement("tr");
                 row.id = `pc-fila-${p.nombre.replace(/\s+/g, '-')}`;
                 let html = `<td>${p.nombre.trim()}</td>`;
-                p.pronosticos.forEach((pron, idx) => { 
-                    html += `<td title="${partidos[idx]}">${pron}</td>`; 
-                });
+                p.pronosticos.forEach(pron => { html += `<td>${pron}</td>`; });
                 row.innerHTML = html;
                 matrixBody.appendChild(row);
             });
 
-            // 3. Construir Vista Móvil (Tarjetas)
+            // 3. Construir Vista Móvil
             const movilContainer = document.getElementById("pronosticos-movil-container");
             participantes.forEach(p => {
                 const userCard = document.createElement("div");
@@ -400,10 +362,9 @@
                 `;
                 
                 p.pronosticos.forEach((pron, i) => {
-                    // SE AÑADE EL ATRIBUTO title TANTO A LA CAJA COMO AL SPAN INTERNO DE "P#"
                     html += `
-                        <div class="game-mini-box" data-game-index="${i}" title="${partidos[i]}">
-                            <span class="p-num" title="${partidos[i]}">P${i+1}</span>
+                        <div class="game-mini-box" data-game-index="${i}">
+                            <span class="p-num">P${i+1}</span>
                             <span class="p-pred ${pron.toLowerCase()}">${pron}</span>
                         </div>
                     `;
@@ -417,22 +378,6 @@
             recalcularTodo();
         }
 
-        function toggleEdicionAdmin() {
-            modoEdicionActivo = !modoEdicionActivo;
-            const btn = document.getElementById("btn-lock");
-            const selects = document.querySelectorAll(".select-resultado");
-
-            if (modoEdicionActivo) {
-                btn.innerHTML = "<span>🔓</span> Editar Activo";
-                btn.classList.add("editing");
-                selects.forEach(select => select.disabled = false);
-            } else {
-                btn.innerHTML = "<span>🔒</span> Bloqueado";
-                btn.classList.remove("editing");
-                selects.forEach(select => select.disabled = true);
-            }
-        }
-
         function procesarCambioResultado(selector) {
             const index = selector.getAttribute("data-index");
             resultadosReales[index] = selector.value;
@@ -443,7 +388,7 @@
             participantes.forEach(p => p.puntosTotales = 0);
 
             for (let i = 0; i < partidos.length; i++) {
-                const resActual = whitespaces= resultadosReales[i];
+                const resActual = resultadosReales[i];
                 if (resActual !== "-") {
                     participantes.forEach(p => {
                         if (p.pronosticos[i].toLowerCase() === resActual.toLowerCase()) {
