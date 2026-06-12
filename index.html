@@ -498,4 +498,280 @@
   "Local", "Visita", "Local", "Local", "Local", "Local",
   "Local", "Empate", "Empate", "Empate", "Empate", "Local",
   "Local", "Local", "Local", "Empate", "Local", "Visita",
-  "Empate", "Local", "Visita", "Local",
+  "Empate", "Local", "Visita", "Local", "Visita", "Visita",
+  "Local", "Visita", "Local", "Local", "Visita", "Visita",
+  "Local", "Visita", "Local", "Local", "Empate", "Empate",
+  "Local", "Visita", "Local", "Empate", "Visita", "Local",
+  "Local", "Empate", "Local", "Empate", "Visita", "Visita",
+  "Local", "Visita", "Local", "Local", "Empate", "Visita",
+  "Empate", "Local", "Local", "Visita", "Visita", "Local"
+]
+            },
+            {
+                nombre: "Laloquera",
+                pronosticos: [
+  "Local", "Visita", "Local", "Local", "Visita", "Local",
+  "Empate", "Visita", "Local", "Empate", "Local", "Local",
+  "Local", "Visita", "Local", "Visita", "Local", "Local",
+  "Local", "Local", "Local", "Local", "Empate", "Visita",
+  "Empate", "Visita", "Local", "Local", "Empate", "Visita",
+  "Visita", "Empate", "Local", "Local", "Visita", "Visita",
+  "Visita", "Local", "Local", "Visita", "Local", "Visita",
+  "Local", "Visita", "Visita", "Local", "Local", "Visita",
+  "Local", "Visita", "Local", "Local", "Visita", "Empate",
+  "Local", "Visita", "Local", "Empate", "Local", "Visita",
+  "Local", "Visita", "Local", "Local", "Local", "Visita",
+  "Visita", "Visita", "Local", "Visita", "Visita", "Local"
+]
+            },
+            {
+                nombre: "Luis García Carrasco",
+                pronosticos: [
+  "Local", "Empate", "Local", "Empate", "Visita", "Local",
+  "Visita", "Visita", "Local", "Local", "Visita", "Local",
+  "Local", "Local", "Visita", "Visita", "Local", "Local",
+  "Visita", "Local", "Local", "Visita", "Empate", "Local",
+  "Local", "Visita", "Local", "Local", "Visita", "Visita",
+  "Local", "Local", "Empate", "Local", "Visita", "Visita",
+  "Local", "Visita", "Local", "Visita", "Local", "Visita",
+  "Local", "Visita", "Local", "Local", "Visita", "Empate",
+  "Local", "Visita", "Local", "Visita", "Visita", "Local",
+  "Local", "Local", "Local", "Visita", "Empate", "Visita",
+  "Local", "Visita", "Local", "Empate", "Visita", "Local",
+  "Local", "Local", "Visita", "Visita", "Local", "Local"
+]
+            },
+            {
+                nombre: "Aldo David Siles Zaragoza",
+                pronosticos: [
+  "Local", "Empate", "Local", "Local", "Visita", "Visita",
+  "Local", "Visita", "Visita", "Local", "Empate", "Local",
+  "Local", "Visita", "Visita", "Local", "Empate", "Local",
+  "Empate", "Visita", "Local", "Visita", "Visita", "Local",
+  "Local", "Visita", "Local", "Visita", "Empate", "Local",
+  "Visita", "Local", "Local", "Visita", "Empate", "Visita",
+  "Local", "Empate", "Local", "Visita", "Local", "Visita",
+  "Local", "Visita", "Local", "Local", "Visita", "Empate",
+  "Local", "Visita", "Local", "Visita", "Empate", "Local",
+  "Local", "Visita", "Local", "Empate", "Local", "Visita",
+  "Local", "Visita", "Local", "Local", "Visita", "Empate",
+  "Visita", "Local", "Local", "Visita", "Visita", "Empate"
+]
+            },
+            {
+                nombre: "Zaid Goodman",
+                pronosticos: [
+  "Local", "Local", "Local", "Local", "Visita", "Empate",
+  "Local", "Visita", "Local", "Local", "Empate", "Empate",
+  "Local", "Visita", "Visita", "Local", "Local", "Local",
+  "Local", "Visita", "Local", "Local", "Visita", "Empate",
+  "Local", "Empate", "Local", "Local", "Visita", "Visita",
+  "Local", "Local", "Local", "Visita", "Empate", "Visita",
+  "Local", "Local", "Local", "Visita", "Empate", "Visita",
+  "Local", "Visita", "Local", "Local", "Empate", "Visita",
+  "Local", "Visita", "Local", "Local", "Visita", "Local",
+  "Local", "Local", "Local", "Empate", "Local", "Visita",
+  "Local", "Visita", "Local", "Empate", "Visita", "Empate",
+  "Local", "Empate", "Local", "Visita", "Visita", "Empate"
+]
+            }
+        ];
+
+        // Genera IDs válidos para JavaScript (reemplaza tildes y caracteres especiales)
+        function limpiarId(texto) {
+            return texto.trim()
+                .toLowerCase()
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "")
+                .replace(/[^a-z0-9]/g, "-");
+        }
+
+        function initQuiniela() {
+            // 1. Panel de Control Admin
+            const adminGrid = document.getElementById("admin-panel-grid");
+            if (adminGrid) {
+                adminGrid.innerHTML = ""; // Limpiar por si acaso
+                partidos.forEach((partido, index) => {
+                    const item = document.createElement("div");
+                    item.className = "admin-item";
+                    
+                    const resActual = resultadosReales[index] || "-";
+
+                    item.innerHTML = `
+                        <span style="font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">P${index+1}: ${partido}</span>
+                        <select class="select-resultado" data-index="${index}" onchange="procesarCambioResultado(this)">
+                            <option value="-" ${resActual === '-' ? 'selected' : ''}>-</option>
+                            <option value="Local" ${resActual === 'Local' ? 'selected' : ''}>Local</option>
+                            <option value="Empate" ${resActual === 'Empate' ? 'selected' : ''}>Empate</option>
+                            <option value="Visita" ${resActual === 'Visita' ? 'selected' : ''}>Visita</option>
+                        </select>
+                    `;
+                    adminGrid.appendChild(item);
+                });
+            }
+
+            // 2. Construir Matriz Desktop
+            const headerRow = document.getElementById("matrix-header");
+            if (headerRow) {
+                headerRow.innerHTML = "<th>Participante</th>"; // Reset con la columna base
+                partidos.forEach(p => {
+                    const th = document.createElement("th");
+                    th.innerText = p;
+                    headerRow.appendChild(th);
+                });
+            }
+
+            const matrixBody = document.getElementById("matrix-body");
+            if (matrixBody) {
+                matrixBody.innerHTML = "";
+                participantes.forEach(p => {
+                    const row = document.createElement("tr");
+                    row.id = `pc-fila-${limpiarId(p.nombre)}`;
+                    let html = `<td>${p.nombre.trim()}</td>`;
+                    p.pronosticos.forEach(pron => { html += `<td>${pron}</td>`; });
+                    row.innerHTML = html;
+                    matrixBody.appendChild(row);
+                });
+            }
+
+            // 3. Construir Vista Móvil
+            const movilContainer = document.getElementById("pronosticos-movil-container");
+            if (movilContainer) {
+                movilContainer.innerHTML = "";
+                participantes.forEach(p => {
+                    const userCard = document.createElement("div");
+                    userCard.className = "user-card";
+                    userCard.setAttribute("data-name", p.nombre.trim().toLowerCase());
+                    userCard.id = `movil-card-${limpiarId(p.nombre)}`;
+                    
+                    let html = `
+                        <div class="user-card-header">
+                            <span>${p.nombre.trim()}</span>
+                            <span class="badge score-badge">0 pts</span>
+                        </div>
+                        <div class="user-games-grid">
+                    `;
+                    
+                    p.pronosticos.forEach((pron, i) => {
+                        html += `
+                            <div class="game-mini-box" data-game-index="${i}">
+                                <span class="p-num">P${i+1}</span>
+                                <span class="p-pred ${pron.toLowerCase()}">${pron}</span>
+                            </div>
+                        `;
+                    });
+                    
+                    html += `</div>`;
+                    userCard.innerHTML = html;
+                    movilContainer.appendChild(userCard);
+                });
+            }
+
+            recalcularTodo();
+        }
+
+        function procesarCambioResultado(selector) {
+            const index = selector.getAttribute("data-index");
+            resultadosReales[index] = selector.value;
+            recalcularTodo();
+        }
+
+        function recalcularTodo() {
+            participantes.forEach(p => p.puntosTotales = 0);
+
+            for (let i = 0; i < partidos.length; i++) {
+                const resActual = resultadosReales[i];
+                if (resActual !== "-") {
+                    participantes.forEach(p => {
+                        if (p.pronosticos[i] && p.pronosticos[i].toLowerCase() === resActual.toLowerCase()) {
+                            p.puntosTotales += 3;
+                        }
+                    });
+                }
+            }
+
+            participantes.forEach(p => {
+                const slug = limpiarId(p.nombre);
+                
+                // Actualizar Desktop
+                const filaPc = document.getElementById(`pc-fila-${slug}`);
+                if (filaPc) {
+                    const celdas = filaPc.getElementsByTagName("td");
+                    p.pronosticos.forEach((pron, i) => {
+                        const celda = celdas[i + 1];
+                        if (celda) {
+                            const resActual = resultadosReales[i];
+                            celda.className = (resActual === "-") ? pron.toLowerCase() : (pron.toLowerCase() === resActual.toLowerCase() ? `${pron.toLowerCase()} hit` : `${pron.toLowerCase()} miss`);
+                        }
+                    });
+                }
+
+                // Actualizar Móvil
+                const tarjetaMovil = document.getElementById(`movil-card-${slug}`);
+                if (tarjetaMovil) {
+                    tarjetaMovil.querySelector(".score-badge").innerText = `${p.puntosTotales} pts`;
+                    const cajasMini = tarjetaMovil.querySelectorAll(".game-mini-box");
+                    p.pronosticos.forEach((pron, i) => {
+                        const caja = cajasMini[i];
+                        if (caja) {
+                            const resActual = resultadosReales[i];
+                            caja.className = (resActual === "-") ? "game-mini-box" : (pron.toLowerCase() === resActual.toLowerCase() ? "game-mini-box hit" : "game-mini-box miss");
+                        }
+                    });
+                }
+            });
+
+            actualizarRanking();
+        }
+
+        function actualizarRanking() {
+            const rankingBody = document.getElementById("ranking-body");
+            if (!rankingBody) return;
+            rankingBody.innerHTML = "";
+            
+            const sorted = [...participantes].sort((a, b) => b.puntosTotales - a.puntosTotales);
+            
+            sorted.forEach((p, idx) => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td><span class="badge" style="background:#64748b">${idx + 1}</span></td>
+                    <td><strong>${p.nombre}</strong></td>
+                    <td style="text-align: right; font-weight: bold; color: var(--primary);">${p.puntosTotales} pts</td>
+                `;
+                rankingBody.appendChild(row);
+            });
+        }
+
+        function filtrarContenido() {
+            const query = document.getElementById("search").value.toLowerCase().trim();
+            
+            // Filtrar Móvil
+            const cards = document.querySelectorAll(".user-card");
+            cards.forEach(card => {
+                const name = card.getAttribute("data-name");
+                if (name.includes(query)) {
+                    card.style.display = "block";
+                } else {
+                    card.style.display = "none";
+                }
+            });
+
+            // Filtrar Desktop Matrix
+            participantes.forEach(p => {
+                const slug = limpiarId(p.nombre);
+                const filaPc = document.getElementById(`pc-fila-${slug}`);
+                if (filaPc) {
+                    if (p.nombre.toLowerCase().includes(query)) {
+                        filaPc.style.display = "";
+                    } else {
+                        filaPc.style.display = "none";
+                    }
+                }
+            });
+        }
+
+        // Ejecutar al cargar la página
+        window.onload = initQuiniela;
+</script>
+</body>
+</html>
