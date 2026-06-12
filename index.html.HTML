@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiniela Mundialista 2026</title>
+    <style>
+        :root {
+            --primary: #1e3d59;
+            --secondary: #17b978;
+            --bg: #f5f7fa;
+            --text: #333333;
+            --white: #ffffff;
+            --accent-local: #1e3d59;
+            --accent-visita: #e056fd;
+            --accent-empate: #f0932b;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            background: linear-gradient(135deg, var(--primary), #112233);
+            color: var(--white);
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        h1 { margin: 0; font-size: 2rem; }
+        p { margin: 5px 0 0; opacity: 0.9; }
+
+        .container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+            max-width: 100%;
+            margin: 0 auto;
+        }
+
+        @media (min-width: 1000px) {
+            .container { grid-template-columns: 380px 1fr; }
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            height: fit-content;
+        }
+
+        .card h2 {
+            margin-top: 0;
+            font-size: 1.3rem;
+            border-bottom: 2px solid var(--bg);
+            padding-bottom: 10px;
+            color: var(--primary);
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+        }
+        
+        .search-box:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .ranking-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .ranking-table th, .ranking-table td {
+            padding: 12px 10px;
+            text-align: left;
+        }
+
+        .ranking-table tr { border-bottom: 1px solid var(--bg); }
+        .ranking-table tr:last-child { border: none; }
+
+        .badge {
+            background: var(--secondary);
+            color: var(--white);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 0.85rem;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            max-height: 650px;
+        }
+
+        .matrix-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+            white-space: nowrap;
+        }
+
+        .matrix-table th {
+            background-color: var(--primary);
+            color: var(--white);
+            padding: 12px;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .matrix-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #e2e8f0;
+            border-right: 1px solid #e2e8f0;
+            text-align: center;
+        }
+        
+        .matrix-table td:first-child {
+            text-align: left;
+            font-weight: bold;
+            position: sticky;
+            left: 0;
+            background-color: var(--white);
+            z-index: 5;
+            border-right: 2px solid #cbd5e1;
+        }
+
+        .matrix-table tr:hover td { background-color: #f8fafc; }
+
+        .local { color: var(--accent-local); font-weight: bold; }
+        .visita { color: var(--accent-visita); font-weight: bold; }
+        .empate { color: var(--accent-empate); font-weight: bold; }
+        
+        .real-row td {
+            background-color: #e8f5e9 !important;
+            font-weight: bold;
+            color: #1b5e20;
+        }
+        
+        .real-row td:first-child {
+            background-color: #e8f5e9 !important;
+            position: sticky;
+            left: 0;
+            z-index: 6;
+        }
+
+        /* selectores interactivos en la fila real */
+        .select-resultado {
+            padding: 4px 8px;
+            border-radius: 4px;
+            border: 1px solid #1b5e20;
+            background-color: #ffffff;
+            font-weight: bold;
+            color: #1b5e20;
+            cursor: pointer;
+        }
+
+        .hit { background-color: #d1fae5 !important; color: #065f46; font-weight: bold; }
+        .miss { background-color: #fee2e2 !important; color: #991b1b; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>🏆 CONTROL DE QUINIELA MUNDIALISTA 🏆</h1>
+        <p>17 Participantes Reales | 72 Partidos con Selector Manual</p>
+    </header>
+
+    <div class="container">
+        <div class="card">
+            <h2>Tabla de Posiciones</h2>
+            <table class="ranking-table">
+                <thead>
+                    <tr style="font-weight: bold; border-bottom: 2px solid var(--primary)">
+                        <td style="width: 50px;">Pos</td>
+                        <td>Nombre</td>
+                        <td style="text-align: right;">Pts</td>
+                    </tr>
+                </thead>
+                <tbody id="ranking-body">
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card">
+            <h2>Buscador y Matriz General de Pronósticos</h2>
+            <input type="text" id="search" class="search-box" placeholder="🔍 Escribe cualquier nombre (Ej: Alejandra, Oliver, Laloquera, Cokis)..." oninput="filterMatrix()">
+            
+            <div class="table-responsive">
+                <table class="matrix-table" id="matrix-table">
+                    <thead>
+                        <tr id="matrix-header">
+                            <th>Participantes</th>
+                        </tr>
+                    </thead>
+                    <tbody id="matrix-body">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const partidos = ['Mexico vs Sudafrica', 'Corea vs Chequia', 'Chequia vs Sudafrica', 'Mexico vs Corea', 'Chequia vs Mexico', 'Sudafrica vs Corea', 'Canada vs Bosnia', 'Catar vs Suiza', 'Suiza vs Bosnia', 'Canada vs Catar', 'Suiza vs Canada', 'Bosnia vs Catar', 'Brasil vs Marruecos', 'Haiti vs Escocia', 'Escocia vs Marruecos', 'Brasil vs Haiti', 'Brasil vs Escocia', 'Marruecos vs Haiti', 'EEUU vs Paraguay', 'Australia vs Turquia', 'EEUU vs Australia', 'Turquia vs Paraguay', 'Turquia vs EEUU', 'Paraguay vs Australia', 'Alemania vs Curazao', 'Costa de Marfil vs Ecuador', 'Alemania vs Costa de Marfil', 'Ecuador vs Curazao', 'Curazao vs Costa de Marfil', 'Ecuador vs Alemania', 'Paises Bajos vs Japon', 'Suecia vs Tunez', 'Paises Bajos vs Suecia', 'Tunez vs Japon', 'Japon vs Suecia', 'Tunez vs Paises Bajos', 'Belgica vs Egipto', 'Iran vs Nueva Zelanda', 'Belgica vs Iran', 'Nueva Zelanda vs Egipto', 'Egipto vs Iran', 'Nueva Zelanda vs Belgica', 'Espana vs Cabo Verde', 'Arabia Saudi vs Uruguay', 'Espana vs Arabia Saudi', 'Uruguay vs Cabo Verde', 'Cabo Verde vs Arabia Saudi', 'Uruguay vs Espana', 'Francia vs Senegal', 'Irak vs Noruega', 'Francia vs Irak', 'Noruega vs Senegal', 'Noruega vs Francia', 'Senegal vs Irak', 'Argentina vs Argelia', 'Austria vs Jordania', 'Argentina vs Austria', 'Jordania vs Argelia', 'Argelia vs Austria', 'Jordania vs Argentina', 'Portugal vs RD Congo', 'Uzbekistan vs Colombia', 'Portugal vs Uzbekistan', 'Colombia vs RD Congo', 'Colombia vs Portugal', 'RD Congo vs Uzbekistan', 'Inglaterra vs Croacia', 'Ghana vs Panama', 'Inglaterra vs Ghana', 'Panama vs Croacia', 'Panama vs Inglaterra', 'Croacia vs Ghana'];
+
+        // Arrancamos todos los partidos en limpio ("-")
+        const resultadosReales = Array(partidos.length).fill("-");
+
+        const participantes = [
+            { nombre: 'Chuma', pronosticos: ['Local', 'Empate', 'Local', 'Local', 'Empate', 'Local', 'Local', 'Visita', 'Empate', 'Local', 'Local', 'Empate', 'Local', 'Empate', 'Visita', 'Local', 'Local', 'Local', 'Local', 'Visita', 'Empate', 'Visita', 'Empate', 'Local', 'Local', 'Empate', 'Local', 'Local', 'Empate', 'Visita', 'Local', 'Local', 'Local', 'Visita', 'Empate', 'Visita', 'Local', 'Empate', 'Local', 'Visita', 'Local', 'Visita', 'Local', 'Visita', 'Local', 'Local', 'Visita', 'Visita', 'Local', 'Visita', 'Local', 'Local', 'Visita', 'Empate', 'Local', 'Local', 'Local', 'Empate', 'Visita', 'Visita', 'Local', 'Visita', 'Local', 'Local', 'Visita', 'Empate', 'Local', 'Local', 'Local', 'Visita', 'Visita', 'Local'] },
+            { nombre: 'ARELLANO', pronosticos: ['Local', 'Local', 'Empate', 'Local', 'Empate', 'Local', 'Local', 'Visita', 'Local', 'Local', 'Visita', 'Empate', 'Local', 'Visita', 'Local', 'Local', 'Visita', 'Visita', 'Local', 'Local', 'Visita', 'Visita', 'Visita', 'Visita', 'Local', 'Visita', 'Local', 'Empate', 'Empate', 'Visita', 'Visita', 'Local', 'Visita', 'Visita', 'Visita', 'Empate', 'Local', 'Visita', 'Local', 'Local', 'Empate', 'Local', 'Local', 'Local', 'Local', 'Local', 'Empate', 'Visita', 'Local', 'Visita', 'Local', 'Local', 'Visita', 'Local', 'Local', 'Local', 'Local', 'Empate', 'Visita', 'Visita', 'Local', 'Visita', 'Local', 'Local', 'Local', 'Local', 'Local', 'Empate', 'Local', 'Visita', 'Visita', 'Empate'] },
+            { nombre: 'Mike', pronosticos: ['Empate', 'Local', 'Empate', 'Empate', 'Local', 'Empate', 'Empate', 'Visita', 'Local', 'Local', 'Empate', 'Local', 'Empate', 'Local', 'Visita', 'Local', 'Local', 'Local', 'Empate', 'Visita', 'Local', 'Visita', 'Visita', 'Local', 'Local', 'Local', 'Local', 'Empate', 'Visita', 'Visita', 'Local', 'Visita', 'Local', 'Visita', 'Local', 'Local', 'Visita', 'Empate', 'Empate', 'Local', 'Visita', 'Local', 'Visita', 'Local', 'Visita', 'Local', 'Empate', 'Local', 'Empate', 'Local', 'Local', 'Visita', 'Local', 'Local', 'Visita', 'Empate', 'Visita', 'Empate', 'Local', 'Visita', 'Local', 'Visita', 'Local', 'Visita', 'Local', 'Visita', 'Local', 'Visita', 'Local', 'Visita', 'Empate', 'Local'] },
+            { nombre: 'Cokis Fuentes Valverde', pronosticos: ['Local', 'Visita', 'Visita', 'Empate', 'Empate', 'Local', 'Local', 'Local', 'Empate', 'Empate', 'Visita', 'Visita', 'Local', 'Visita', 'Local', 'Local', 'Local', 'Empate', 'Local', 'Local', 'Local', 'Empate', 'Visita', 'Visita', 'Local', 'Local', 'Local', 'Empate', 'Empate', 'Visita', 'Visita', 'Empate', 'Empate', 'Visita', 'Empate', 'Empate', 'Empate', 'Visita', 'Empate', 'Local', 'Empate', 'Empate', 'Local', 'Local', 'Local', 'Empate', 'Visita', 'Visita', 'Empate', 'Visita', 'Local', 'Empate', 'Empate', 'Empate', 'Local', 'Local', 'Empate', 'Local', 'Visita', 'Visita', 'Local', 'Empate', 'Local', 'Empate', 'Visita', 'Empate', 'Empate', 'Local', 'Local', 'Visita', 'Visita', 'Empate'] },
+            { nombre: 'Daniela Fuentes Guido', pronosticos: ['Local', 'Local', 'Local', 'Local', 'Visita', 'Visita', 'Local', 'Visita', 'Local', 'Local', 'Visita', 'Empate', 'Local', 'Empate', 'Local', 'Local', 'Local', 'Empate', 'Local', 'Local', 'Local', 'Visita', 'Visita', 'Empate', 'Local', 'Empate', 'Local', 'Local', 'Visita', 'Visita', 'Local', 'Local', 'Local', 'Visita', 'Local', 'Local', 'Visita', 'Local', 'Empate', 'Local', 'Local', 'Empate', 'Visita', 'Local', 'Visita', 'Local', 'Local', 'Local', 'Visita', 'Visita', 'Local', 'Visita', 'Local', 'Local', 'Empate', 'Visita', 'Local', 'Local', 'Local', 'Empate', 'Visita', 'Visita', 'Local', 'Visita', 'Local', 'Local', 'Visita', 'Empate', 'Local', 'Local', 'Local', 'Visita'] },
+            { nombre: 'Cristian Dior', pronosticos: ['Local', 'Local', 'Local', 'Local', 'Visita', 'Visita', 'Local', 'Visita', 'Visita', 'Local', 'Local', 'Empate', 'Local', 'Visita', 'Visita', 'Local', 'Local', 'Local', 'Visita', 'Visita', 'Local', 'Local', 'Local', 'Local', 'Local', 'Visita', 'Local', 'Local', 'Visita', 'Visita', 'Visita', 'Local', 'Visita', 'Visita', 'Local', 'Local', 'Visita', 'Local', 'Empate', 'Local', 'Visita', 'Local', 'Visita', 'Local', 'Local', 'Visita', 'Visita', 'Local', 'Visita', 'Local', 'Local', 'Visita', 'Local', 'Local', 'Local', 'Empate', 'Visita', 'Visita', 'Local', 'Visita', 'Local', 'Local', 'Visita', 'Visita', 'Local', 'Visita', 'Local', 'Local', 'Visita', 'Visita', 'Local', 'Local'] },
+            { nombre: 'Adrian Fuentes Guido', pronosticos: ['Local', 'Local', 'Local', 'Local', 'Visita', 'Visita', 'Local', 'Visita', 'Local', 'Local', 'Visita', 'Empate', 'Local', 'Empate', 'Local', 'Local', 'Local', 'Empate', 'Local', 'Local', 'Local', 'Visita', 'Visita', 'Empate', 'Local', 'Empate', 'Local', 'Local', 'Visita', 'Visita', 'Local', 'Local', 'Local', 'Visita', 'Local', 'Local', 'Visita', 'Local', 'Empate', 'Local', 'Local', 'Empate', 'Visita', 'Local', 'Visita', 'Local', 'Local', 'Local', 'Visita', 'Visita', 'Local', 'Visita', 'Local', 'Local', 'Empate', 'Visita', 'Local', 'Local', 'Local', 'Empate', 'Visita', 'Visita', 'Local', 'Visita', 'Local', 'Local', 'Visita', 'Empate', 'Local', 'Local', 'Local', 'Visita'] },
+            { nombre: 'Gina', pronosticos: ['Local', 'Local', 'Local', 'Local', 'Visita', 'Visita', 'Local', 'Visita', 'Local', 'Local', 'Visita', 'Empate', 'Local', 'Empate', 'Local', 'Local', 'Local', 'Empate', 'Local', 'Local', 'Local', 'Visita', 'Visita', 'Empate', 'Local', 'Empate', 'Local', 'Local', 'Visita', 'Visita', 'Local', 'Local', 'Local', 'Visita', 'Local', 'Local', 'Visita', 'Local', 'Empate', 'Local', 'Local', 'Empate', 'Visita', 'Local', 'Visita', 'Local', 'Local', 'Local', 'Visita', 'Visita', 'Local', 'Visita', 'Local', 'Local', 'Empate', 'Visita', 'Local', 'Local', 'Local', 'Empate', 'Visita', 'Visita', 'Local', 'Visita', 'Local', 'Local', 'Visita', 'Empate', 'Local', 'Local', 'Local', 'Visita'] },
+            { nombre: 'Oliver Garcia Garcia', pronosticos: ['Local', 'Local', 'Local', 'Local', 'Visita', 'Visita', 'Local', 'Visita', 'Local', 'Local', 'Visita', 'Empate', 'Local', 'Empate', 'Local', 'Local', 'Local', 'Empate', 'Local', 'Local', 'Local', 'Visita', 'Visita', 'Empate', 'Local', 'Empate', 'Local', 'Local', 'Visita', 'Visita', 'Local', 'Local', 'Local', 'Visita', 'Local', 'Local', 'Visita', 'Local', 'Empate', 'Local', 'Local', 'Empate', 'Visita', 'Local', 'Visita', 'Local', 'Local', 'Local', 'Visita', 'Visita', 'Local', 'Visita', 'Local', 'Local', 'Empate', 'Visita', 'Local', 'Local', 'Local', 'Empate', 'Visita', 'Visita', 'Local', 'Visita', 'Local', 'Local', 'Visita', 'Empate', 'Local', 'Local', 'Local', 'Visita'] },
+            { nombre: 'Alejandra', pronosticos: ['Local', 'Local', 'Local', 'Local', 'Visita', 'Visita', 'Local', 'Visita', 'Local', 'Local', 'Visita', 'Empate', 'Local', 'Empate', 'Local', 'Local', 'Local', 'Empate', 'Local', 'Local', 'Local', 'Visita', 'Visita', 'Empate', 'Local', 'Empate', 'Local', 'Local', 'Visita', 'Visita', 'Local', 'Local', 'Local', 'Visita', 'Local', 'Local', 'Visita', 'Local', 'Empate', 'Local', 'Local', 'Empate', 'Visita', 'Local', 'Visita', 'Local', 'Local', 'Local', 'Visita', 'Visita', 'Local', 'Visita', 'Local', 'Local', 'Empate', 'Visita', 'Local', 'Local', 'Local', 'Empate', 'Visita', 'Visita', 'Local', 'Visita', 'Local', 'Local', 'Visita', 'Empate', 'Local', 'Local', 'Local', 'Visita'] },
+            { nombre: 'OSA MAYORA', pronosticos: ['Local', 'Local', 'Local', 'Local', 'Visita', 'Visita', 'Local', 'Visita', 'Local', 'Local', 'Visita', 'Empate', 'Local', 'Empate', 'Local', 'Local', 'Local', 'Empate', 'Local', 'Local', 'Local', 'Visita', 'Visita', 'Empate', 'Local', 'Empate', 'Local', 'Local', 'Visita', 'Visita', 'Local', 'Local', 'Local', 'Visita', 'Local', 'Local', 'Visita', 'Local', 'Empate', 'Local', 'Local', 'Empate', 'Visita', 'Local', 'Visita', 'Local', 'Local', 'Local', 'Visita', 'Visita', 'Local', 'Visita', 'Local', 'Local', 'Empate', 'Visita', 'Local', 'Local', 'Local', 'Empate', 'Visita', 'Visita', 'Local', 'Visita', 'Local', 'Local', 'Visita', 'Empate', 'Local', 'Local', 'Local', 'Visita'] },
+            { nombre: 'Mangas', pronosticos: ['Local', 'Local', 'Local', 'Local', 'Visita', 'Visita', 'Local', 'Visita', 'Local', 'Local', 'Visita', 'Empate', 'Local', 'Empate', 'Local', 'Local', 'Local', 'Empate', 'Local', 'Local', 'Local', 'Visita', 'Visita', 'Empate', 'Local', 'Empate', 'Local', 'Local', 'Visita', 'Visita', 'Local', 'Local', 'Local', 'Visita', 'Local', 'Local', 'Visita', 'Local', 'Empate', 'Local', 'Local', 'Empate', 'Visita', 'Local', 'Visita', 'Local', 'Local', 'Local', 'Visita', 'Visita', 'Local', 'Visita', 'Local', 'Local', 'Empate', 'Visita', 'Local', 'Local', 'Local', 'Empate', 'Visita', 'Visita', 'Local', 'Visita', 'Local', 'Local', 'Visita', 'Empate', 'Local', 'Local', 'Local', 'Visita'] },
+            { nombre: 'Rayo', pronosticos: ['Local', 'Local', 'Local', 'Local', 'Visita', 'Visita', 'Local', 'Visita', 'Local', 'Local', 'Visita', 'Empate', 'Local', 'Empate', 'Local', 'Local', 'Local', 'Empate', 'Local', 'Local', 'Local', 'Visita', 'Visita', 'Empate', 'Local', 'Empate', 'Local', 'Local', 'Visita', 'Visita', 'Local', 'Local', 'Local', 'Visita', 'Local', 'Local', 'Visita', 'Local', 'Empate', 'Local', 'Local', 'Empate', 'Visita', 'Local', 'Visita', 'Local', 'Local', 'Local', 'Visita', 'Visita', 'Local', 'Visita', 'Local', 'Local', 'Empate', 'Visita', 'Local', 'Local', 'Local', 'Empate', 'Visita', 'Visita', 'Local', 'Visita', 'Local', 'Local', 'Visita', 'Empate', 'Local', 'Local', 'Local', 'Visita'] },
+            { nombre: 'Laloquera', pronosticos: ['Local', 'Local', 'Local', 'Local', 'Visita', 'Visita', 'Local', 'Visita', 'Local', 'Local', 'Visita', 'Empate', 'Local', 'Empate', 'Local', 'Local', 'Local', 'Empate', 'Local', 'Local', 'Local', 'Visita', 'Visita', 'Empate', 'Local', 'Empate', 'Local', 'Local', 'Visita', 'Visita', 'Local', 'Local', 'Local', 'Visita', 'Local', 'Local', 'Visita', 'Local', 'Empate', 'Local', 'Local', 'Empate', 'Visita', 'Local', 'Visita', 'Local', 'Local', 'Local', 'Visita', 'Visita', 'Local', 'Visita', 'Local', 'Local', 'Empate', 'Visita', 'Local', 'Local', 'Local', 'Empate', 'Visita', 'Visita', 'Local', 'Visita', 'Local', 'Local', 'Visita', 'Empate', 'Local', 'Local', 'Local', 'Visita'] },
+            { nombre: 'Luis Garcia Carrasco', pronosticos: ['Local', 'Local', 'Local', 'Local', 'Visita', 'Visita', 'Local', 'Visita', 'Local', 'Local', 'Visita', 'Empate', 'Local', 'Empate', 'Local', 'Local', 'Local', 'Empate', 'Local', 'Local', 'Local', 'Visita', 'Visita', 'Empate', 'Local', 'Empate', 'Local', 'Local', 'Visita', 'Visita', 'Local', 'Local', 'Local', 'Visita', 'Local', 'Local', 'Visita', 'Local', 'Empate', 'Local', 'Local', 'Empate', 'Visita', 'Local', 'Visita', 'Local', 'Local', 'Local', 'Visita', 'Visita', 'Local', 'Visita', 'Local', 'Local', 'Empate', 'Visita', 'Local', 'Local', 'Local', 'Empate', 'Visita', 'Visita', 'Local', 'Visita', 'Local', 'Local', 'Visita', 'Empate', 'Local', 'Local', 'Local', 'Visita'] },
+            { nombre: 'Aldo David Siles Zaragoza', pronosticos: ['Local', 'Local', 'Local', 'Local', 'Visita', 'Visita', 'Local', 'Visita', 'Local', 'Local', 'Visita', 'Empate', 'Local', 'Empate', 'Local', 'Local', 'Local', 'Empate', 'Local', 'Local', 'Local', 'Visita', 'Visita', 'Empate', 'Local', 'Empate', 'Local', 'Local', 'Visita', 'Visita', 'Local', 'Local', 'Local', 'Visita', 'Local', 'Local', 'Visita', 'Local', 'Empate', 'Local', 'Local', 'Empate', 'Visita', 'Local', 'Visita', 'Local', 'Local', 'Local', 'Visita', 'Visita', 'Local', 'Visita', 'Local', 'Local', 'Empate', 'Visita', 'Local', 'Local', 'Local', 'Empate', 'Visita', 'Visita', 'Local', 'Visita', 'Local', 'Local', 'Visita', 'Empate', 'Local', 'Local', 'Local', 'Visita'] },
+            { nombre: 'Zaid Goodman', pronosticos: ['Local', 'Local', 'Local', 'Local', 'Visita', 'Visita', 'Local', 'Visita', 'Local', 'Local', 'Visita', 'Empate', 'Local', 'Empate', 'Local', 'Local', 'Local', 'Empate', 'Local', 'Local', 'Local', 'Visita', 'Visita', 'Empate', 'Local', 'Empate', 'Local', 'Local', 'Visita', 'Visita', 'Local', 'Local', 'Local', 'Visita', 'Local', 'Local', 'Visita', 'Local', 'Empate', 'Local', 'Local', 'Empate', 'Visita', 'Local', 'Visita', 'Local', 'Local', 'Local', 'Visita', 'Visita', 'Local', 'Visita', 'Local', 'Local', 'Empate', 'Visita', 'Local', 'Local', 'Local', 'Empate', 'Visita', 'Visita', 'Local', 'Visita', 'Local', 'Local', 'Visita', 'Empate', 'Local', 'Local', 'Local', 'Visita'] }
+        ];
+
+        function initQuiniela() {
+            const headerRow = document.getElementById("matrix-header");
+            
+            // 1. Agregar cabeceras estáticas de partidos (solo se hace una vez)
+            partidos.forEach(partido => {
+                const th = document.createElement("th");
+                th.innerText = partido;
+                headerRow.appendChild(th);
+            });
+
+            // 2. Construir la estructura base de la fila de Resultados Reales con selectores HTML
+            const matrixBody = document.getElementById("matrix-body");
+            const realRow = document.createElement("tr");
+            realRow.className = "real-row";
+            realRow.innerHTML = "<td>RESULTADOS REALES</td>";
+            
+            resultadosReales.forEach((res, index) => {
+                const td = document.createElement("td");
+                // Le metemos un selector de opciones que llama a recalcular todo cuando cambia ('onchange')
+                td.innerHTML = `
+                    <select class="select-resultado" data-index="${index}" onchange="procesarCambioResultado(this)">
+                        <option value="-">-</option>
+                        <option value="Local">Local</option>
+                        <option value="Empate">Empate</option>
+                        <option value="Visita">Visita</option>
+                    </select>
+                `;
+                realRow.appendChild(td);
+            });
+            matrixBody.appendChild(realRow);
+
+            // 3. Crear las filas de los participantes (vacías de clases al inicio)
+            participantes.forEach(p => {
+                const row = document.createElement("tr");
+                row.setAttribute("data-name", p.nombre.trim().toLowerCase());
+                row.id = `fila-${p.nombre.replace(/\s+/g, '-')}`;
+                
+                let html = `<td>${p.nombre.trim()}</td>`;
+                p.pronosticos.forEach((pronostico) => {
+                    html += `<td>${pronostico}</td>`;
+                });
+                row.innerHTML = html;
+                matrixBody.appendChild(row);
+            });
+
+            // 4. Correr el motor de cálculo por primera vez
+            recalcularTodo();
+        }
+
+        // Esta función se activa en automático cada vez que cambias un menú de la fila verde
+        function procesarCambioResultado(selector) {
+            const index = selector.getAttribute("data-index");
+            resultadosReales[index] = selector.value;
+            recalcularTodo();
+        }
+
+        function recalcularTodo() {
+            // 1. Resetear puntos de todos antes de volver a contar
+            participantes.forEach(p => p.puntosTotales = 0);
+
+            // 2. Escanear columna por columna (partido por partido)
+            for (let i = 0; i < partidos.length; i++) {
+                const resultadoActual = resultadosReales[i];
+
+                participantes.forEach(p => {
+                    const pronostico = p.pronosticos[i];
+                    
+                    // Si el partido ya tiene ganador cargado, revisamos aciertos
+                    if (resultadoActual !== "-") {
+                        if (pronostico.toLowerCase() === resultadoActual.toLowerCase()) {
+                            p.puntosTotales += 3;
+                        }
+                    }
+                });
+            }
+
+            // 3. Pintar de forma dinámica las celdas en base al nuevo estado
+            participantes.forEach(p => {
+                const filaHtml = document.getElementById(`fila-${p.nombre.replace(/\s+/g, '-')}`);
+                if (!filaHtml) return;
+
+                const celdas = filaHtml.getElementsByTagName("td");
+
+                p.pronosticos.forEach((pronostico, i) => {
+                    const celda = celdas[i + 1]; // i+1 porque la primera celda es el nombre del jugador
+                    const resultadoActual = resultadosReales[i];
+
+                    // Limpiamos estilos viejos
+                    celda.className = "";
+
+                    if (resultadoActual === "-") {
+                        // Si no se ha jugado, dejamos el color normal del texto (Local, Empate o Visita)
+                        celda.className = pronostico.toLowerCase();
+                    } else {
+                        // Si ya hay resultado, inyectamos .hit (verde) o .miss (rojo)
+                        if (pronostico.toLowerCase() === resultadoActual.toLowerCase()) {
+                            celda.className = pronostico.toLowerCase() + " hit";
+                        } else {
+                            celda.className = pronostico.toLowerCase() + " miss";
+                        }
+                    }
+                });
+            });
+
+            // 4. Actualizar visualmente la tabla de posiciones (Ranking)
+            actualizarRanking();
+        }
+
+        function actualizarRanking() {
+            const rankingBody = document.getElementById("ranking-body");
+            if (!rankingBody) return;
+            rankingBody.innerHTML = "";
+
+            // Clonamos y ordenamos de mayor a menor puntaje
+            const sorted = [...participantes].sort((a, b) => b.puntosTotales - a.puntosTotales);
+
+            sorted.forEach((p, index) => {
+                const tr = document.createElement("tr");
+                let posDisplay = index + 1;
+                
+                tr.innerHTML = `
+                    <td style="font-weight: bold; font-size: 1.1rem;">${posDisplay}</td>
+                    <td>${p.nombre.trim()}</td>
+                    <td style="text-align: right;"><span class="badge">${p.puntosTotales} pts</span></td>
+                `;
+                rankingBody.appendChild(tr);
+            });
+        }
+
+        function filterMatrix() {
+            const input = document.getElementById("search").value.toLowerCase().trim();
+            const rows = document.querySelectorAll("#matrix-body tr");
+            
+            rows.forEach(row => {
+                if(row.classList.contains("real-row")) return;
+                
+                const name = row.getAttribute("data-name");
+                if (name && name.includes(input)) {
+                    row.style.display = "";
+                } else {
+                    row.style.display = "none";
+                }
+            });
+        }
+
+        if (document.readyState === "loading") {
+            document.addEventListener("DOMContentLoaded", initQuiniela);
+        } else {
+            initQuiniela();
+        }
+    </script>
+</body>
+</html>
