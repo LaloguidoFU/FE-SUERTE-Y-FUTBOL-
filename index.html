@@ -165,6 +165,7 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            cursor: pointer; /* Indica que se puede interactuar para ver el tooltip */
         }
         .game-mini-box .p-num { color: #64748b; font-weight: bold; margin-bottom: 2px;}
         .game-mini-box .p-pred { font-weight: bold; font-size: 0.75rem; }
@@ -212,7 +213,7 @@
     </header>
 
     <div class="container">
-        <!-- BLOQUE 1: RANKING (SIEMPRE ARRIBA EN MÓVIL) -->
+        <!-- BLOQUE 1: RANKING -->
         <div class="card">
             <h2>Tabla de Posiciones</h2>
             <table class="ranking-table">
@@ -231,7 +232,7 @@
         <div class="card">
             <h2>Control de Partidos y Pronósticos</h2>
             
-            <!-- PANEL DEL ADMINISTRADOR (INGRESAR GANADORES) -->
+            <!-- PANEL DEL ADMINISTRADOR -->
             <div class="admin-section" style="margin-bottom: 15px;">
                 <b style="color: #1b5e20; font-size: 0.9rem; display: block; margin-bottom: 8px;">🛠️ PANEL DE CONTROL: RESULTADOS REALES</b>
                 <div class="admin-grid" id="admin-panel-grid"></div>
@@ -242,7 +243,7 @@
             <!-- VISTA MÓVIL: Tarjetas dinámicas -->
             <div class="pronosticos-movil" id="pronosticos-movil-container"></div>
 
-            <!-- VISTA ESCRITORIO: Matriz tradicional (Oculta en celulares) -->
+            <!-- VISTA ESCRITORIO: Matriz tradicional -->
             <div class="matrix-desktop-wrapper">
                 <div class="table-responsive">
                     <table class="matrix-table">
@@ -260,7 +261,6 @@
     </div>
 
     <script>
-        // Los 72 partidos estrictamente ordenados de manera CRONOLÓGICA (Del 11 de junio al 27 de junio)
         const partidos = [
             'Mexico vs Sudafrica', 'Corea vs Chequia', 'Canada vs Bosnia', 'EEUU vs Paraguay', 
             'Catar vs Suiza', 'Brasil vs Marruecos', 'Haiti vs Escocia', 'Australia vs Turquia', 
@@ -282,10 +282,8 @@
             'Colombia vs Portugal', 'RD Congo vs Uzbekistan', 'Argelia vs Austria', 'Jordania vs Argentina'
         ];
 
-        // Mantiene el primer encuentro de México como "Local", y limpia el resto en el nuevo orden cronológico
         const resultadosReales = ["Local", ...Array(partidos.length - 1).fill("-")];
 
-        // Todos los pronósticos de los participantes fueron reorganizados uno por uno para seguir al partido correspondiente sin alterar su predicción original
         const participantes = [
             { nombre: 'Chuma', pronosticos: ['Local', 'Empate', 'Local', 'Local', 'Visita', 'Local', 'Empate', 'Visita', 'Local', 'Local', 'Empate', 'Local', 'Local', 'Local', 'Visita', 'Empate', 'Local', 'Visita', 'Local', 'Local', 'Local', 'Local', 'Local', 'Visita', 'Local', 'Empate', 'Local', 'Local', 'Empate', 'Visita', 'Local', 'Visita', 'Local', 'Local', 'Local', 'Visita', 'Local', 'Local', 'Local', 'Visita', 'Local', 'Local', 'Local', 'Visita', 'Local', 'Local', 'Visita', 'Local', 'Local', 'Empate', 'Local', 'Local', 'Empate', 'Local', 'Empate', 'Visita', 'Empate', 'Visita', 'Empate', 'Local', 'Visita', 'Empate', 'Visita', 'Visita', 'Local', 'Visita', 'Visita', 'Local', 'Visita', 'Empate', 'Visita', 'Visita'] },
             { nombre: 'ARELLANO', pronosticos: ['Local', 'Local', 'Local', 'Local', 'Visita', 'Local', 'Visita', 'Local', 'Local', 'Visita', 'Visita', 'Local', 'Local', 'Local', 'Local', 'Visita', 'Local', 'Visita', 'Local', 'Local', 'Local', 'Local', 'Empate', 'Visita', 'Empate', 'Local', 'Local', 'Local', 'Visita', 'Local', 'Local', 'Visita', 'Visita', 'Local', 'Empate', 'Visita', 'Local', 'Local', 'Local', 'Local', 'Local', 'Local', 'Local', 'Visita', 'Local', 'Local', 'Visita', 'Local', 'Visita', 'Empate', 'Visita', 'Visita', 'Empate', 'Local', 'Empate', 'Visita', 'Visita', 'Empate', 'Visita', 'Visita', 'Visita', 'Local', 'Empate', 'Visita', 'Empate', 'Local', 'Local', 'Empate', 'Local', 'Local', 'Visita', 'Visita'] },
@@ -307,11 +305,12 @@
         ];
 
         function initQuiniela() {
-            // 1. Panel de Control Admin
+            // 1. Panel Admin de selectores con tooltip informativo
             const adminGrid = document.getElementById("admin-panel-grid");
             partidos.forEach((partido, index) => {
                 const item = document.createElement("div");
                 item.className = "admin-item";
+                item.setAttribute("title", partido); // Tooltip en admin
                 
                 const esPrimerPartido = index === 0;
 
@@ -332,6 +331,7 @@
             partidos.forEach(p => {
                 const th = document.createElement("th");
                 th.innerText = p;
+                th.setAttribute("title", p); // Tooltip en cabecera de tabla
                 headerRow.appendChild(th);
             });
 
@@ -340,12 +340,15 @@
                 const row = document.createElement("tr");
                 row.id = `pc-fila-${p.nombre.replace(/\s+/g, '-')}`;
                 let html = `<td>${p.nombre.trim()}</td>`;
-                p.pronosticos.forEach(pron => { html += `<td>${pron}</td>`; });
+                p.pronosticos.forEach((pron, idx) => { 
+                    // Agregamos el title dinámico con el nombre del partido correspondiente
+                    html += `<td title="${partidos[idx]}">${pron}</td>`; 
+                });
                 row.innerHTML = html;
                 matrixBody.appendChild(row);
             });
 
-            // 3. Construir Vista Móvil
+            // 3. Construir Vista Móvil (Tarjetas)
             const movilContainer = document.getElementById("pronosticos-movil-container");
             participantes.forEach(p => {
                 const userCard = document.createElement("div");
@@ -362,8 +365,9 @@
                 `;
                 
                 p.pronosticos.forEach((pron, i) => {
+                    // Agregamos el title en el div para que funcione como tooltip en móviles al pulsar prolongadamente
                     html += `
-                        <div class="game-mini-box" data-game-index="${i}">
+                        <div class="game-mini-box" data-game-index="${i}" title="${partidos[i]}">
                             <span class="p-num">P${i+1}</span>
                             <span class="p-pred ${pron.toLowerCase()}">${pron}</span>
                         </div>
