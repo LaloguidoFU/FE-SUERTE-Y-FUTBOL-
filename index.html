@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Quiniela Mundialista 2026</title>
     <style>
         :root {
@@ -14,215 +14,254 @@
             --accent-local: #1e3d59;
             --accent-visita: #e056fd;
             --accent-empate: #f0932b;
+            --hit-bg: #d1fae5;
+            --hit-text: #065f46;
+            --miss-bg: #fee2e2;
+            --miss-text: #991b1b;
         }
         
+        * { box-sizing: border-box; }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--bg);
             color: var(--text);
             margin: 0;
-            padding: 20px;
+            padding: 10px;
         }
 
         header {
             text-align: center;
             background: linear-gradient(135deg, var(--primary), #112233);
             color: var(--white);
-            padding: 25px;
-            border-radius: 12px;
-            margin-bottom: 25px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
 
-        h1 { margin: 0; font-size: 2rem; }
-        p { margin: 5px 0 0; opacity: 0.9; }
+        h1 { margin: 0; font-size: 1.4rem; }
+        header p { margin: 5px 0 0; opacity: 0.9; font-size: 0.9rem; }
 
         .container {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 25px;
-            max-width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-width: 1400px;
             margin: 0 auto;
-        }
-
-        @media (min-width: 1000px) {
-            .container { grid-template-columns: 380px 1fr; }
         }
 
         .card {
             background: var(--white);
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            height: fit-content;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
 
         .card h2 {
             margin-top: 0;
-            font-size: 1.3rem;
+            font-size: 1.1rem;
             border-bottom: 2px solid var(--bg);
-            padding-bottom: 10px;
+            padding-bottom: 8px;
             color: var(--primary);
         }
 
         .search-box {
             width: 100%;
-            padding: 12px;
+            padding: 10px;
             margin-bottom: 15px;
             border: 2px solid #e2e8f0;
-            border-radius: 8px;
-            box-sizing: border-box;
-            font-size: 1rem;
-            transition: border-color 0.2s;
-        }
-        
-        .search-box:focus {
-            outline: none;
-            border-color: var(--primary);
+            border-radius: 6px;
+            font-size: 0.95rem;
         }
 
+        /* TABLA DE POSICIONES OPTIMIZADA */
         .ranking-table {
             width: 100%;
             border-collapse: collapse;
+            font-size: 0.95rem;
         }
-
-        .ranking-table th, .ranking-table td {
-            padding: 12px 10px;
-            text-align: left;
-        }
-
+        .ranking-table th, .ranking-table td { padding: 10px 8px; text-align: left; }
         .ranking-table tr { border-bottom: 1px solid var(--bg); }
-        .ranking-table tr:last-child { border: none; }
-
         .badge {
             background: var(--secondary);
             color: var(--white);
-            padding: 4px 10px;
-            border-radius: 12px;
+            padding: 3px 8px;
+            border-radius: 10px;
             font-weight: bold;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
         }
 
-        .table-responsive {
-            overflow-x: auto;
+        /* SECCIÓN ADMIN / RESULTADOS REALES MÓVIL */
+        .admin-section {
+            background: #e8f5e9;
+            border: 1px solid #c8e6c9;
             border-radius: 8px;
-            border: 1px solid #e2e8f0;
-            max-height: 650px;
-        }
-
-        .matrix-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.85rem;
-            white-space: nowrap;
-        }
-
-        .matrix-table th {
-            background-color: var(--primary);
-            color: var(--white);
             padding: 12px;
-            font-weight: 600;
-            position: sticky;
-            top: 0;
-            z-index: 10;
         }
-
-        .matrix-table td {
-            padding: 10px 12px;
-            border-bottom: 1px solid #e2e8f0;
-            border-right: 1px solid #e2e8f0;
-            text-align: center;
+        .admin-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 8px;
+            max-height: 200px;
+            overflow-y: auto;
+            padding: 5px;
         }
-        
-        .matrix-table td:first-child {
-            text-align: left;
-            font-weight: bold;
-            position: sticky;
-            left: 0;
-            background-color: var(--white);
-            z-index: 5;
-            border-right: 2px solid #cbd5e1;
-        }
-
-        .matrix-table tr:hover td { background-color: #f8fafc; }
-
-        .local { color: var(--accent-local); font-weight: bold; }
-        .visita { color: var(--accent-visita); font-weight: bold; }
-        .empate { color: var(--accent-empate); font-weight: bold; }
-        
-        .real-row td {
-            background-color: #e8f5e9 !important;
-            font-weight: bold;
-            color: #1b5e20;
-        }
-        
-        .real-row td:first-child {
-            background-color: #e8f5e9 !important;
-            position: sticky;
-            left: 0;
-            z-index: 6;
-        }
-
-        /* selectores interactivos en la fila real */
-        .select-resultado {
-            padding: 4px 8px;
+        .admin-item {
+            background: var(--white);
+            padding: 6px;
             border-radius: 4px;
-            border: 1px solid #1b5e20;
-            background-color: #ffffff;
+            border: 1px solid #a5d6a7;
+            font-size: 0.75rem;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .select-resultado {
+            width: 100%;
+            padding: 4px;
+            border-radius: 4px;
+            border: 1px solid var(--primary);
             font-weight: bold;
-            color: #1b5e20;
-            cursor: pointer;
+            font-size: 0.8rem;
+            background: #fff;
         }
 
-        .hit { background-color: #d1fae5 !important; color: #065f46; font-weight: bold; }
-        .miss { background-color: #fee2e2 !important; color: #991b1b; }
+        /* CONTENEDOR DE PRONÓSTICOS EN MÓVIL (TARJETAS) */
+        .pronosticos-movil {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .user-card {
+            background: #fff;
+            border-left: 5px solid var(--primary);
+            border-radius: 6px;
+            padding: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .user-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            font-weight: bold;
+            font-size: 1rem;
+            border-bottom: 1px dashed #e2e8f0;
+            padding-bottom: 6px;
+        }
+        .user-games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(95px, 1fr));
+            gap: 6px;
+        }
+        .game-mini-box {
+            font-size: 0.7rem;
+            padding: 5px;
+            border-radius: 4px;
+            text-align: center;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .game-mini-box .p-num { color: #64748b; font-weight: bold; margin-bottom: 2px;}
+        .game-mini-box .p-pred { font-weight: bold; font-size: 0.75rem; }
+
+        /* CLASES DE ACIERTO Y ERROR */
+        .hit { background-color: var(--hit-bg) !important; color: var(--hit-text) !important; border-color: #a7f3d0 !important; }
+        .miss { background-color: var(--miss-bg) !important; color: var(--miss-text) !important; border-color: #fca5a5 !important; }
+        
+        .local { color: var(--accent-local); }
+        .visita { color: var(--accent-visita); }
+        .empate { color: var(--accent-empate); }
+
+        /* ESCRITORIO / TABLETA (PANTALLAS GRANDES) */
+        .matrix-desktop-wrapper { display: none; }
+
+        @media (min-width: 1024px) {
+            body { padding: 20px; }
+            h1 { font-size: 2rem; }
+            header p { font-size: 1rem; }
+            .container { display: grid; grid-template-columns: 350px 1fr; gap: 20px; }
+            
+            .pronosticos-movil { display: none; }
+            .matrix-desktop-wrapper { display: block; }
+            
+            .table-responsive {
+                overflow-x: auto;
+                border-radius: 8px;
+                border: 1px solid #e2e8f0;
+                max-height: 700px;
+            }
+            .matrix-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; white-space: nowrap; }
+            .matrix-table th { background-color: var(--primary); color: var(--white); padding: 10px; position: sticky; top: 0; z-index: 10; }
+            .matrix-table td { padding: 8px 10px; border-bottom: 1px solid #e2e8f0; border-right: 1px solid #e2e8f0; text-align: center; }
+            .matrix-table td:first-child { text-align: left; font-weight: bold; position: sticky; left: 0; background-color: var(--white); z-index: 5; border-right: 2px solid #cbd5e1; }
+            .real-row td { background-color: #e8f5e9 !important; font-weight: bold; color: #1b5e20; }
+            .real-row td:first-child { position: sticky; left: 0; z-index: 6; }
+        }
     </style>
 </head>
 <body>
 
     <header>
-        <h1>🏆 CONTROL DE QUINIELA MUNDIALISTA 🏆</h1>
-        <p>17 Participantes Reales | 72 Partidos con Selector Manual</p>
+        <h1>🏆 QUINIELA MUNDIALISTA 2026 🏆</h1>
+        <p>Resultados en Tiempo Real y Diseño Adaptable</p>
     </header>
 
     <div class="container">
+        <!-- BLOQUE 1: RANKING (SIEMPRE ARRIBA EN MÓVIL) -->
         <div class="card">
             <h2>Tabla de Posiciones</h2>
             <table class="ranking-table">
                 <thead>
                     <tr style="font-weight: bold; border-bottom: 2px solid var(--primary)">
-                        <td style="width: 50px;">Pos</td>
+                        <td style="width: 40px;">Pos</td>
                         <td>Nombre</td>
                         <td style="text-align: right;">Pts</td>
                     </tr>
                 </thead>
-                <tbody id="ranking-body">
-                </tbody>
+                <tbody id="ranking-body"></tbody>
             </table>
         </div>
 
+        <!-- BLOQUE 2: MATRIZ / BUSCADOR -->
         <div class="card">
-            <h2>Buscador y Matriz General de Pronósticos</h2>
-            <input type="text" id="search" class="search-box" placeholder="🔍 Escribe cualquier nombre (Ej: Alejandra, Oliver, Laloquera, Cokis)..." oninput="filterMatrix()">
+            <h2>Control de Partidos y Pronósticos</h2>
             
-            <div class="table-responsive">
-                <table class="matrix-table" id="matrix-table">
-                    <thead>
-                        <tr id="matrix-header">
-                            <th>Participantes</th>
-                        </tr>
-                    </thead>
-                    <tbody id="matrix-body">
-                    </tbody>
-                </table>
+            <!-- PANEL DEL ADMINISTRADOR (INGRESAR GANADORES) -->
+            <div class="admin-section" style="margin-bottom: 15px;">
+                <b style="color: #1b5e20; font-size: 0.9rem; display: block; margin-bottom: 8px;">🛠️ PANEL DE CONTROL: RESULTADOS REALES</b>
+                <div class="admin-grid" id="admin-panel-grid"></div>
             </div>
+
+            <input type="text" id="search" class="search-box" placeholder="🔍 Filtra por nombre (Ej: Alejandra, Oliver, Chuma)..." oninput="filtrarContenido()">
+            
+            <!-- VISTA MÓVIL: Tarjetas dinámicas -->
+            <div class="pronosticos-movil" id="pronosticos-movil-container"></div>
+
+            <!-- VISTA ESCRITORIO: Matriz tradicional (Oculta en celulares) -->
+            <div class="matrix-desktop-wrapper">
+                <div class="table-responsive">
+                    <table class="matrix-table">
+                        <thead>
+                            <tr id="matrix-header">
+                                <th>Participante</th>
+                            </tr>
+                        </thead>
+                        <tbody id="matrix-body"></tbody>
+                    </table>
+                </div>
+            </div>
+
         </div>
     </div>
 
     <script>
         const partidos = ['Mexico vs Sudafrica', 'Corea vs Chequia', 'Chequia vs Sudafrica', 'Mexico vs Corea', 'Chequia vs Mexico', 'Sudafrica vs Corea', 'Canada vs Bosnia', 'Catar vs Suiza', 'Suiza vs Bosnia', 'Canada vs Catar', 'Suiza vs Canada', 'Bosnia vs Catar', 'Brasil vs Marruecos', 'Haiti vs Escocia', 'Escocia vs Marruecos', 'Brasil vs Haiti', 'Brasil vs Escocia', 'Marruecos vs Haiti', 'EEUU vs Paraguay', 'Australia vs Turquia', 'EEUU vs Australia', 'Turquia vs Paraguay', 'Turquia vs EEUU', 'Paraguay vs Australia', 'Alemania vs Curazao', 'Costa de Marfil vs Ecuador', 'Alemania vs Costa de Marfil', 'Ecuador vs Curazao', 'Curazao vs Costa de Marfil', 'Ecuador vs Alemania', 'Paises Bajos vs Japon', 'Suecia vs Tunez', 'Paises Bajos vs Suecia', 'Tunez vs Japon', 'Japon vs Suecia', 'Tunez vs Paises Bajos', 'Belgica vs Egipto', 'Iran vs Nueva Zelanda', 'Belgica vs Iran', 'Nueva Zelanda vs Egipto', 'Egipto vs Iran', 'Nueva Zelanda vs Belgica', 'Espana vs Cabo Verde', 'Arabia Saudi vs Uruguay', 'Espana vs Arabia Saudi', 'Uruguay vs Cabo Verde', 'Cabo Verde vs Arabia Saudi', 'Uruguay vs Espana', 'Francia vs Senegal', 'Irak vs Noruega', 'Francia vs Irak', 'Noruega vs Senegal', 'Noruega vs Francia', 'Senegal vs Irak', 'Argentina vs Argelia', 'Austria vs Jordania', 'Argentina vs Austria', 'Jordania vs Argelia', 'Argelia vs Austria', 'Jordania vs Argentina', 'Portugal vs RD Congo', 'Uzbekistan vs Colombia', 'Portugal vs Uzbekistan', 'Colombia vs RD Congo', 'Colombia vs Portugal', 'RD Congo vs Uzbekistan', 'Inglaterra vs Croacia', 'Ghana vs Panama', 'Inglaterra vs Ghana', 'Panama vs Croacia', 'Panama vs Inglaterra', 'Croacia vs Ghana'];
 
-        // Arrancamos todos los partidos en limpio ("-")
         const resultadosReales = Array(partidos.length).fill("-");
 
         const participantes = [
@@ -246,25 +285,13 @@
         ];
 
         function initQuiniela() {
-            const headerRow = document.getElementById("matrix-header");
-            
-            // 1. Agregar cabeceras estáticas de partidos (solo se hace una vez)
-            partidos.forEach(partido => {
-                const th = document.createElement("th");
-                th.innerText = partido;
-                headerRow.appendChild(th);
-            });
-
-            // 2. Construir la estructura base de la fila de Resultados Reales con selectores HTML
-            const matrixBody = document.getElementById("matrix-body");
-            const realRow = document.createElement("tr");
-            realRow.className = "real-row";
-            realRow.innerHTML = "<td>RESULTADOS REALES</td>";
-            
-            resultadosReales.forEach((res, index) => {
-                const td = document.createElement("td");
-                // Le metemos un selector de opciones que llama a recalcular todo cuando cambia ('onchange')
-                td.innerHTML = `
+            // 1. Crear Panel Admin de selectores (funciona igual en móvil y PC)
+            const adminGrid = document.getElementById("admin-panel-grid");
+            partidos.forEach((partido, index) => {
+                const item = document.createElement("div");
+                item.className = "admin-item";
+                item.innerHTML = `
+                    <span style="font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">P${index+1}: ${partido}</span>
                     <select class="select-resultado" data-index="${index}" onchange="procesarCambioResultado(this)">
                         <option value="-">-</option>
                         <option value="Local">Local</option>
@@ -272,29 +299,60 @@
                         <option value="Visita">Visita</option>
                     </select>
                 `;
-                realRow.appendChild(td);
+                adminGrid.appendChild(item);
             });
-            matrixBody.appendChild(realRow);
 
-            // 3. Crear las filas de los participantes (vacías de clases al inicio)
+            // 2. Construir Matriz Desktop (Vista Computadora)
+            const headerRow = document.getElementById("matrix-header");
+            partidos.forEach(p => {
+                const th = document.createElement("th");
+                th.innerText = p;
+                headerRow.appendChild(th);
+            });
+
+            const matrixBody = document.getElementById("matrix-body");
             participantes.forEach(p => {
                 const row = document.createElement("tr");
-                row.setAttribute("data-name", p.nombre.trim().toLowerCase());
-                row.id = `fila-${p.nombre.replace(/\s+/g, '-')}`;
-                
+                row.id = `pc-fila-${p.nombre.replace(/\s+/g, '-')}`;
                 let html = `<td>${p.nombre.trim()}</td>`;
-                p.pronosticos.forEach((pronostico) => {
-                    html += `<td>${pronostico}</td>`;
-                });
+                p.pronosticos.forEach(pron => { html += `<td>${pron}</td>`; });
                 row.innerHTML = html;
                 matrixBody.appendChild(row);
             });
 
-            // 4. Correr el motor de cálculo por primera vez
+            // 3. Construir Vista Móvil (Tarjetas)
+            const movilContainer = document.getElementById("pronosticos-movil-container");
+            participantes.forEach(p => {
+                const userCard = document.createElement("div");
+                userCard.className = "user-card";
+                userCard.setAttribute("data-name", p.nombre.trim().toLowerCase());
+                userCard.id = `movil-card-${p.nombre.replace(/\s+/g, '-')}`;
+                
+                let html = `
+                    <div class="user-card-header">
+                        <span>${p.nombre.trim()}</span>
+                        <span class="badge score-badge">0 pts</span>
+                    </div>
+                    <div class="user-games-grid">
+                `;
+                
+                p.pronosticos.forEach((pron, i) => {
+                    html += `
+                        <div class="game-mini-box" data-game-index="${i}">
+                            <span class="p-num">P${i+1}</span>
+                            <span class="p-pred ${pron.toLowerCase()}">${pron}</span>
+                        </div>
+                    `;
+                });
+                
+                html += `</div>`;
+                userCard.innerHTML = html;
+                movilContainer.appendChild(userCard);
+            });
+
             recalcularTodo();
         }
 
-        // Esta función se activa en automático cada vez que cambias un menú de la fila verde
         function procesarCambioResultado(selector) {
             const index = selector.getAttribute("data-index");
             resultadosReales[index] = selector.value;
@@ -302,71 +360,61 @@
         }
 
         function recalcularTodo() {
-            // 1. Resetear puntos de todos antes de volver a contar
+            // Resetear puntos
             participantes.forEach(p => p.puntosTotales = 0);
 
-            // 2. Escanear columna por columna (partido por partido)
+            // Contar puntos
             for (let i = 0; i < partidos.length; i++) {
-                const resultadoActual = resultadosReales[i];
-
-                participantes.forEach(p => {
-                    const pronostico = p.pronosticos[i];
-                    
-                    // Si el partido ya tiene ganador cargado, revisamos aciertos
-                    if (resultadoActual !== "-") {
-                        if (pronostico.toLowerCase() === resultadoActual.toLowerCase()) {
+                const resActual = resultadosReales[i];
+                if (resActual !== "-") {
+                    participantes.forEach(p => {
+                        if (p.pronosticos[i].toLowerCase() === resActual.toLowerCase()) {
                             p.puntosTotales += 3;
                         }
-                    }
-                });
+                    });
+                }
             }
 
-            // 3. Pintar de forma dinámica las celdas en base al nuevo estado
+            // Pintar y renderizar cambios en ambas vistas (Móvil y Escritorio)
             participantes.forEach(p => {
-                const filaHtml = document.getElementById(`fila-${p.nombre.replace(/\s+/g, '-')}`);
-                if (!filaHtml) return;
+                const slug = p.nombre.replace(/\s+/g, '-');
+                
+                // --- Actualizar Vista Computadora ---
+                const filaPc = document.getElementById(`pc-fila-${slug}`);
+                if (filaPc) {
+                    const celdas = filaPc.getElementsByTagName("td");
+                    p.pronosticos.forEach((pron, i) => {
+                        const celda = celdas[i + 1];
+                        const resActual = resultadosReales[i];
+                        celda.className = (resActual === "-") ? pron.toLowerCase() : (pron.toLowerCase() === resActual.toLowerCase() ? `${pron.toLowerCase()} hit` : `${pron.toLowerCase()} miss`);
+                    });
+                }
 
-                const celdas = filaHtml.getElementsByTagName("td");
-
-                p.pronosticos.forEach((pronostico, i) => {
-                    const celda = celdas[i + 1]; // i+1 porque la primera celda es el nombre del jugador
-                    const resultadoActual = resultadosReales[i];
-
-                    // Limpiamos estilos viejos
-                    celda.className = "";
-
-                    if (resultadoActual === "-") {
-                        // Si no se ha jugado, dejamos el color normal del texto (Local, Empate o Visita)
-                        celda.className = pronostico.toLowerCase();
-                    } else {
-                        // Si ya hay resultado, inyectamos .hit (verde) o .miss (rojo)
-                        if (pronostico.toLowerCase() === resultadoActual.toLowerCase()) {
-                            celda.className = pronostico.toLowerCase() + " hit";
-                        } else {
-                            celda.className = pronostico.toLowerCase() + " miss";
-                        }
-                    }
-                });
+                // --- Actualizar Vista Móvil ---
+                const tarjetaMovil = document.getElementById(`movil-card-${slug}`);
+                if (tarjetaMovil) {
+                    tarjetaMovil.querySelector(".score-badge").innerText = `${p.puntosTotales} pts`;
+                    const cajasMini = tarjetaMovil.querySelectorAll(".game-mini-box");
+                    p.pronosticos.forEach((pron, i) => {
+                        const caja = cajasMini[i];
+                        const resActual = resultadosReales[i];
+                        caja.className = (resActual === "-") ? "game-mini-box" : (pron.toLowerCase() === resActual.toLowerCase() ? "game-mini-box hit" : "game-mini-box miss");
+                    });
+                }
             });
 
-            // 4. Actualizar visualmente la tabla de posiciones (Ranking)
             actualizarRanking();
         }
 
         function actualizarRanking() {
             const rankingBody = document.getElementById("ranking-body");
-            if (!rankingBody) return;
             rankingBody.innerHTML = "";
-
-            // Clonamos y ordenamos de mayor a menor puntaje
             const sorted = [...participantes].sort((a, b) => b.puntosTotales - a.puntosTotales);
 
             sorted.forEach((p, index) => {
                 const tr = document.createElement("tr");
-                let posDisplay = index + 1;
-                
                 tr.innerHTML = `
-                    <td style="font-weight: bold; font-size: 1.1rem;">${posDisplay}</td>
+                    <td style="font-weight: bold;">${index + 1}</td>
                     <td>${p.nombre.trim()}</td>
                     <td style="text-align: right;"><span class="badge">${p.puntosTotales} pts</span></td>
                 `;
@@ -374,27 +422,26 @@
             });
         }
 
-        function filterMatrix() {
+        function filtrarContenido() {
             const input = document.getElementById("search").value.toLowerCase().trim();
-            const rows = document.querySelectorAll("#matrix-body tr");
             
-            rows.forEach(row => {
-                if(row.classList.contains("real-row")) return;
+            // Filtrar tarjetas móviles
+            participantes.forEach(p => {
+                const slug = p.nombre.replace(/\s+/g, '-');
+                const tarjeta = document.getElementById(`movil-card-${slug}`);
+                if (tarjeta) {
+                    tarjeta.style.display = p.nombre.toLowerCase().includes(input) ? "" : "none";
+                }
                 
-                const name = row.getAttribute("data-name");
-                if (name && name.includes(input)) {
-                    row.style.display = "";
-                } else {
-                    row.style.display = "none";
+                // Filtrar filas de escritorio
+                const filaPc = document.getElementById(`pc-fila-${slug}`);
+                if (filaPc) {
+                    filaPc.style.display = p.nombre.toLowerCase().includes(input) ? "" : "none";
                 }
             });
         }
 
-        if (document.readyState === "loading") {
-            document.addEventListener("DOMContentLoaded", initQuiniela);
-        } else {
-            initQuiniela();
-        }
+        document.addEventListener("DOMContentLoaded", initQuiniela);
     </script>
 </body>
 </html>
