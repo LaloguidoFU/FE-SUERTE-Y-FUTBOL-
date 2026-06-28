@@ -3,492 +3,482 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🏆 Quiniela Mundial 2026 - Dieciseisavos de Final</title>
+    <title>🏆 Quiniela Oficial - Dieciseisavos de Final</title>
     <style>
         :root {
-            --primary: #1e3799;
-            --secondary: #0c2461;
-            --success: #2ed573;
-            --danger: #ff4757;
-            --light: #f1f2f6;
-            --dark: #2f3542;
+            --primary-color: #0f172a;
+            --accent-color: #2563eb;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-color: #1e293b;
+            --correct-color: #d1fae5;
+            --correct-text: #065f46;
+            --incorrect-color: #fee2e2;
+            --incorrect-text: #991b1b;
+            --border-color: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f5f6fa;
-            color: var(--dark);
-            margin: 0;
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding-bottom: 60px;
         }
 
         header {
-            text-align: center;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            background: linear-gradient(135deg, #1e3a8a, var(--primary-color));
             color: white;
-            padding: 30px;
-            border-radius: 15px;
-            margin-bottom: 30px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            text-align: center;
+            padding: 2rem 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
 
-        h1 { margin: 0; font-size: 2.5rem; }
-        p { margin: 10px 0 0; opacity: 0.9; }
+        header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
 
-        .tabs {
+        header p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .nav-tabs {
             display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
+            justify-content: center;
+            background-color: #111827;
+            padding: 0.5rem;
+            gap: 0.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
         .tab-btn {
-            background-color: white;
-            border: 2px solid var(--primary);
-            color: var(--primary);
-            padding: 12px 24px;
-            font-weight: bold;
-            border-radius: 8px;
+            background: transparent;
+            color: #9ca3af;
+            border: none;
+            padding: 0.75rem 1.25rem;
+            font-size: 0.95rem;
+            font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
+            border-radius: 0.375rem;
+            transition: all 0.2s;
         }
 
-        .tab-btn.active, .tab-btn:hover {
-            background-color: var(--primary);
+        .tab-btn:hover {
             color: white;
+            background-color: #1f2937;
         }
 
-        .panel {
-            background-color: white;
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        .tab-btn.active {
+            color: white;
+            background-color: var(--accent-color);
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .tab-content {
             display: none;
         }
 
-        .panel.active { display: block; }
+        .tab-content.active {
+            display: block;
+        }
 
-        .match-card {
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            margin-bottom: 1.5rem;
+        }
+
+        h2 {
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+            font-size: 1.4rem;
+            border-left: 5px solid var(--accent-color);
+            padding-left: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.375rem;
+            font-size: 1rem;
+        }
+
+        /* Estilos de la lista de partidos */
+        .match-row {
+            background-color: #f1f5f9;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .match-header {
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: #64748b;
+            margin-bottom: 0.75rem;
+            text-transform: uppercase;
+        }
+
+        .match-teams {
             display: grid;
             grid-template-columns: 1fr auto 1fr;
             align-items: center;
-            background: var(--light);
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 15px;
-            gap: 15px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
         }
 
-        .team { font-weight: bold; font-size: 1.1rem; }
-        .team.local { text-align: right; }
-        .team.visita { text-align: left; }
-        
-        .match-actions {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            align-items: center;
+        .team-name {
+            padding: 0.25rem;
+        }
+
+        .vs {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            padding: 0 1rem;
+        }
+
+        .options-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        @media (max-width: 600px) {
+            .options-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .option-box {
+            background-color: white;
+            border: 1px solid var(--border-color);
+            border-radius: 0.375rem;
+            padding: 0.5rem;
+        }
+
+        .option-title {
+            font-size: 0.75rem;
+            color: #64748b;
+            margin-bottom: 0.4rem;
+            font-weight: bold;
         }
 
         .radio-group {
             display: flex;
-            gap: 5px;
-            background: #ddd;
-            padding: 3px;
-            border-radius: 6px;
+            gap: 0.25rem;
         }
 
         .radio-group label {
-            padding: 6px 12px;
-            background: transparent;
+            flex: 1;
+            text-align: center;
+            background-color: #f8fafc;
+            border: 1px solid var(--border-color);
+            padding: 0.5rem;
+            border-radius: 0.25rem;
             cursor: pointer;
-            border-radius: 4px;
-            font-weight: bold;
             font-size: 0.9rem;
+            margin-bottom: 0;
+            transition: all 0.2s;
         }
 
-        .radio-group input[type="radio"] { display: none; }
-        
+        .radio-group input[type="radio"] {
+            display: none;
+        }
+
         .radio-group input[type="radio"]:checked + label {
-            background-color: var(--primary);
+            background-color: var(--accent-color);
             color: white;
+            border-color: var(--accent-color);
         }
 
+        /* Estilos de selección de quién avanza */
         .advance-select {
-            padding: 6px;
-            border-radius: 6px;
-            border: 1px solid #ccc;
-            font-size: 0.85rem;
             width: 100%;
+            padding: 0.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.25rem;
+            background-color: #f8fafc;
+            font-size: 0.9rem;
+            font-weight: 500;
         }
 
-        .btn-submit {
-            background-color: var(--success);
+        .btn {
+            background-color: var(--accent-color);
             color: white;
             border: none;
-            padding: 15px 30px;
-            font-size: 1.2rem;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
             font-weight: bold;
-            border-radius: 8px;
+            border-radius: 0.375rem;
             cursor: pointer;
             width: 100%;
-            margin-top: 20px;
+            transition: background-color 0.2s;
         }
 
-        .table-container {
+        .btn:hover {
+            background-color: #1d4ed8;
+        }
+
+        /* Tabla de Clasificación */
+        .table-responsive {
             overflow-x: auto;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 15px;
-            text-align: center;
+            text-align: left;
+            margin-top: 1rem;
         }
 
         th, td {
-            border: 1px solid #ddd;
-            padding: 10px;
-            font-size: 0.9rem;
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border-color);
         }
 
-        th { background-color: var(--secondary); color: white; }
-        
-        .hit { background-color: rgba(46, 213, 115, 0.3) !important; color: #1e6b37; font-weight: bold; }
-        .miss { background-color: rgba(255, 71, 87, 0.3) !important; color: #a51d24; }
+        th {
+            background-color: #f1f5f9;
+            color: var(--primary-color);
+            font-weight: 700;
+        }
 
-        .admin-auth {
-            max-width: 400px;
-            margin: 5px auto;
+        tr:hover {
+            background-color: #f8fafc;
+        }
+
+        .rank-badge {
+            display: inline-block;
+            background-color: #64748b;
+            color: white;
+            padding: 0.2rem 0.5rem;
+            border-radius: 0.25rem;
+            font-weight: bold;
+            font-size: 0.85rem;
+        }
+
+        tr:nth-child(1) .rank-badge { background-color: #eab308; }
+        tr:nth-child(2) .rank-badge { background-color: #94a3b8; }
+        tr:nth-child(3) .rank-badge { background-color: #b45309; }
+
+        /* Matriz de aciertos estilo celda */
+        .cell-correct {
+            background-color: var(--correct-color) !important;
+            color: var(--correct-text) !important;
+        }
+
+        .cell-incorrect {
+            background-color: var(--incorrect-color) !important;
+            color: var(--incorrect-text) !important;
+        }
+
+        /* Bloque de visualización detallada por participante */
+        .detail-section {
+            margin-top: 2rem;
+            border-top: 2px solid var(--border-color);
+            padding-top: 1.5rem;
+            display: none;
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .detail-card {
+            background-color: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 0.375rem;
+            padding: 0.75rem;
+            font-size: 0.85rem;
+        }
+
+        .detail-match-name {
+            font-weight: bold;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.25rem;
+            margin-bottom: 0.4rem;
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.2rem 0;
+            border-radius: 0.2rem;
+            padding-left: 4px;
+            padding-right: 4px;
+            margin-bottom: 2px;
+        }
+
+        /* Panel Admin */
+        .admin-lock {
             text-align: center;
+            padding: 2rem 0;
         }
         
-        .input-text {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 6px;
-            border: 1px solid #ccc;
-            box-sizing: border-box;
-        }
-
-        .code-output {
-            background: #2f3542;
-            color: #3ae374;
-            padding: 15px;
-            border-radius: 6px;
-            font-family: monospace;
-            word-break: break-all;
-            margin-top: 15px;
-        }
-        
-        .admin-box {
-            background: #f8f9fa;
-            border: 1px solid #e9ecef;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
+        .admin-content {
+            display: none;
         }
     </style>
 </head>
 <body>
 
-<div class="container">
     <header>
-        <h1>🏆 Quiniela - Dieciseisavos de Final</h1>
-        <p>Mundial 2026 | Resultado exacto (90 mins) = 1 pto | Equipo que clasifica = 1 pto</p>
+        <h1>🏆 QUINIELA MUNDIAL 2026</h1>
+        <p>Fase Final - Dieciseisavos de Final (16 Partidos Completos)</p>
     </header>
 
-    <div class="tabs">
-        <button class="tab-btn active" onclick="switchTab('tabla-panel')">📊 Tabla de Posiciones</button>
-        <button class="tab-btn" onclick="switchTab('registro-panel')">📝 Registrar Pronósticos</button>
-        <button class="tab-btn" onclick="switchTab('admin-panel')">⚙️ Panel Admin</button>
-    </div>
+    <nav class="nav-tabs">
+        <button class="tab-btn active" onclick="switchTab('registro')">📝 Mi Pronóstico</button>
+        <button class="tab-btn" onclick="switchTab('posiciones')">📊 Clasificación General</button>
+        <button class="tab-btn" onclick="switchTab('admin')">⚙️ Panel Admin</button>
+    </nav>
 
-    <!-- TABLA GENERAL -->
-    <div id="tabla-panel" class="panel active">
-        <h2>Posiciones Dieciseisavos</h2>
-        <div class="table-container">
-            <table id="leaderboard"></table>
-        </div>
-    </div>
-
-    <!-- REGISTRO AMIGOS -->
-    <div id="registro-panel" class="panel">
-        <h2>Arma tus Predicciones</h2>
-        <div style="margin-bottom: 20px;">
-            <label style="font-weight: bold;">Tu Nombre / Apodo exacto:</label>
-            <input type="text" id="participant-name" class="input-text" placeholder="Usa el mismo nombre de la fase anterior">
-        </div>
+    <div class="container">
         
-        <div id="matches-form-list"></div>
-
-        <button class="btn-submit" onclick="generatePredictionCode()">Generar Código de Mis Pronósticos</button>
-        
-        <div id="code-result-container" style="display:none; margin-top:20px;">
-            <p><strong>¡Copia este código y envíaselo a tu Administrador por WhatsApp!</strong></p>
-            <div class="code-output" id="code-output-text"></div>
-        </div>
-    </div>
-
-    <!-- PANEL ADMIN -->
-    <div id="admin-panel" class="panel">
-        <div id="admin-login" class="admin-auth">
-            <h3>Acceso Restringido</h3>
-            <input type="password" id="admin-pass" class="input-text" placeholder="Introduce la contraseña">
-            <button class="tab-btn" onclick="checkAdminPass()">Entrar como Admin</button>
-        </div>
-
-        <div id="admin-content" style="display: none;">
-            <h2>Panel de Control</h2>
-            
-            <div class="admin-box" style="background: #e3fafc;">
-                <h3>🔄 Conexión de Fases</h3>
-                <p>Haz clic abajo para cargar automáticamente a los mismos amigos que jugaron la Fase de Grupos:</p>
-                <button class="tab-btn" style="background:#15aabf; color:white; border:none;" onclick="importPastParticipants()">⚡ Importar Amigos de Fase de Grupos</button>
-            </div>
-
-            <div class="admin-box">
-                <h3>📥 Cargar Pronóstico de un Amigo</h3>
-                <p>Pega el código que te mandaron por chat:</p>
-                <textarea id="import-code" class="input-text" rows="3" placeholder="Pega el código largo aquí..."></textarea>
-                <button class="tab-btn" onclick="importParticipant()">Cargar Pronóstico a la Tabla</button>
-            </div>
-
-            <div class="admin-box">
-                <h3>⚙️ Resultados Oficiales de los Partidos</h3>
-                <div id="admin-matches-list"></div>
-                <button class="btn-submit" onclick="saveOfficialResults()" style="background-color: var(--secondary);">Guardar y Calcular Puntos</button>
-            </div>
-            
-            <button class="tab-btn" style="background:var(--danger); color:white; border:none; width:100%;" onclick="clearAllData()">Borrar Datos de esta Fase</button>
-        </div>
-    </div>
-</div>
-
-<script>
-    // Los 16 partidos oficiales en estricto orden
-    const matches = [
-        { id: 1, local: "Sudáfrica", visita: "Canadá" },
-        { id: 2, local: "Brasil", visita: "Japón" },
-        { id: 3, local: "Alemania", visita: "Paraguay" },
-        { id: 4, local: "Países Bajos", visita: "Marruecos" },
-        { id: 5, local: "Costa de Marfil", visita: "Noruega" },
-        { id: 6, local: "Francia", visita: "Suecia" },
-        { id: 7, local: "México", visita: "Ecuador" },
-        { id: 8, local: "Inglaterra", visita: "RD Congo" },
-        { id: 9, local: "Bélgica", visita: "Senegal" },
-        { id: 10, local: "Estados Unidos", visita: "Bosnia y Herzegovina" },
-        { id: 11, local: "España", visita: "Austria" },
-        { id: 12, local: "Portugal", visita: "Croacia" },
-        { id: 13, local: "Suiza", visita: "Argelia" },
-        { id: 14, local: "Australia", visita: "Egipto" },
-        { id: 15, local: "Argentina", visita: "Cabo Verde" },
-        { id: 16, local: "Colombia", visita: "Ghana" }
-    ];
-
-    // USAR LLAVES EXCLUSIVAS PARA NO BORRAR LOS GRUPOS
-    let participants = JSON.parse(localStorage.getItem('quiniela_d16_participants')) || [];
-    let officialResults = JSON.parse(localStorage.getItem('quiniela_d16_official')) || {};
-
-    function switchTab(tabId) {
-        document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById(tabId).classList.add('active');
-        event.currentTarget.classList.add('active');
-        if(tabId === 'tabla-panel') renderLeaderboard();
-    }
-
-    function checkAdminPass() {
-        if(document.getElementById('admin-pass').value === 'admin123') {
-            document.getElementById('admin-login').style.display = 'none';
-            document.getElementById('admin-content').style.display = 'block';
-            renderAdminMatches();
-        } else { alert('Contraseña Incorrecta'); }
-    }
-
-    function importPastParticipants() {
-        // Busca la base de datos vieja del paso anterior
-        const oldData = JSON.parse(localStorage.getItem('quiniela_participants'));
-        if(!oldData || oldData.length === 0) {
-            alert("No se detectó la base de datos de la Fase de Grupos en este navegador. Asegúrate de abrir este archivo en la misma PC/Laptop.");
-            return;
-        }
-        let agregados = 0;
-        oldData.forEach(oldPlayer => {
-            if(!participants.some(p => p.name.toLowerCase() === oldPlayer.name.toLowerCase())) {
-                participants.push({ name: oldPlayer.name, predictions: {} });
-                agregados++;
-            }
-        });
-        localStorage.setItem('quiniela_d16_participants', JSON.stringify(participants));
-        alert(`¡Listo! Se importaron con éxito ${agregados} amigos. Ya aparecen listados.`);
-        renderLeaderboard();
-    }
-
-    function renderUserForm() {
-        const container = document.getElementById('matches-form-list');
-        container.innerHTML = '';
-        matches.forEach(m => {
-            container.innerHTML += `
-                <div class="match-card">
-                    <div class="team local">${m.local}</div>
-                    <div class="match-actions">
-                        <div class="radio-group">
-                            <input type="radio" id="r-${m.id}-L" name="res-${m.id}" value="L">
-                            <label for="r-${m.id}-L">L</label>
-                            <input type="radio" id="r-${m.id}-E" name="res-${m.id}" value="E">
-                            <label for="r-${m.id}-E">E</label>
-                            <input type="radio" id="r-${m.id}-V" name="res-${m.id}" value="V">
-                            <label for="r-${m.id}-V">V</label>
-                        </div>
-                        <select id="adv-${m.id}" class="advance-select">
-                            <option value="">¿Quién avanza a 8vos?</option>
-                            <option value="${m.local}">${m.local}</option>
-                            <option value="${m.visita}">${m.visita}</option>
-                        </select>
+        <div id="tab-registro" class="tab-content active">
+            <div class="card">
+                <h2>Registra tus Predicciones</h2>
+                <form id="prediction-form" onsubmit="saveUserPrediction(event)">
+                    <div class="form-group">
+                        <label for="participant-name">Tu Nombre Completo / Apodo:</label>
+                        <input type="text" id="participant-name" required placeholder="Ej. Juan Pérez">
                     </div>
-                    <div class="team visita">${m.visita}</div>
-                </div>
-            `;
-        });
-    }
 
-    function generatePredictionCode() {
-        const name = document.getElementById('participant-name').value.trim();
-        if(!name) return alert('Pon tu nombre o apodo');
-        let data = { name: name, predictions: {} };
-        for(let m of matches) {
-            const resOpt = document.querySelector(`input[name="res-${m.id}"]:checked`);
-            const advOpt = document.getElementById(`adv-${m.id}`).value;
-            if(!resOpt || !advOpt) return alert(`Responde completo el partido ${m.id}`);
-            data.predictions[m.id] = { res: resOpt.value, adv: advOpt };
-        }
-        document.getElementById('code-output-text').innerText = btoa(unescape(encodeURIComponent(JSON.stringify(data))));
-        document.getElementById('code-result-container').style.display = 'block';
-    }
-
-    function renderAdminMatches() {
-        const container = document.getElementById('admin-matches-list');
-        container.innerHTML = '';
-        matches.forEach(m => {
-            const currentRes = officialResults[m.id]?.res || '';
-            const currentAdv = officialResults[m.id]?.adv || '';
-            container.innerHTML += `
-                <div class="match-card" style="background:#fff; border:1px solid #ccc;">
-                    <div class="team local">${m.local}</div>
-                    <div class="match-actions">
-                        <div class="radio-group">
-                            <input type="radio" id="adm-${m.id}-L" name="admres-${m.id}" value="L" ${currentRes==='L'?'checked':''}>
-                            <label for="adm-${m.id}-L">L</label>
-                            <input type="radio" id="adm-${m.id}-E" name="admres-${m.id}" value="E" ${currentRes==='E'?'checked':''}>
-                            <label for="adm-${m.id}-E">E</label>
-                            <input type="radio" id="adm-${m.id}-V" name="admres-${m.id}" value="V" ${currentRes==='V'?'checked':''}>
-                            <label for="adm-${m.id}-V">V</label>
+                    <div id="matches-form-container">
                         </div>
-                        <select id="admadv-${m.id}" class="advance-select">
-                            <option value="">Ganador oficial</option>
-                            <option value="${m.local}" ${currentAdv===m.local?'selected':''}>${m.local}</option>
-                            <option value="${m.visita}" ${currentAdv===m.visita?'selected':''}>${m.visita}</option>
-                        </select>
-                    </div>
-                    <div class="team visita">${m.visita}</div>
+
+                    <button type="submit" class="btn" style="background-color: #16a34a; font-size: 1.1rem; margin-top: 1rem;">
+                        💾 Guardar y Enviar mi Pronóstico
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div id="tab-posiciones" class="tab-content">
+            <div class="card">
+                <h2>Tabla de Posiciones</h2>
+                <p style="font-size: 0.85rem; color:#64748b; margin-bottom: 1rem;">
+                    💡 Haz clic sobre el nombre de cualquier participante para desplegar el desglose visual de todas sus tarjetas (verde = acertado, rojo = errado).
+                </p>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 70px;">Pos</th>
+                                <th>Participante</th>
+                                <th style="text-align: center;">Pts Totales</th>
+                                <th style="text-align: center;">Aciertos 1X2</th>
+                                <th style="text-align: center;">Aciertos Clasifica</th>
+                            </tr>
+                        </thead>
+                        <tbody id="leaderboard-body">
+                            </tbody>
+                    </table>
                 </div>
-            `;
-        });
-    }
+            </div>
 
-    function saveOfficialResults() {
-        matches.forEach(m => {
-            const resOpt = document.querySelector(`input[name="admres-${m.id}"]:checked`);
-            const advOpt = document.getElementById(`admadv-${m.id}`).value;
-            if(resOpt && advOpt) officialResults[m.id] = { res: resOpt.value, adv: advOpt };
-        });
-        localStorage.setItem('quiniela_d16_official', JSON.stringify(officialResults));
-        alert('¡Resultados actualizados y puntuaciones recalculadas!');
-        renderLeaderboard();
-    }
+            <div id="user-detail-section" class="card detail-section">
+                <h3 id="detail-title">Detalle de Pronósticos: Nombre</h3>
+                <div class="detail-grid" id="detail-grid-container">
+                    </div>
+            </div>
+        </div>
 
-    function importParticipant() {
-        const code = document.getElementById('import-code').value.trim();
-        if(!code) return;
-        try {
-            const decoded = JSON.parse(decodeURIComponent(escape(atob(code))));
-            participants = participants.filter(p => p.name.toLowerCase() !== decoded.name.toLowerCase());
-            participants.push(decoded);
-            localStorage.setItem('quiniela_d16_participants', JSON.stringify(participants));
-            alert(`Puntaje cargado para: ${decoded.name}`);
-            document.getElementById('import-code').value = '';
-        } catch(e) { alert('Código no válido.'); }
-    }
+        <div id="tab-admin" class="tab-content">
+            <div class="card" id="admin-auth-box">
+                <h2>Acceso de Administrador</h2>
+                <div class="form-group">
+                    <label for="admin-password">Ingresa la contraseña maestra:</label>
+                    <input type="password" id="admin-password" placeholder="Contraseña">
+                </div>
+                <button type="button" class="btn" onclick="checkAdminAuth()">Ingresar al Panel</button>
+            </div>
 
-    function clearAllData() {
-        if(confirm('¿Borrar las predicciones de Dieciseisavos? (No afectará a la fase de grupos)')) {
-            localStorage.removeItem('quiniela_d16_participants');
-            participants = [];
-            renderLeaderboard();
-        }
-    }
-
-    function renderLeaderboard() {
-        const table = document.getElementById('leaderboard');
-        table.innerHTML = '';
-        
-        let scores = participants.map(p => {
-            let pts = 0;
-            matches.forEach(m => {
-                const off = officialResults[m.id];
-                const pred = p.predictions[m.id];
-                if(off && pred) {
-                    if(off.res === pred.res) pts++;
-                    if(off.adv === pred.adv) pts++;
-                }
-            });
-            return { ...p, totalPoints: pts };
-        });
-
-        scores.sort((a,b) => b.totalPoints - a.totalPoints);
-
-        let header = `<tr><th>Participante</th><th>Pts total</th>`;
-        matches.forEach(m => {
-            header += `<th colspan="2">P${m.id}<br><small style="font-size:9px">${m.local.substring(0,3)} v ${m.visita.substring(0,3)}</small></th>`;
-        });
-        header += `</tr>`;
-        table.innerHTML += header;
-
-        if(scores.length === 0) {
-            table.innerHTML += `<tr><td colspan="${2 + (matches.length*2)}">Sin datos. Ve al Panel Admin e importa tus participantes anteriores, o regístralos de nuevo.</td></tr>`;
-            return;
-        }
-
-        scores.forEach(p => {
-            let row = `<tr><td style="font-weight:bold; background:#fff; position:sticky; left:0;">${p.name}</td><td style="font-weight:bold; color:var(--primary); background:#fff;">${p.totalPoints}</td>`;
-            matches.forEach(m => {
-                const off = officialResults[m.id];
-                const pred = p.predictions[m.id];
-                let cRes = "", cAdv = "", textRes = "-", textAdv = "-";
+            <div class="card admin-content" id="admin-panel-content">
+                <h2>⚙️ Panel de Control - Carga de Resultados Reales</h2>
+                <p style="margin-bottom: 1.5rem; font-size: 0.9rem; color: #64748b;">
+                    Registra aquí los marcadores definitivos del partido (Regular/Extras tiempo para el 1X2) y define quién avanzó oficialmente. Al guardar, todas las calificaciones se actualizarán al instante.
+                </p>
                 
-                if(pred) {
-                    textRes = pred.res;
-                    textAdv = pred.adv.substring(0,3) + ".";
-                    if(off) {
-                        cRes = (off.res === pred.res) ? "hit" : "miss";
-                        cAdv = (off.adv === pred.adv) ? "hit" : "miss";
-                    }
-                }
-                row += `<td class="${cRes}">${textRes}</td><td class="${cAdv}">${textAdv}</td>`;
-            });
-            row += `</tr>`;
-            table.innerHTML += row;
-        });
-    }
+                <form id="admin-results-form" onsubmit="saveAdminResults(event)">
+                    <div id="admin-matches-container">
+                        </div>
+                    <button type="submit" class="btn" style="background-color: #2563eb; margin-bottom: 1rem;">📢 Publicar Resultados Oficiales</button>
+                </form>
 
-    renderUserForm();
-    renderLeaderboard();
-</script>
-</body>
-</html>
+                <hr style="margin: 2rem 0; border: 0; border-top: 1px solid var(--border-color);">
+                <h3 style="color: var(--incorrect-text); margin-bottom: 0.5rem;">⚠️ Zona de Peligro</h3>
+                <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 1rem;">Esta acción borrará de forma permanente los pronósticos de todos los participantes de la base de datos de esta página web.</p>
+                <button class="btn" style="background-color: #dc2626; max-width: 250px; font-size: 0.85rem;" onclick="clearAllData()">Resetear Toda la Quiniela</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Configuración Maestra de los 16 Partidos en secuencia oficial
+        const baseMatches = [
+            { id: 1, home: "Sudáfrica", away: "Canadá" },
+            { id: 2, home: "Brasil", away: "Japón" },
+            { id: 3, home: "Alemania", away: "Paraguay" },
+            { id: 4, home: "Países Bajos", away: "Marruecos" },
+            { id: 5, home: "Costa de Marfil", away: "Noruega" },
+            { id: 6, home: "Francia", away: "Suecia" },
+            { id: 7, home: "México", away: "Ecuador" },
+            { id: 8, home: "Inglaterra", away: "RD Congo" },
+            { id: 9, home: "Bélgica", away: "Senegal" },
+            { id: 10, home: "Estados Unidos", away: "Bosnia y Herzegovina" },
+            { id: 11, home: "España", away: "Austria" },
+            { id: 12, home: "Portugal", away: "Croacia" },
+            { id: 13, home: "Suiza", away: "Argelia" },
+            { id: 14, home: "Australia", away: "Egipto" },
+            { id: 15, home: "Argentina", away: "Cabo Verde" },
+            { id: 16, home: "Colombia", away: "Ghana" }
+        ];
+
+        // Estado inicial de datos cargado desde LocalStorage
+        let participants = JSON.parse(localStorage.getItem('q2026_participants')) || [];
+        let actualResults = JSON.parse(localStorage.getItem('q2026_actual_results')) || {};
+
+        document.addEventListener("DOMContentLoaded", () => {
+            renderParticipantForm();
+            renderAdminForm();
+            calculateAndRenderLeaderboard();
+        });
+
+        // Alternador de Pestañas Nav
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-btn
