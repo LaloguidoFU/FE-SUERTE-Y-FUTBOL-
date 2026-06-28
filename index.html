@@ -110,7 +110,12 @@
     let participants = JSON.parse(localStorage.getItem('q_players_v2')) || MASTER_PARTICIPANTS;
     let officialResults = JSON.parse(localStorage.getItem('q_official')) || {};
 
-    window.onload = () => { initForms(); renderLeaderboard(); };
+    window.onload = () => { 
+    localStorage.removeItem('q_players_v2'); // Esto fuerza a leer MASTER_PARTICIPANTS
+    initForms(); 
+    renderLeaderboard(); 
+};
+
 
     function initForms() {
         let regHTML = '', admHTML = '';
