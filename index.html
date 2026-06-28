@@ -129,7 +129,6 @@
         <button class="btn-secondary" onclick="verifyAdmin()">Verificar Clave</button>
 
         <div id="admin-content" style="display: none; margin-top: 25px;">
-            <!-- SECCIÓN NUEVA: PROCESAR CÓDIGOS DE WHATSAPP -->
             <div style="background: #f0fdf4; border: 1px solid #bbf7d0; padding: 15px; border-radius: 8px; margin-bottom: 25px;">
                 <h3>📥 Cargar Participante desde WhatsApp</h3>
                 <p style="font-size: 13px; color: #1e293b; margin-bottom: 10px;">Pega aquí el código largo que te mandó el participante por mensaje:</p>
@@ -155,13 +154,13 @@
     // ==========================================
     // SECCIÓN: DATA MAESTRA (¡AQUÍ PEGAS TU EXPORTACIÓN PARA ACTUALIZAR GITHUB!)
     // ==========================================
-const MASTER_RESULTS = {}; 
-const MASTER_PARTICIPANTS = [];
+    const MASTER_RESULTS = {"1":{"result":null,"advance":null},"2":{"result":null,"advance":null},"3":{"result":null,"advance":null},"4":{"result":null,"advance":null},"5":{"result":null,"advance":null},"6":{"result":null,"advance":null},"7":{"result":null,"advance":null},"8":{"result":null,"advance":null},"9":{"result":null,"advance":null},"10":{"result":null,"advance":null},"11":{"result":null,"advance":null},"12":{"result":null,"advance":null},"13":{"result":null,"advance":null},"14":{"result":null,"advance":null},"15":{"result":null,"advance":null},"16":{"result":null,"advance":null}}; 
 
+    const MASTER_PARTICIPANTS = [{"name":"Zaid","predictions":{"1":{"result":"L","advance":"Sudáfrica"},"2":{"result":"E","advance":"Brasil"},"3":{"result":"L","advance":"Alemania"},"4":{"result":"L","advance":"Países Bajos"},"5":{"result":"V","advance":"Costa de Marfil"},"6":{"result":"E","advance":"Francia"},"7":{"result":"E","advance":"México"},"8":{"result":"E","advance":"Inglaterra"},"9":{"result":"E","advance":"Senegal"},"10":{"result":"V","advance":"Bosnia y Herzegovina"},"11":{"result":"V","advance":"España"},"12":{"result":"V","advance":"Croacia"},"13":{"result":"E","advance":"Suiza"},"14":{"result":"E","advance":"Egipto"},"15":{"result":"V","advance":"Argentina"},"16":{"result":"E","advance":"Colombia"}}}];
     // ==========================================
 
-    const ADMIN_PASSWORD = "admin123"; // <-- CAMBIA ESTA CONTRASEÑA PARA TU PANEL
-    const WHATSAPP_PHONE = "5215546879724";  // <-- TU TELÉFONO CON CÓDIGO DE PAÍS (Sin el + ni espacios. Ej: México 521...)
+    const ADMIN_PASSWORD = "1234"; 
+    const WHATSAPP_PHONE = "5215546879724";  
 
     const matches = [
         { id: 1, home: "Sudáfrica", away: "Canadá" }, { id: 2, home: "Brasil", away: "Japón" },
@@ -264,9 +263,7 @@ const MASTER_PARTICIPANTS = [];
             userPredictions[m.id] = { result: rdoOpt.value, advance: passOpt };
         }
 
-        // Generar el payload
         let payload = { name: name, predictions: userPredictions };
-        // Encriptar de forma segura soportando caracteres con acentos (UTF-8)
         let encryptedData = btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
         
         let mensaje = `¡Hola! Aquí están mis pronósticos para la quiniela. Mi código de participante es:\n\n${encryptedData}`;
@@ -290,6 +287,7 @@ const MASTER_PARTICIPANTS = [];
         }
     }
 
+    // Procesa el código de WhatsApp y lo añade a la lista temporal de la página
     function importParticipantCode() {
         const code = document.getElementById('whatsapp-code-input').value.trim();
         if(!code) return alert('Por favor, pega un código válido.');
