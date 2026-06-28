@@ -1,353 +1,177 @@
-O sea este mismo código  adáptale lo de los ajustes centrados etc 
-
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Quiniela Dieciseisavos de Final</title>
     <style>
-        :root {
-            --primary: #1e3a8a;
-            --primary-light: #3b82f6;
-            --bg: #f8fafc;
-            --card-bg: #ffffff;
-            --text: #0f172a;
-            --green: #22c55e;
-            --red: #ef4444;
-            --border: #e2e8f0;
-        }
-
+        :root { --primary: #1e3a8a; --primary-light: #3b82f6; --bg: #f8fafc; --card-bg: #ffffff; --text: #0f172a; --green: #22c55e; --red: #ef4444; --border: #e2e8f0; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: var(--bg); color: var(--text); padding: 20px; }
-        .container { max-width: 1000px; margin: 0 auto; }
+        body { background-color: var(--bg); color: var(--text); padding: 10px; }
+        .container { max-width: 600px; margin: 0 auto; }
         
-        header { text-align: center; margin-bottom: 30px; padding: 20px; background: var(--primary); color: white; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
-        h1 { margin-bottom: 10px; }
+        header { text-align: center; margin-bottom: 20px; padding: 15px; background: var(--primary); color: white; border-radius: 12px; }
+        h1 { font-size: 22px; margin-bottom: 10px; }
         
-        .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
-        .tab-btn { flex: 1; padding: 12px; background: #cbd5e1; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        /* Ajuste Reglas */
+        .reglas { background: #ffffff; padding: 15px; border-radius: 12px; border: 2px solid var(--primary); margin-bottom: 20px; text-align: left; color: var(--text); font-size: 14px; }
+        
+        .tabs { display: flex; gap: 5px; margin-bottom: 20px; }
+        .tab-btn { flex: 1; padding: 10px; background: #cbd5e1; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 13px; }
         .tab-btn.active { background: var(--primary-light); color: white; }
 
-        .panel { display: none; background: var(--card-bg); padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        .panel { display: none; background: var(--card-bg); padding: 15px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 20px; }
         .panel.active { display: block; }
 
-        .form-group { margin-bottom: 20px; }
-        label { display: block; font-weight: 600; margin-bottom: 8px; }
-        input[type="text"], input[type="password"] { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 6px; font-size: 16px; }
-
-        .match-card { display: grid; grid-template-columns: 1fr auto 1fr; gap: 15px; padding: 15px; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 15px; align-items: center; background: #fafafa; }
-        .team { font-weight: bold; }
-        .team.home { text-align: right; }
-        .team.away { text-align: left; }
+        /* Ajuste móvil para partidos */
+        .match-card { display: flex; flex-direction: column; gap: 10px; padding: 15px; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 15px; text-align: center; background: #fafafa; }
+        .teams-row { display: flex; justify-content: space-between; align-items: center; font-weight: bold; font-size: 14px; }
+        .options-container { display: flex; flex-direction: column; align-items: center; gap: 8px; }
         
-        .options-container { display: flex; flex-direction: column; gap: 10px; align-items: center; }
-        .prediction-row { display: flex; gap: 8px; }
-        
-        .btn-radio { appearance: none; -webkit-appearance: none; padding: 8px 14px; background: #e2e8f0; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 14px; }
+        .btn-radio { appearance: none; padding: 8px 12px; background: #e2e8f0; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 12px; }
         .btn-radio:checked { background: var(--primary); color: white; }
         .btn-radio::before { content: attr(data-label); }
 
-        .advance-select { padding: 6px; border-radius: 6px; border: 1px solid var(--border); font-size: 13px; width: 160px; }
-
-        button.submit-btn { width: 100%; padding: 14px; background: var(--green); color: white; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.2s; }
-        button.submit-btn:hover { opacity: 0.9; }
-
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-        th, td { padding: 12px; text-align: left; border-bottom: 1px solid var(--border); }
-        th { background-color: #f1f5f9; font-weight: 600; }
-
-        .badge { padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 12px; color: white; }
-        .badge.hit { background-color: var(--green); }
-        .badge.miss { background-color: var(--red); }
-        .badge.pending { background-color: #94a3b8; }
-
-        .details-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; margin-top: 15px; padding: 15px; background: #f1f5f9; border-radius: 8px; }
-        .detail-item { padding: 10px; border-radius: 6px; background: white; border-left: 5px solid #cbd5e1; font-size: 13px; }
-        .detail-item.hit { border-left-color: var(--green); background: #f0fdf4; }
-        .detail-item.miss { border-left-color: var(--red); background: #fef2f2; }
-
-        .admin-actions { display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap; }
-        .btn-secondary { padding: 8px 15px; background: #64748b; color: white; border: none; border-radius: 6px; cursor: pointer; margin-top: 5px; }
-        textarea { width: 100%; height: 120px; margin-top: 10px; font-family: monospace; padding: 10px; }
+        .advance-select { width: 100%; padding: 8px; border-radius: 6px; border: 1px solid var(--border); font-size: 13px; }
+        button.submit-btn { width: 100%; padding: 12px; background: var(--green); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        
+        table { width: 100%; border-collapse: collapse; font-size: 12px; }
+        th, td { padding: 10px 5px; text-align: left; border-bottom: 1px solid var(--border); }
+        .btn-secondary { padding: 6px 10px; background: #64748b; color: white; border: none; border-radius: 6px; cursor: pointer; }
+        textarea { width: 100%; height: 80px; font-size: 12px; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <header>
-        <h1>🏆 Quiniela Pro - Dieciseisavos 🏆</h1>
-        
-        <div style="background: #ffffff; padding: 20px; border-radius: 12px; border: 2px solid var(--primary); margin-top: 20px; text-align: left; color: var(--text);">
-            <h2 style="color: var(--primary); margin-bottom: 10px;">📜 Reglas de Juego</h2>
-            <ul style="padding-left: 20px; line-height: 1.6;">
+        <h1>🏆 Quiniela Pro</h1>
+        <div class="reglas">
+            <strong>📜 Reglas de Juego:</strong>
+            <ul style="padding-left: 20px; line-height: 1.5; margin-top: 5px;">
                 <li><b>Costo:</b> $100 MXN por participación.</li>
-                <li><b>Puntos:</b> 1 punto por acertar el resultado en 90' y 1 punto por acertar el equipo que clasifica.</li>
-                <li><b>Ganador:</b> Quien acumule más puntos al final.</li>
-                <li><b>Empates:</b> En caso de empate en el primer lugar, el premio se repartirá entre los ganadores.</li>
+                <li><b>Puntos:</b> 1 pt x resultado (90') + 1 pt x clasificado.</li>
+                <li><b>Ganador:</b> Quien acumule más puntos.</li>
+                <li><b>Empates:</b> El premio se reparte entre los ganadores.</li>
             </ul>
         </div>
-        
-        <p style="margin-top: 20px;">Pronostica el resultado (90') y quién clasifica a la siguiente ronda</p>
     </header>
 
     <div class="tabs">
-        <button class="tab-btn active" onclick="switchTab('tabla')">📊 Posiciones y Resultados</button>
-        <button class="tab-btn" onclick="switchTab('registro')">📝 Registrar Pronóstico</button>
-        <button class="tab-btn" onclick="switchTab('admin')">⚙️ Administrador</button>
+        <button class="tab-btn active" onclick="switchTab('tabla')">📊 Posiciones</button>
+        <button class="tab-btn" onclick="switchTab('registro')">📝 Pronóstico</button>
+        <button class="tab-btn" onclick="switchTab('admin')">⚙️ Admin</button>
     </div>
 
     <div id="panel-tabla" class="panel active">
-        <h2>Clasificación General</h2>
         <div style="overflow-x: auto;">
             <table id="leaderboard">
-                <thead>
-                    <tr>
-                        <th>Pos</th>
-                        <th>Participante</th>
-                        <th>Pts Rdo (90')</th>
-                        <th>Pts Pase</th>
-                        <th>Total Pts</th>
-                        <th>Acción</th>
-                    </tr>
-                </thead>
+                <thead><tr><th>Pos</th><th>Participante</th><th>Pts</th><th>Acción</th></tr></thead>
                 <tbody></tbody>
             </table>
         </div>
-        <div id="user-details-section" style="margin-top: 30px; display: none;">
-            <h3>Detalles de Pronósticos: <span id="detail-user-name" style="color: var(--primary-light);"></span></h3>
-            <div class="details-grid" id="details-space"></div>
+        <div id="user-details-section" style="margin-top: 20px; display: none;">
+            <h3>Detalles de: <span id="detail-user-name"></span></h3>
+            <div id="details-space" style="margin-top: 10px;"></div>
         </div>
     </div>
 
     <div id="panel-registro" class="panel">
-        <h2>Ingresa tus Pronósticos</h2>
-        <div class="form-group" style="margin-top: 15px;">
-            <label for="player-name">Tu Nombre Completo o Apodo:</label>
-            <input type="text" id="player-name" placeholder="Ej. Juan Pérez">
-        </div>
+        <input type="text" id="player-name" placeholder="Tu nombre..." style="width:100%; padding:10px; margin-bottom:15px; border:1px solid #ccc; border-radius:6px;">
         <div id="matches-form-container"></div>
-        <button class="submit-btn" onclick="savePrediction()">Guardar y Enviar por WhatsApp</button>
+        <button class="submit-btn" onclick="savePrediction()">Enviar por WhatsApp</button>
     </div>
 
     <div id="panel-admin" class="panel">
-        <h2>Panel de Control (Solo Organizador)</h2>
-        <div class="form-group" style="margin-top: 15px;">
-            <label for="admin-pass">Contraseña de Acceso:</label>
-            <input type="password" id="admin-pass" placeholder="Ingresa la clave para modificar">
-        </div>
-        <button class="btn-secondary" onclick="verifyAdmin()">Verificar Clave</button>
-
-        <div id="admin-content" style="display: none; margin-top: 25px;">
-            <div style="background: #f0fdf4; border: 1px solid #bbf7d0; padding: 15px; border-radius: 8px; margin-bottom: 25px;">
-                <h3>📥 Cargar Participante desde WhatsApp</h3>
-                <input type="text" id="whatsapp-code-input" placeholder="Pega el código encriptado aquí...">
-                <button class="btn-secondary" style="background: var(--green);" onclick="importParticipantCode()">Agregar a la Lista</button>
-            </div>
-
-            <h3>Resultados Oficiales</h3>
-            <div id="admin-matches-container" style="margin-top: 15px;"></div>
-            <button class="submit-btn" style="background: var(--primary);" onclick="saveOfficialResults()">Guardar Resultados Oficiales</button>
-            
-            <hr style="margin: 30px 0; border: 0; border-top: 1px solid var(--border);">
-            
-            <h3>Base de Datos Compartida</h3>
-            <button class="btn-secondary" onclick="exportData()">Generar Texto de Respaldo</button>
+        <input type="password" id="admin-pass" placeholder="Contraseña..." style="width:100%; padding:10px; margin-bottom:10px;">
+        <button class="btn-secondary" onclick="verifyAdmin()">Verificar</button>
+        <div id="admin-content" style="display:none; margin-top:20px;">
+            <input type="text" id="whatsapp-code-input" placeholder="Código participante..." style="width:100%; padding:10px; margin-bottom:10px;">
+            <button class="btn-secondary" style="background:var(--green);" onclick="importParticipantCode()">Agregar</button>
+            <div id="admin-matches-container" style="margin-top:20px;"></div>
+            <button class="submit-btn" style="background:var(--primary); margin-top:10px;" onclick="saveOfficialResults()">Guardar Resultados</button>
+            <button class="btn-secondary" style="margin-top:20px;" onclick="exportData()">Generar Respaldo</button>
             <textarea id="io-data" readonly></textarea>
         </div>
     </div>
 </div>
 
 <script>
-    // ==========================================
-    // DATA MAESTRA
-    // ==========================================
     const MASTER_RESULTS = {"1":{"result":null,"advance":null},"2":{"result":null,"advance":null},"3":{"result":null,"advance":null},"4":{"result":null,"advance":null},"5":{"result":null,"advance":null},"6":{"result":null,"advance":null},"7":{"result":null,"advance":null},"8":{"result":null,"advance":null},"9":{"result":null,"advance":null},"10":{"result":null,"advance":null},"11":{"result":null,"advance":null},"12":{"result":null,"advance":null},"13":{"result":null,"advance":null},"14":{"result":null,"advance":null},"15":{"result":null,"advance":null},"16":{"result":null,"advance":null}}; 
-
-    const MASTER_PARTICIPANTS = [
-        {"name":"Zaid","predictions":{"1":{"result":"L","advance":"Sudáfrica"},"2":{"result":"E","advance":"Brasil"},"3":{"result":"L","advance":"Alemania"},"4":{"result":"L","advance":"Países Bajos"},"5":{"result":"V","advance":"Costa de Marfil"},"6":{"result":"E","advance":"Francia"},"7":{"result":"E","advance":"México"},"8":{"result":"E","advance":"Inglaterra"},"9":{"result":"E","advance":"Senegal"},"10":{"result":"V","advance":"Bosnia y Herzegovina"},"11":{"result":"V","advance":"España"},"12":{"result":"V","advance":"Croacia"},"13":{"result":"E","advance":"Suiza"},"14":{"result":"E","advance":"Egipto"},"15":{"result":"V","advance":"Argentina"},"16":{"result":"E","advance":"Colombia"}}},
-        {"name":"Prueba","predictions":{"1":{"result":"E","advance":"Sudáfrica"},"2":{"result":"V","advance":"Japón"},"3":{"result":"E","advance":"Paraguay"},"4":{"result":"V","advance":"Países Bajos"},"5":{"result":"L","advance":"Costa de Marfil"},"6":{"result":"L","advance":"Suecia"},"7":{"result":"L","advance":"México"},"8":{"result":"L","advance":"RD Congo"},"9":{"result":"V","advance":"Senegal"},"10":{"result":"V","advance":"Estados Unidos"},"11":{"result":"V","advance":"Austria"},"12":{"result":"V","advance":"Portugal"},"13":{"result":"E","advance":"Argelia"},"14":{"result":"L","advance":"Australia"},"15":{"result":"E","advance":"Cabo Verde"},"16":{"result":"V","advance":"Colombia"}}},
-        {"name":"I'm so tired","predictions":{"1":{"result":"L","advance":"Sudáfrica"},"2":{"result":"E","advance":"Brasil"},"3":{"result":"L","advance":"Paraguay"},"4":{"result":"E","advance":"Países Bajos"},"5":{"result":"E","advance":"Costa de Marfil"},"6":{"result":"E","advance":"Francia"},"7":{"result":"L","advance":"México"},"8":{"result":"V","advance":"RD Congo"},"9":{"result":"V","advance":"Senegal"},"10":{"result":"L","advance":"Estados Unidos"},"11":{"result":"E","advance":"España"},"12":{"result":"L","advance":"Portugal"},"13":{"result":"V","advance":"Argelia"},"14":{"result":"V","advance":"Egipto"},"15":{"result":"L","advance":"Argentina"},"16":{"result":"L","advance":"Colombia"}}},
-        {"name":"Holi","predictions":{"1":{"result":"L","advance":"Sudáfrica"},"2":{"result":"L","advance":"Brasil"},"3":{"result":"L","advance":"Alemania"},"4":{"result":"L","advance":"Países Bajos"},"5":{"result":"L","advance":"Costa de Marfil"},"6":{"result":"L","advance":"Suecia"},"7":{"result":"L","advance":"México"},"8":{"result":"L","advance":"Inglaterra"},"9":{"result":"L","advance":"Bélgica"},"10":{"result":"L","advance":"Estados Unidos"},"11":{"result":"L","advance":"España"},"12":{"result":"L","advance":"Portugal"},"13":{"result":"L","advance":"Suiza"},"14":{"result":"L","advance":"Australia"},"15":{"result":"L","advance":"Argentina"},"16":{"result":"L","advance":"Colombia"}}}
-    ];
-
+    const MASTER_PARTICIPANTS = [{"name":"Zaid","predictions":{"1":{"result":"L","advance":"Sudáfrica"},"2":{"result":"E","advance":"Brasil"},"3":{"result":"L","advance":"Alemania"},"4":{"result":"L","advance":"Países Bajos"},"5":{"result":"V","advance":"Costa de Marfil"},"6":{"result":"E","advance":"Francia"},"7":{"result":"E","advance":"México"},"8":{"result":"E","advance":"Inglaterra"},"9":{"result":"E","advance":"Senegal"},"10":{"result":"V","advance":"Bosnia y Herzegovina"},"11":{"result":"V","advance":"España"},"12":{"result":"V","advance":"Croacia"},"13":{"result":"E","advance":"Suiza"},"14":{"result":"E","advance":"Egipto"},"15":{"result":"V","advance":"Argentina"},"16":{"result":"E","advance":"Colombia"}},"ptsResult":0,"ptsAdvance":0,"total":0},{"name":"Prueba","predictions":{"1":{"result":"E","advance":"Sudáfrica"},"2":{"result":"V","advance":"Japón"},"3":{"result":"E","advance":"Paraguay"},"4":{"result":"V","advance":"Países Bajos"},"5":{"result":"L","advance":"Costa de Marfil"},"6":{"result":"L","advance":"Suecia"},"7":{"result":"L","advance":"México"},"8":{"result":"L","advance":"RD Congo"},"9":{"result":"V","advance":"Senegal"},"10":{"result":"V","advance":"Estados Unidos"},"11":{"result":"V","advance":"Austria"},"12":{"result":"V","advance":"Portugal"},"13":{"result":"E","advance":"Argelia"},"14":{"result":"L","advance":"Australia"},"15":{"result":"E","advance":"Cabo Verde"},"16":{"result":"V","advance":"Colombia"}},"ptsResult":0,"ptsAdvance":0,"total":0},{"name":"I'm so tired","predictions":{"1":{"result":"L","advance":"Sudáfrica"},"2":{"result":"E","advance":"Brasil"},"3":{"result":"L","advance":"Paraguay"},"4":{"result":"E","advance":"Países Bajos"},"5":{"result":"E","advance":"Costa de Marfil"},"6":{"result":"E","advance":"Francia"},"7":{"result":"L","advance":"México"},"8":{"result":"V","advance":"RD Congo"},"9":{"result":"V","advance":"Senegal"},"10":{"result":"L","advance":"Estados Unidos"},"11":{"result":"E","advance":"España"},"12":{"result":"L","advance":"Portugal"},"13":{"result":"V","advance":"Argelia"},"14":{"result":"V","advance":"Egipto"},"15":{"result":"L","advance":"Argentina"},"16":{"result":"L","advance":"Colombia"}},"ptsResult":0,"ptsAdvance":0,"total":0},{"name":"Holi","predictions":{"1":{"result":"L","advance":"Sudáfrica"},"2":{"result":"L","advance":"Brasil"},"3":{"result":"L","advance":"Alemania"},"4":{"result":"L","advance":"Países Bajos"},"5":{"result":"L","advance":"Costa de Marfil"},"6":{"result":"L","advance":"Suecia"},"7":{"result":"L","advance":"México"},"8":{"result":"L","advance":"Inglaterra"},"9":{"result":"L","advance":"Bélgica"},"10":{"result":"L","advance":"Estados Unidos"},"11":{"result":"L","advance":"España"},"12":{"result":"L","advance":"Portugal"},"13":{"result":"L","advance":"Suiza"},"14":{"result":"L","advance":"Australia"},"15":{"result":"L","advance":"Argentina"},"16":{"result":"L","advance":"Colombia"}},"ptsResult":0,"ptsAdvance":0,"total":0}];
     const ADMIN_PASSWORD = "1234"; 
-    const WHATSAPP_PHONE = "5215546879724";  
-    // ... el resto del script se mantiene igual ...
-
-    const matches = [
-        { id: 1, home: "Sudáfrica", away: "Canadá" }, { id: 2, home: "Brasil", away: "Japón" },
-        { id: 3, home: "Alemania", away: "Paraguay" }, { id: 4, home: "Países Bajos", away: "Marruecos" },
-        { id: 5, home: "Costa de Marfil", away: "Noruega" }, { id: 6, home: "Francia", away: "Suecia" },
-        { id: 7, home: "México", away: "Ecuador" }, { id: 8, home: "Inglaterra", away: "RD Congo" },
-        { id: 9, home: "Bélgica", away: "Senegal" }, { id: 10, home: "Estados Unidos", away: "Bosnia y Herzegovina" },
-        { id: 11, home: "España", away: "Austria" }, { id: 12, home: "Portugal", away: "Croacia" },
-        { id: 13, home: "Suiza", away: "Argelia" }, { id: 14, home: "Australia", away: "Egipto" },
-        { id: 15, home: "Argentina", away: "Cabo Verde" }, { id: 16, home: "Colombia", away: "Ghana" }
-    ];
+    const WHATSAPP_PHONE = "5215546879724";
+    const matches = [{id:1,home:"Sudáfrica",away:"Canadá"},{id:2,home:"Brasil",away:"Japón"},{id:3,home:"Alemania",away:"Paraguay"},{id:4,home:"Países Bajos",away:"Marruecos"},{id:5,home:"Costa de Marfil",away:"Noruega"},{id:6,home:"Francia",away:"Suecia"},{id:7,home:"México",away:"Ecuador"},{id:8,home:"Inglaterra",away:"RD Congo"},{id:9,home:"Bélgica",away:"Senegal"},{id:10,home:"Estados Unidos",away:"Bosnia y Herzegovina"},{id:11,home:"España",away:"Austria"},{id:12,home:"Portugal",away:"Croacia"},{id:13,home:"Suiza",away:"Argelia"},{id:14,home:"Australia",away:"Egipto"},{id:15,home:"Argentina",away:"Cabo Verde"},{id:16,home:"Colombia",away:"Ghana"}];
 
     let participants = JSON.parse(localStorage.getItem('q_players')) || MASTER_PARTICIPANTS;
     let officialResults = JSON.parse(localStorage.getItem('q_official')) || MASTER_RESULTS;
 
-    window.onload = function() { initForms(); renderLeaderboard(); };
-
-    function switchTab(tab) {
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-        if(event) event.target.classList.add('active');
-        document.getElementById(`panel-${tab}`).classList.add('active');
-    }
+    window.onload = () => { initForms(); renderLeaderboard(); };
 
     function initForms() {
-        let registerHTML = '';
-        let adminHTML = '';
-
+        let regHTML = '', admHTML = '';
         matches.forEach(m => {
-            registerHTML += `
-            <div class="match-card">
-                <div class="team home">${m.home}</div>
-                <div class="options-container">
-                    <span style="font-size:11px; color:#64748b;">Resultado 90'</span>
-                    <div class="prediction-row">
-                        <input type="radio" name="rdo-${m.id}" data-label="L" value="L" class="btn-radio" required>
-                        <input type="radio" name="rdo-${m.id}" data-label="E" value="E" class="btn-radio">
-                        <input type="radio" name="rdo-${m.id}" data-label="V" value="V" class="btn-radio">
-                    </div>
-                    <span style="font-size:11px; color:#64748b; margin-top:5px;">¿Quién clasifica?</span>
-                    <select id="pass-${m.id}" class="advance-select">
-                        <option value="">-- Seleccionar --</option>
-                        <option value="${m.home}">${m.home}</option>
-                        <option value="${m.away}">${m.away}</option>
-                    </select>
-                </div>
-                <div class="team away">${m.away}</div>
-            </div>`;
-
-            adminHTML += `
-            <div class="match-card">
-                <div class="team home">${m.home}</div>
-                <div class="options-container">
-                    <div class="prediction-row">
-                        <input type="radio" name="adm-rdo-${m.id}" data-label="L" value="L" class="btn-radio">
-                        <input type="radio" name="adm-rdo-${m.id}" data-label="E" value="E" class="btn-radio">
-                        <input type="radio" name="adm-rdo-${m.id}" data-label="V" value="V" class="btn-radio">
-                    </div>
-                    <select id="adm-pass-${m.id}" class="advance-select" style="margin-top:5px;">
-                        <option value="">Sin definir</option>
-                        <option value="${m.home}">${m.home}</option>
-                        <option value="${m.away}">${m.away}</option>
-                    </select>
-                </div>
-                <div class="team away">${m.away}</div>
-            </div>`;
+            regHTML += `<div class="match-card"><div class="teams-row"><span>${m.home}</span><small>vs</small><span>${m.away}</span></div><div class="options-container"><div class="prediction-row"><input type="radio" name="rdo-${m.id}" data-label="L" value="L" class="btn-radio"> <input type="radio" name="rdo-${m.id}" data-label="E" value="E" class="btn-radio"> <input type="radio" name="rdo-${m.id}" data-label="V" value="V" class="btn-radio"></div><select id="pass-${m.id}" class="advance-select"><option value="">¿Quién clasifica?</option><option value="${m.home}">${m.home}</option><option value="${m.away}">${m.away}</option></select></div></div>`;
+            admHTML += `<div class="match-card"><div class="teams-row"><span>${m.home}</span><small>vs</small><span>${m.away}</span></div><div class="options-container"><div class="prediction-row"><input type="radio" name="adm-rdo-${m.id}" data-label="L" value="L" class="btn-radio"> <input type="radio" name="adm-rdo-${m.id}" data-label="E" value="E" class="btn-radio"> <input type="radio" name="adm-rdo-${m.id}" data-label="V" value="V" class="btn-radio"></div><select id="adm-pass-${m.id}" class="advance-select"><option value="">Sin definir</option><option value="${m.home}">${m.home}</option><option value="${m.away}">${m.away}</option></select></div></div>`;
         });
-
-        document.getElementById('matches-form-container').innerHTML = registerHTML;
-        document.getElementById('admin-matches-container').innerHTML = adminHTML;
-        
-        matches.forEach(m => {
-            if(officialResults[m.id]) {
-                let res = officialResults[m.id].result;
-                let pass = officialResults[m.id].advance;
-                if(res) {
-                    let rad = document.querySelector(`input[name="adm-rdo-${m.id}"][value="${res}"]`);
-                    if(rad) rad.checked = true;
-                }
-                if(pass) document.getElementById(`adm-pass-${m.id}`).value = pass;
-            }
-        });
+        document.getElementById('matches-form-container').innerHTML = regHTML;
+        document.getElementById('admin-matches-container').innerHTML = admHTML;
     }
 
-    function savePrediction() {
-        const name = document.getElementById('player-name').value.trim();
-        if(!name) return alert('Por favor, ingresa tu nombre.');
-
-        let userPredictions = {};
-        for(let m of matches) {
-            let rdoOpt = document.querySelector(`input[name="rdo-${m.id}"]:checked`);
-            let passOpt = document.getElementById('pass-' + m.id).value;
-            
-            if(!rdoOpt || !passOpt) return alert(`Te falta completar: ${m.home} vs ${m.away}`);
-            userPredictions[m.id] = { result: rdoOpt.value, advance: passOpt };
-        }
-
-        let payload = { name: name, predictions: userPredictions };
-        let encryptedData = btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
-        let mensaje = `Mi código de participante es:\n\n${encryptedData}`;
-        let urlWhatsapp = `https://api.whatsapp.com/send?phone=${WHATSAPP_PHONE}&text=${encodeURIComponent(mensaje)}`;
-
-        if(confirm("¡Listo! Se abrirá WhatsApp para enviar tu quiniela.")) window.open(urlWhatsapp, '_blank');
-        else { navigator.clipboard.writeText(encryptedData); alert("Código copiado: " + encryptedData); }
-    }
-
-    function verifyAdmin() {
-        if(document.getElementById('admin-pass').value === ADMIN_PASSWORD) document.getElementById('admin-content').style.display = 'block';
-        else alert('Contraseña incorrecta.');
-    }
-
-    function importParticipantCode() {
-        const code = document.getElementById('whatsapp-code-input').value.trim();
-        try {
-            let decoded = decodeURIComponent(escape(atob(code)));
-            let parsed = JSON.parse(decoded);
-            let index = participants.findIndex(p => p.name.toLowerCase() === parsed.name.toLowerCase());
-            if(index > -1) { if(confirm("¿Sobreescribir?")) participants[index] = parsed; } 
-            else participants.push(parsed);
-            localStorage.setItem('q_players', JSON.stringify(participants));
-            alert('Agregado con éxito');
-            renderLeaderboard();
-        } catch(e) { alert('Código inválido'); }
-    }
-
-    function saveOfficialResults() {
-        matches.forEach(m => {
-            let rdoOpt = document.querySelector(`input[name="adm-rdo-${m.id}"]:checked`);
-            let passOpt = document.getElementById(`adm-pass-${m.id}`).value;
-            officialResults[m.id] = { result: rdoOpt ? rdoOpt.value : null, advance: passOpt ? passOpt : null };
-        });
-        localStorage.setItem('q_official', JSON.stringify(officialResults));
-        alert('Resultados guardados.');
-        renderLeaderboard();
+    function switchTab(t) {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+        event.target.classList.add('active');
+        document.getElementById(`panel-${t}`).classList.add('active');
     }
 
     function renderLeaderboard() {
         const tbody = document.querySelector('#leaderboard tbody');
         tbody.innerHTML = '';
-        let calculatedPlayers = participants.map(p => {
-            let ptsResult = 0; let ptsAdvance = 0;
+        participants.map(p => {
+            let ptsR = 0, ptsA = 0;
             matches.forEach(m => {
-                let official = officialResults[m.id];
-                let user = p.predictions[m.id];
-                if(official && user) {
-                    if(official.result && official.result === user.result) ptsResult++;
-                    if(official.advance && official.advance === user.advance) ptsAdvance++;
+                if(officialResults[m.id] && p.predictions[m.id]) {
+                    if(officialResults[m.id].result === p.predictions[m.id].result) ptsR++;
+                    if(officialResults[m.id].advance === p.predictions[m.id].advance) ptsA++;
                 }
             });
-            return { name: p.name, total: (ptsResult + ptsAdvance), ptsResult, ptsAdvance };
-        });
-        calculatedPlayers.sort((a,b) => b.total - a.total);
-        calculatedPlayers.forEach((p, idx) => {
-            tbody.innerHTML += `<tr><td><b>${idx + 1}</b></td><td>${p.name}</td><td>${p.ptsResult}</td><td>${p.ptsAdvance}</td><td><b>${p.total}</b></td><td><button class="btn-secondary" onclick="viewUserDetails('${p.name}')">Ver</button></td></tr>`;
+            return {name: p.name, total: ptsR + ptsA};
+        }).sort((a,b) => b.total - a.total).forEach((p, i) => {
+            tbody.innerHTML += `<tr><td>${i+1}</td><td>${p.name}</td><td><b>${p.total}</b></td><td><button class="btn-secondary" onclick="alert('${p.name} tiene ${p.total} pts')">Ver</button></td></tr>`;
         });
     }
 
-    function viewUserDetails(name) {
-        let player = participants.find(p => p.name === name);
-        document.getElementById('user-details-section').style.display = 'block';
-        document.getElementById('detail-user-name').innerText = player.name;
-        let space = document.getElementById('details-space'); space.innerHTML = '';
+    function savePrediction() {
+        const name = document.getElementById('player-name').value;
+        if(!name) return alert('Pon tu nombre');
+        let preds = {};
         matches.forEach(m => {
-            let uPred = player.predictions[m.id];
-            let oRes = officialResults[m.id];
-            space.innerHTML += `<div class="detail-item"><strong>${m.home} vs ${m.away}</strong><br>Res: ${uPred.result} | Pase: ${uPred.advance.substring(0,8)}</div>`;
+            let rdo = document.querySelector(`input[name="rdo-${m.id}"]:checked`);
+            preds[m.id] = {result: rdo ? rdo.value : '', advance: document.getElementById('pass-'+m.id).value};
         });
+        let data = btoa(JSON.stringify({name, predictions: preds}));
+        window.open(`https://api.whatsapp.com/send?phone=${WHATSAPP_PHONE}&text=Mi código es: ${data}`);
     }
 
-    function exportData() {
-        let bundle = { official: officialResults, players: participants };
-        document.getElementById('io-data').value = JSON.stringify(bundle);
+    function verifyAdmin() { if(document.getElementById('admin-pass').value === ADMIN_PASSWORD) document.getElementById('admin-content').style.display = 'block'; }
+    function importParticipantCode() {
+        let code = document.getElementById('whatsapp-code-input').value;
+        let p = JSON.parse(atob(code));
+        participants.push(p);
+        localStorage.setItem('q_players', JSON.stringify(participants));
+        renderLeaderboard();
+        alert('Agregado');
     }
+    function saveOfficialResults() {
+        matches.forEach(m => {
+            let rdo = document.querySelector(`input[name="adm-rdo-${m.id}"]:checked`);
+            officialResults[m.id] = {result: rdo ? rdo.value : '', advance: document.getElementById('adm-pass-'+m.id).value};
+        });
+        localStorage.setItem('q_official', JSON.stringify(officialResults));
+        renderLeaderboard();
+    }
+    function exportData() { document.getElementById('io-data').value = JSON.stringify({official: officialResults, players: participants}); }
 </script>
 </body>
 </html>
