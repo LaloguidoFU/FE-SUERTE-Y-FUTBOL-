@@ -66,7 +66,7 @@
         .detail-item.miss { border-left-color: var(--red); background: #fef2f2; }
 
         .admin-actions { display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap; }
-        .btn-secondary { padding: 8px 15px; background: #64748b; color: white; border: none; border-radius: 6px; cursor: pointer; }
+        .btn-secondary { padding: 8px 15px; background: #64748b; color: white; border: none; border-radius: 6px; cursor: pointer; margin-top: 5px; }
         textarea { width: 100%; height: 120px; margin-top: 10px; font-family: monospace; padding: 10px; }
     </style>
 </head>
@@ -112,11 +112,11 @@
     <div id="panel-registro" class="panel">
         <h2>Ingresa tus Pronósticos</h2>
         <div class="form-group" style="margin-top: 15px;">
-            <label for="player-name">Tu Nombre Completo / Apodo:</label>
+            <label for="player-name">Tu Nombre Completo o Apodo:</label>
             <input type="text" id="player-name" placeholder="Ej. Juan Pérez">
         </div>
         <div id="matches-form-container"></div>
-        <button class="submit-btn" onclick="savePrediction()">Guardar Mi Quiniela</button>
+        <button class="submit-btn" onclick="savePrediction()">Guardar y Enviar por WhatsApp</button>
     </div>
 
     <!-- TAB ADMIN -->
@@ -129,6 +129,14 @@
         <button class="btn-secondary" onclick="verifyAdmin()">Verificar Clave</button>
 
         <div id="admin-content" style="display: none; margin-top: 25px;">
+            <!-- SECCIÓN NUEVA: PROCESAR CÓDIGOS DE WHATSAPP -->
+            <div style="background: #f0fdf4; border: 1px solid #bbf7d0; padding: 15px; border-radius: 8px; margin-bottom: 25px;">
+                <h3>📥 Cargar Participante desde WhatsApp</h3>
+                <p style="font-size: 13px; color: #1e293b; margin-bottom: 10px;">Pega aquí el código largo que te mandó el participante por mensaje:</p>
+                <input type="text" id="whatsapp-code-input" placeholder="Pega el código encriptado aquí...">
+                <button class="btn-secondary" style="background: var(--green);" onclick="importParticipantCode()">Agregar a la Lista</button>
+            </div>
+
             <h3>Resultados Oficiales de los Partidos</h3>
             <div id="admin-matches-container" style="margin-top: 15px;"></div>
             <button class="submit-btn" style="background: var(--primary);" onclick="saveOfficialResults()">Guardar Resultados Oficiales</button>
@@ -136,10 +144,9 @@
             <hr style="margin: 30px 0; border: 0; border-top: 1px solid var(--border);">
             
             <h3>Base de Datos Compartida (Para actualizar en GitHub)</h3>
-            <p style="font-size: 13px; color: #64748b; margin-bottom: 10px;">Copia este texto y pégalo en la sección "DATA MAESTRA" del código fuente para que todos puedan ver las actualizaciones globales.</p>
+            <p style="font-size: 13px; color: #64748b; margin-bottom: 10px;">Copia este texto y pégalo en la sección "DATA MAESTRA" de tu archivo en tu compu para actualizar el sitio web global de GitHub Pages.</p>
             <button class="btn-secondary" onclick="exportData()">Generar Texto de Respaldo</button>
-            <textarea id="io-data" placeholder="El texto de datos aparecerá aquí..."></textarea>
-            <button class="btn-secondary" style="background: #0284c7;" onclick="importData()">Importar datos del cuadro anterior</button>
+            <textarea id="io-data" readonly placeholder="El texto de datos aparecerá aquí..."></textarea>
         </div>
     </div>
 </div>
@@ -153,6 +160,7 @@
     // ==========================================
 
     const ADMIN_PASSWORD = "tu_clave_aqui"; // <-- CAMBIA ESTA CONTRASEÑA PARA TU PANEL
+    const WHATSAPP_PHONE = "521234567890";  // <-- TU TELÉFONO CON CÓDIGO DE PAÍS (Sin el + ni espacios. Ej: México 521...)
 
     const matches = [
         { id: 1, home: "Sudáfrica", away: "Canadá" }, { id: 2, home: "Brasil", away: "Japón" },
@@ -176,7 +184,7 @@
     function switchTab(tab) {
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-        event.target.classList.add('active');
+        if(event) event.target.classList.add('active');
         document.getElementById(`panel-${tab}`).classList.add('active');
     }
 
@@ -185,7 +193,6 @@
         let adminHTML = '';
 
         matches.forEach(m => {
-            // Formulario Registro Usuarios
             registerHTML += `
             <div class="match-card">
                 <div class="team home">${m.home}</div>
@@ -206,7 +213,6 @@
                 <div class="team away">${m.away}</div>
             </div>`;
 
-            // Formulario Admin Oficiales
             adminHTML += `
             <div class="match-card">
                 <div class="team home">${m.home}</div>
@@ -229,7 +235,6 @@
         document.getElementById('matches-form-container').innerHTML = registerHTML;
         document.getElementById('admin-matches-container').innerHTML = adminHTML;
         
-        // Precargar datos del admin si ya existen
         matches.forEach(m => {
             if(officialResults[m.id]) {
                 let res = officialResults[m.id].result;
@@ -258,20 +263,21 @@
             userPredictions[m.id] = { result: rdoOpt.value, advance: passOpt };
         }
 
-        // Buscar si ya existe para sobreescribir, o añadir nuevo
-        let index = participants.findIndex(p => p.name.toLowerCase() === name.toLowerCase());
-        if(index > -1) {
-            participants[index].predictions = userPredictions;
-        } else {
-            participants.push({ name: name, predictions: userPredictions });
-        }
+        // Generar el payload
+        let payload = { name: name, predictions: userPredictions };
+        // Encriptar de forma segura soportando caracteres con acentos (UTF-8)
+        let encryptedData = btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
+        
+        let mensaje = `¡Hola! Aquí están mis pronósticos para la quiniela. Mi código de participante es:\n\n${encryptedData}`;
+        let urlWhatsapp = `https://api.whatsapp.com/send?phone=${WHATSAPP_PHONE}&text=${encodeURIComponent(mensaje)}`;
 
-        localStorage.setItem('q_players', JSON.stringify(participants));
-        alert('¡Tus pronósticos se guardaron exitosamente en esta sesión!');
-        document.getElementById('player-name').value = '';
-        initForms();
-        renderLeaderboard();
-        switchTab('tabla');
+        let proceder = confirm("¡Quiniela lista! Al dar clic en Aceptar, se abrirá WhatsApp para enviar tus pronósticos automáticamente al organizador.");
+        if(proceder) {
+            window.open(urlWhatsapp, '_blank');
+        } else {
+            navigator.clipboard.writeText(encryptedData);
+            alert("Código copiado al portapapeles de tu dispositivo. Envíaselo al organizador por el medio que prefieras.");
+        }
     }
 
     function verifyAdmin() {
@@ -280,6 +286,36 @@
             document.getElementById('admin-content').style.display = 'block';
         } else {
             alert('Contraseña incorrecta.');
+        }
+    }
+
+    function importParticipantCode() {
+        const code = document.getElementById('whatsapp-code-input').value.trim();
+        if(!code) return alert('Por favor, pega un código válido.');
+
+        try {
+            let decoded = decodeURIComponent(escape(atob(code)));
+            let parsed = JSON.parse(decoded);
+
+            if(parsed.name && parsed.predictions) {
+                let index = participants.findIndex(p => p.name.toLowerCase() === parsed.name.toLowerCase());
+                if(index > -1) {
+                    if(confirm(`El participante "${parsed.name}" ya existe. ¿Deseas sobreescribir sus pronósticos anteriores?`)) {
+                        participants[index] = parsed;
+                    } else { return; }
+                } else {
+                    participants.push(parsed);
+                }
+
+                localStorage.setItem('q_players', JSON.stringify(participants));
+                alert(`¡${parsed.name} agregado exitosamente a tu navegador!`);
+                document.getElementById('whatsapp-code-input').value = '';
+                renderLeaderboard();
+            } else {
+                alert('El formato del código es incorrecto.');
+            }
+        } catch(e) {
+            alert('Error al procesar el código. Revisa que esté copiado de forma completa sin espacios extra.');
         }
     }
 
@@ -293,7 +329,7 @@
             };
         });
         localStorage.setItem('q_official', JSON.stringify(officialResults));
-        alert('Resultados oficiales actualizados localmente.');
+        alert('Resultados oficiales guardados en tu navegador.');
         renderLeaderboard();
     }
 
@@ -318,7 +354,6 @@
             return { name: p.name, ptsResult: ptsResult, ptsAdvance: ptsAdvance, total: (ptsResult + ptsAdvance), raw: p };
         });
 
-        // Ordenar por puntos totales desc
         calculatedPlayers.sort((a,b) => b.total - a.total);
 
         calculatedPlayers.forEach((p, idx) => {
@@ -376,26 +411,6 @@
             players: participants
         };
         document.getElementById('io-data').value = JSON.stringify(bundle);
-    }
-
-    function importData() {
-        try {
-            let raw = document.getElementById('io-data').value;
-            let parsed = JSON.parse(raw);
-            if(parsed.official && parsed.players) {
-                officialResults = parsed.official;
-                participants = parsed.players;
-                localStorage.setItem('q_official', JSON.stringify(officialResults));
-                localStorage.setItem('q_players', JSON.stringify(participants));
-                alert('¡Datos sincronizados e importados al almacenamiento local con éxito!');
-                renderLeaderboard();
-                initForms();
-            } else {
-                alert('El formato no es válido.');
-            }
-        } catch(e) {
-            alert('Error al leer los datos. Asegúrate de pegar el bloque JSON completo.');
-        }
     }
 </script>
 </body>
