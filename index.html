@@ -178,7 +178,7 @@
         { id: 15, home: "Argentina", away: "Cabo Verde" }, { id: 16, home: "Colombia", away: "Ghana" }
     ];
 
-    let participants = JSON.parse(localStorage.getItem('q_players')) || MASTER_PARTICIPANTS;
+    let participants = JSON.parse(localStorage.getItem('q_players_v2')) || MASTER_PARTICIPANTS;
     let officialResults = JSON.parse(localStorage.getItem('q_official')) || MASTER_RESULTS;
 
     window.onload = function() {
