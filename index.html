@@ -313,14 +313,17 @@ let officialResults = JSON.parse(localStorage.getItem('q_official')) || {
     function importParticipantCode() {
         try { let p = JSON.parse(atob(document.getElementById('whatsapp-code-input').value)); participants.push(p); localStorage.setItem('q_players_v2', JSON.stringify(participants)); renderLeaderboard(); alert('Agregado'); } catch(e) { alert('Error'); }
     }
-    function saveOfficialResults() {
+       function saveOfficialResults() {
         matches.forEach(m => {
             let rdo = document.querySelector(`input[name="adm-rdo-${m.id}"]:checked`);
-            officialResults[m.id] = {result: rdo ? rdo.value : '', advance: document.getElementById('adm-pass-'+m.id).value};
+            let advanceVal = document.getElementById('adm-pass-'+m.id).value; // Asegúrate de usar esta forma
+            officialResults[m.id] = {result: rdo ? rdo.value : '', advance: advanceVal};
         });
         localStorage.setItem('q_official', JSON.stringify(officialResults));
-        renderLeaderboard(); alert('Guardado');
+        renderLeaderboard(); 
+        alert('Resultados guardados');
     }
+
 </script>
 </body>
 </html>
