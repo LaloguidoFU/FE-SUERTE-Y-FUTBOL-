@@ -271,17 +271,31 @@ let officialResults = JSON.parse(localStorage.getItem('q_official')) || {
             tbody.innerHTML += `<tr><td>${p.name}</td><td><b>${pts}</b></td><td><button class="btn-secondary" onclick="viewDetails('${p.name}')">Ver</button></td></tr>`;
         });
     }
-
     function viewDetails(name) {
         let p = participants.find(x => x.name === name);
         document.getElementById('user-details-section').style.display = 'block';
         document.getElementById('detail-user-name').innerText = p.name;
-        let space = document.getElementById('details-space'); space.innerHTML = '';
+        let space = document.getElementById('details-space'); 
+        space.innerHTML = '';
+        
         matches.forEach(m => {
             let pr = p.predictions[m.id];
-            space.innerHTML += `<div class="detail-item"><b>${m.home.slice(0,3)} vs ${m.away.slice(0,3)}</b>: ${pr.result} | ${pr.advance.slice(0,6)}</div>`;
+            
+            // Verificamos si este partido ya tiene resultado oficial
+            let isPlayed = officialResults[m.id] && officialResults[m.id].result !== "";
+            
+            // Si es jugado, azul (#dbeafe). Si no, blanco (#ffffff)
+            let bgColor = isPlayed ? '#dbeafe' : '#ffffff';
+            let border = isPlayed ? '1px solid #bfdbfe' : '1px solid #e2e8f0';
+
+            space.innerHTML += `
+                <div class="detail-item" style="background-color: ${bgColor}; border: ${border};">
+                    <b>${m.home.slice(0,3)} vs ${m.away.slice(0,3)}</b>: 
+                    ${pr.result} | ${pr.advance.slice(0,6)}
+                </div>`;
         });
     }
+
 
     function savePrediction() {
         const name = document.getElementById('player-name').value;
