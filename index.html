@@ -267,10 +267,12 @@ let officialResults = JSON.parse(localStorage.getItem('q_official')) || {
         document.getElementById(`panel-${t}`).classList.add('active');
     }
 
-    function renderLeaderboard() {
+        function renderLeaderboard() {
         const tbody = document.querySelector('#leaderboard tbody');
         tbody.innerHTML = '';
-        participants.forEach(p => {
+
+        // 1. Calcular puntos de todos para saber cuál es el máximo
+        let participantScores = participants.map(p => {
             let pts = 0;
             matches.forEach(m => {
                 if(officialResults[m.id] && p.predictions[m.id]) {
@@ -278,9 +280,26 @@ let officialResults = JSON.parse(localStorage.getItem('q_official')) || {
                     if(officialResults[m.id].advance === p.predictions[m.id].advance) pts++;
                 }
             });
-            tbody.innerHTML += `<tr><td>${p.name}</td><td><b>${pts}</b></td><td><button class="btn-secondary" onclick="viewDetails('${p.name}')">Ver</button></td></tr>`;
+            return { name: p.name, pts: pts };
+        });
+
+        // 2. Encontrar el puntaje máximo
+        let maxPts = Math.max(...participantScores.map(p => p.pts));
+
+        // 3. Renderizar la tabla aplicando el estilo azul si tiene el máximo
+        participantScores.forEach(p => {
+            let isLeader = p.pts === maxPts && maxPts > 0;
+            let rowStyle = isLeader ? 'style="background-color: #dbeafe; font-weight: bold;"' : '';
+            
+            tbody.innerHTML += `
+                <tr ${rowStyle}>
+                    <td>${p.name}</td>
+                    <td><b>${p.pts}</b></td>
+                    <td><button class="btn-secondary" onclick="viewDetails('${p.name}')">Ver</button></td>
+                </tr>`;
         });
     }
+
     function viewDetails(name) {
         let p = participants.find(x => x.name === name);
         document.getElementById('user-details-section').style.display = 'block';
