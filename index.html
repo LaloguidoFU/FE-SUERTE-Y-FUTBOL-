@@ -177,8 +177,8 @@
                 <div class="match-card">
                     <div class="teams-row"><span>${m.home}</span> vs <span>${m.away}</span></div>
                     <div class="controls-row">
-                        <input type="number" class="score-input" id="home-${m.id}" placeholder="0" min="0">
-                        <input type="number" class="score-input" id="away-${m.id}" placeholder="0" min="0">
+                        <input type="number" class="score-input" id="home-${m.id}" placeholder="-" min="0">
+                        <input type="number" class="score-input" id="away-${m.id}" placeholder="-" min="0">
                         <select id="rdo-${m.id}"><option value="L">Local</option><option value="E">Empate</option><option value="V">Visita</option></select>
                         <select id="pass-${m.id}"><option value="${m.home}">${m.home}</option><option value="${m.away}">${m.away}</option></select>
                     </div>
