@@ -126,7 +126,23 @@
         {id:8, home:"Suiza", away:"Colombia"}
     ];
 
-    let participants = JSON.parse(localStorage.getItem('q_cuartos_players')) || [];
+ let participants = JSON.parse(localStorage.getItem('q_cuartos_players')) || [
+  
+{
+    "name": "Prueba 2",
+    "predictions": {
+        "1": {"homeScore": 1, "awayScore": 1, "result": "E", "advance": "Paraguay"},
+        "2": {"homeScore": 1, "awayScore": 1, "result": "E", "advance": "Canadá"},
+        "3": {"homeScore": 1, "awayScore": 1, "result": "E", "advance": "Brasil"},
+        "4": {"homeScore": 1, "awayScore": 1, "result": "E", "advance": "México"},
+        "5": {"homeScore": 1, "awayScore": 1, "result": "E", "advance": "Portugal"},
+        "6": {"homeScore": 1, "awayScore": 1, "result": "E", "advance": "Estados Unidos"},
+        "7": {"homeScore": 1, "awayScore": 1, "result": "E", "advance": "Argentina"},
+        "8": {"homeScore": 1, "awayScore": 1, "result": "E", "advance": "Suiza"}
+    }
+}
+   
+];
     let officialResults = JSON.parse(localStorage.getItem('q_cuartos_official')) || {};
 
     window.onload = () => { initForms(); renderLeaderboard(); };
