@@ -1,11 +1,10 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <title>Quiniela Pro - Cuartos de Final</title>
     <style>
-        :root { --primary: #1e3a8a; --primary-light: #3b82f6; --bg: #f8fafc; --green: #22c55e; --red: #ef4444; --border: #e2e8f0; }
+        :root { --primary: #1e3a8a; --primary-light: #3b82f6; --bg: #f8fafc; --green: #22c55e; --border: #e2e8f0; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
         body { background-color: var(--bg); padding: 10px; display: flex; justify-content: center; }
         .container { width: 100%; max-width: 600px; }
@@ -14,17 +13,15 @@
         .panel { display: none; background: white; padding: 15px; border-radius: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
         .panel.active { display: block; }
 
-        /* Estilos de Tabla */
         table { width: 100%; font-size: 11px; border-collapse: collapse; margin-top: 10px; }
         th, td { padding: 8px 2px; text-align: center; border-bottom: 1px solid var(--border); }
         .hit { background-color: #dcfce7; color: #166534; font-weight: bold; }
-        .miss { background-color: #fee2e2; color: #991b1b; }
 
-        /* Formulario */
         .match-card { padding: 12px; border: 1px solid var(--border); border-radius: 10px; margin-bottom: 10px; background: #fafafa; }
         .teams-row { display: flex; justify-content: space-between; font-weight: bold; margin-bottom: 8px; }
         .score-input { width: 40px; padding: 5px; text-align: center; border: 1px solid #ccc; border-radius: 4px; }
         .submit-btn { width: 100%; padding: 12px; background: var(--green); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 10px;}
+        .error-msg { color: red; font-size: 12px; margin-top: 5px; display: none; }
     </style>
 </head>
 <body>
@@ -32,30 +29,27 @@
 <div class="container">
     <header><h1>🏆 Quiniela: Cuartos</h1></header>
 
-    <div class="tabs">
-        <button onclick="switchTab('tabla')">📊 Tabla</button>
-        <button onclick="switchTab('registro')">📝 Registro</button>
-        <button onclick="switchTab('admin')">⚙️ Admin</button>
+    <div class="tabs" style="display:flex; gap:5px; margin-bottom:15px;">
+        <button class="tab-btn" onclick="switchTab('tabla')">📊 Tabla</button>
+        <button class="tab-btn" onclick="switchTab('registro')">📝 Registro</button>
+        <button class="tab-btn" onclick="switchTab('admin')">⚙️ Admin</button>
     </div>
 
-    <!-- Panel Tabla -->
     <div id="panel-tabla" class="panel active">
         <table id="leaderboard">
             <thead>
-                <tr><th>Participante</th><th>Total</th><th>Pase<br>(1pt)</th><th>Rdo<br>(2pt)</th><th>Marc<br>(3pt)</th><th>Ver</th></tr>
+                <tr><th>Participante</th><th>Total</th><th>Pase<br>(1pt)</th><th>Rdo<br>(2pt)</th><th>Marc<br>(3pt)</th></tr>
             </thead>
             <tbody></tbody>
         </table>
     </div>
 
-    <!-- Panel Registro -->
     <div id="panel-registro" class="panel">
         <input type="text" id="player-name" placeholder="Tu nombre..." style="width:100%; padding:10px; margin-bottom:10px;">
         <div id="matches-form-container"></div>
-        <button class="submit-btn" onclick="savePrediction()">Enviar WhatsApp</button>
+        <button class="submit-btn" onclick="validateAndSave()">Enviar WhatsApp</button>
     </div>
 
-    <!-- Panel Admin -->
     <div id="panel-admin" class="panel">
         <input type="password" id="admin-pass" placeholder="Contraseña...">
         <button onclick="verifyAdmin()">Verificar</button>
@@ -100,18 +94,30 @@
         document.getElementById('admin-matches-container').innerHTML = admHTML;
     }
 
+    function validateAndSave() {
+        // Validacion de consistencia
+        for (let m of matches) {
+            let res = document.getElementById('rdo-' + m.id).value;
+            let adv = document.getElementById('pass-' + m.id).value;
+            
+            if (res === 'L' && adv !== m.home) {
+                return alert(`¡Error en ${m.home} vs ${m.away}! Elegiste Local, pero ${adv} no puede avanzar.`);
+            }
+            if (res === 'V' && adv !== m.away) {
+                return alert(`¡Error en ${m.home} vs ${m.away}! Elegiste Visita, pero ${adv} no puede avanzar.`);
+            }
+        }
+        savePrediction();
+    }
+
     function calculateScore(p) {
         let scores = { total: 0, advance: 0, outcome: 0, scoreline: 0 };
         matches.forEach(m => {
             let o = officialResults[m.id];
             let pred = p.predictions[m.id];
             if (!o || !pred) return;
-            
-            // 1pt x acierto de pase
             if(pred.advance === o.advance) scores.advance += 1;
-            // 2pts x acierto de resultado (L/E/V)
             if(pred.result === o.result) scores.outcome += 2;
-            // 3pts x acierto de marcador exacto
             if(pred.homeScore === o.homeScore && pred.awayScore === o.awayScore) scores.scoreline += 3;
         });
         scores.total = scores.advance + scores.outcome + scores.scoreline;
@@ -123,19 +129,13 @@
         tbody.innerHTML = '';
         participants.forEach(p => {
             let s = calculateScore(p);
-            tbody.innerHTML += `<tr>
-                <td>${p.name}</td>
-                <td><b>${s.total}</b></td>
-                <td class="${s.advance > 0 ? 'hit' : ''}">${s.advance}</td>
-                <td class="${s.outcome > 0 ? 'hit' : ''}">${s.outcome}</td>
-                <td class="${s.scoreline > 0 ? 'hit' : ''}">${s.scoreline}</td>
-                <td><button onclick="alert('Marcadores: ' + JSON.stringify(p.predictions))">Ver</button></td>
-            </tr>`;
+            tbody.innerHTML += `<tr><td>${p.name}</td><td><b>${s.total}</b></td><td class="${s.advance > 0 ? 'hit' : ''}">${s.advance}</td><td class="${s.outcome > 0 ? 'hit' : ''}">${s.outcome}</td><td class="${s.scoreline > 0 ? 'hit' : ''}">${s.scoreline}</td></tr>`;
         });
     }
 
     function savePrediction() {
         const name = document.getElementById('player-name').value;
+        if(!name) return alert('Pon tu nombre');
         let preds = {};
         matches.forEach(m => {
             preds[m.id] = {
