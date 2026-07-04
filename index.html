@@ -143,7 +143,14 @@
 }
    
 ];
-    let officialResults = JSON.parse(localStorage.getItem('q_cuartos_official')) || {};
+    let officialResults = JSON.parse(localStorage.getItem('q_cuartos_official')) || {
+        "1": {"homeScore": 0, "awayScore": 0, "result": "E", "advance": "Paraguay"}
+
+
+
+
+        
+    };
 
     window.onload = () => { initForms(); renderLeaderboard(); };
 
