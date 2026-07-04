@@ -41,10 +41,7 @@
 <div class="container">
     <header>
         <h1>🏆 Quiniela: Cuartos</h1>
-        <div style="margin-top: 10px; cursor: pointer; text-decoration: underline; font-size: 0.9em; opacity: 0.9;" 
-             onclick="showRules()">
-            Ver Reglas
-        </div>
+       
     </header>
 
     <div class="tabs">
@@ -52,6 +49,25 @@
         <button class="tab-btn" onclick="switchTab(this, 'registro')">📝 Registro</button>
         <button class="tab-btn" onclick="switchTab(this, 'admin')">⚙️ Admin</button>
     </div>
+
+    <div style="background: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+    <h3 style="margin-bottom: 15px; color: #1e3a8a; text-align: center;">📜 Reglas de la Quiniela</h3>
+    <ul style="padding-left: 20px; line-height: 1.6;">
+        <li style="margin-bottom: 10px;"><strong>💰 Inscripción:</strong> El costo es de <strong>$150 MXN</strong> por participante.</li>
+        
+        <li style="margin-bottom: 10px;"><strong>🎯 Sistema de Puntos:</strong>
+            <ul style="padding-left: 20px; margin-top: 5px; color: #475569;">
+                <li>+1 punto por acertar el equipo que clasifica.</li>
+                <li>+2 puntos por acertar el resultado (Local, Empate o Visita).</li>
+                <li>+3 puntos por acertar el marcador exacto (tiempo regular).</li>
+            </ul>
+        </li>
+
+        <li style="margin-bottom: 10px;"><strong>🏆 Desempate:</strong> En caso de empate en el primer lugar, el premio se repartirá equitativamente entre los ganadores.</li>
+        
+        <li style="margin-bottom: 10px;"><strong>⚠️ Validación:</strong> Los marcadores deben ser números positivos y congruentes con el resultado seleccionado.</li>
+    </ul>
+</div>
 
     <div id="panel-tabla" class="panel active">
         <div class="table-container">
