@@ -22,6 +22,7 @@
         table { width: 100%; font-size: 13px; border-collapse: collapse; margin-top: 10px; min-width: 400px; }
         th, td { padding: 10px 5px; text-align: center; border-bottom: 1px solid var(--border); }
         .hit { background-color: #dcfce7; color: #166534; font-weight: bold; }
+        .miss { background-color: #fee2e2; color: #991b1b; }
         .btn-view { background: var(--primary); color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; }
 
         .match-card { padding: 15px; border: 1px solid var(--border); border-radius: 12px; margin-bottom: 15px; background: #fff; }
@@ -230,9 +231,9 @@
             let s = calculateScore(p);
             tbody.innerHTML += `<tr>
                 <td>${p.name}</td><td><b>${s.total}</b></td>
-                <td class="${s.advance > 0 ? 'hit' : ''}">${s.advance}</td>
-                <td class="${s.outcome > 0 ? 'hit' : ''}">${s.outcome}</td>
-                <td class="${s.scoreline > 0 ? 'hit' : ''}">${s.scoreline}</td>
+               <td class="${s.advance > 0 ? 'hit' : 'miss'}">${s.advance}</td>
+<td class="${s.outcome > 0 ? 'hit' : 'miss'}">${s.outcome}</td>
+<td class="${s.scoreline > 0 ? 'hit' : 'miss'}">${s.scoreline}</td>
                 <td><button class="btn-view" onclick="viewDetails(${index})">Ver</button></td>
             </tr>`;
         });
