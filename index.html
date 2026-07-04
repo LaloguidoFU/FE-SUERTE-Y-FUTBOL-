@@ -41,7 +41,13 @@
 <body>
 
 <div class="container">
-    <header><h1>🏆 Quiniela: Cuartos</h1></header>
+    <header>
+        <h1>🏆 Quiniela: Cuartos</h1>
+        <div style="margin-top: 10px; cursor: pointer; text-decoration: underline; font-size: 0.9em; opacity: 0.9;" 
+             onclick="showRules()">
+            Ver Reglas
+        </div>
+    </header>
 
     <div class="tabs">
         <button class="tab-btn active" onclick="switchTab(this, 'tabla')">📊 Tabla</button>
@@ -64,16 +70,6 @@
         <input type="text" id="player-name" placeholder="Tu nombre..." style="width:100%; padding:12px; margin-bottom:15px; font-size:16px; border:1px solid #ccc; border-radius:8px;">
         <div id="matches-form-container"></div>
         <button class="submit-btn" onclick="validateAndSave()">Enviar WhatsApp</button>
-    </div>
-
-    <div id="panel-reglas" class="panel">
-        <h3>Reglas de la Quiniela</h3>
-        <ul style="padding: 20px; line-height: 1.8;">
-            <li><b>Costo de inscripción:</b> $150 MXN.</li>
-            <li><b>Ganador:</b> El participante con más puntos acumulados al finalizar los partidos.</li>
-            <li><b>Empates:</b> En caso de haber más de un participante empatado en el primer lugar, el premio total se repartirá equitativamente entre ellos.</li>
-            <li><b>Validación:</b> Todos los marcadores deben ser números positivos y congruentes con el resultado seleccionado.</li>
-        </ul>
     </div>
 
     <div id="panel-admin" class="panel">
@@ -216,6 +212,16 @@ let participants = JSON.parse(localStorage.getItem('q_cuartos_players')) || [
     }
 
     function closeModal() { document.getElementById('modal').style.display = 'none'; }
+
+    function showRules() {
+        // Desactivar todos los botones de las pestañas
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        // Ocultar todos los paneles
+        document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+        
+        // Mostrar el panel de reglas
+        document.getElementById('panel-reglas').classList.add('active');
+    }
 
     function savePrediction() {
         const name = document.getElementById('player-name').value;
