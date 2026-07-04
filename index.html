@@ -19,9 +19,8 @@
 
         .match-card { padding: 12px; border: 1px solid var(--border); border-radius: 10px; margin-bottom: 10px; background: #fafafa; }
         .teams-row { display: flex; justify-content: space-between; font-weight: bold; margin-bottom: 8px; }
-        .score-input { width: 40px; padding: 5px; text-align: center; border: 1px solid #ccc; border-radius: 4px; }
+        .score-input { width: 45px; padding: 5px; text-align: center; border: 1px solid #ccc; border-radius: 4px; }
         .submit-btn { width: 100%; padding: 12px; background: var(--green); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 10px;}
-        .error-msg { color: red; font-size: 12px; margin-top: 5px; display: none; }
     </style>
 </head>
 <body>
@@ -83,8 +82,8 @@
             regHTML += `
                 <div class="match-card">
                     <div class="teams-row"><span>${m.home}</span> vs <span>${m.away}</span></div>
-                    <input type="number" class="score-input" id="home-${m.id}" placeholder="0"> - 
-                    <input type="number" class="score-input" id="away-${m.id}" placeholder="0">
+                    <input type="number" class="score-input" id="home-${m.id}" placeholder="0" min="0"> - 
+                    <input type="number" class="score-input" id="away-${m.id}" placeholder="0" min="0">
                     <select id="rdo-${m.id}"><option value="L">Local</option><option value="E">Empate</option><option value="V">Visita</option></select>
                     <select id="pass-${m.id}"><option value="${m.home}">${m.home}</option><option value="${m.away}">${m.away}</option></select>
                 </div>`;
@@ -95,17 +94,25 @@
     }
 
     function validateAndSave() {
-        // Validacion de consistencia
         for (let m of matches) {
             let res = document.getElementById('rdo-' + m.id).value;
             let adv = document.getElementById('pass-' + m.id).value;
-            
-            if (res === 'L' && adv !== m.home) {
-                return alert(`¡Error en ${m.home} vs ${m.away}! Elegiste Local, pero ${adv} no puede avanzar.`);
+            let hScore = parseInt(document.getElementById('home-' + m.id).value);
+            let aScore = parseInt(document.getElementById('away-' + m.id).value);
+
+            // 1. Validar números
+            if (isNaN(hScore) || isNaN(aScore) || hScore < 0 || aScore < 0) {
+                return alert(`¡Error en ${m.home} vs ${m.away}! El marcador debe ser números positivos.`);
             }
-            if (res === 'V' && adv !== m.away) {
-                return alert(`¡Error en ${m.home} vs ${m.away}! Elegiste Visita, pero ${adv} no puede avanzar.`);
-            }
+
+            // 2. Validar congruencia Marcador vs Resultado (L/E/V)
+            if (res === 'L' && hScore <= aScore) return alert(`¡Incongruencia en ${m.home} vs ${m.away}! Elegiste Local, pero el marcador no refleja una victoria local.`);
+            if (res === 'V' && aScore <= hScore) return alert(`¡Incongruencia en ${m.home} vs ${m.away}! Elegiste Visita, pero el marcador no refleja una victoria visitante.`);
+            if (res === 'E' && hScore !== aScore) return alert(`¡Incongruencia en ${m.home} vs ${m.away}! Elegiste Empate, pero el marcador no es igual.`);
+
+            // 3. Validar consistencia con el equipo que avanza
+            if (res === 'L' && adv !== m.home) return alert(`¡Error! Elegiste Local (L) pero ${adv} no es el local.`);
+            if (res === 'V' && adv !== m.away) return alert(`¡Error! Elegiste Visita (V) pero ${adv} no es el visitante.`);
         }
         savePrediction();
     }
@@ -139,8 +146,8 @@
         let preds = {};
         matches.forEach(m => {
             preds[m.id] = {
-                homeScore: parseInt(document.getElementById('home-'+m.id).value) || 0,
-                awayScore: parseInt(document.getElementById('away-'+m.id).value) || 0,
+                homeScore: parseInt(document.getElementById('home-'+m.id).value),
+                awayScore: parseInt(document.getElementById('away-'+m.id).value),
                 result: document.getElementById('rdo-'+m.id).value,
                 advance: document.getElementById('pass-'+m.id).value
             };
