@@ -11,7 +11,6 @@
         .container { width: 100%; max-width: 600px; margin: 0 auto; }
         header { text-align: center; margin-bottom: 20px; padding: 15px; background: var(--primary); color: white; border-radius: 12px; }
         
-        /* Tabs mejoradas para móvil */
         .tabs { display: flex; gap: 5px; margin-bottom: 15px; }
         .tab-btn { flex: 1; padding: 12px; border: none; border-radius: 8px; background: #cbd5e1; cursor: pointer; font-weight: bold; font-size: 14px; }
         .tab-btn.active { background: var(--primary-light); color: white; }
@@ -19,13 +18,12 @@
         .panel { display: none; background: white; padding: 15px; border-radius: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
         .panel.active { display: block; }
 
-        /* Tabla responsiva */
         .table-container { width: 100%; overflow-x: auto; }
         table { width: 100%; font-size: 13px; border-collapse: collapse; margin-top: 10px; min-width: 400px; }
         th, td { padding: 10px 5px; text-align: center; border-bottom: 1px solid var(--border); }
         .hit { background-color: #dcfce7; color: #166534; font-weight: bold; }
+        .btn-view { background: var(--primary); color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; }
 
-        /* Partidos */
         .match-card { padding: 15px; border: 1px solid var(--border); border-radius: 12px; margin-bottom: 15px; background: #fff; }
         .teams-row { display: flex; justify-content: space-between; font-weight: bold; margin-bottom: 10px; font-size: 15px; }
         .controls-row { display: flex; gap: 5px; flex-wrap: wrap; justify-content: center; align-items: center; }
@@ -33,6 +31,10 @@
         select { padding: 10px; border-radius: 6px; font-size: 14px; border: 1px solid #ccc; }
         
         .submit-btn { width: 100%; padding: 15px; background: var(--green); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px; margin-top: 10px; }
+
+        /* Modal Styles */
+        #modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:1000; padding:20px; align-items:center; justify-content:center; }
+        .modal-content { background:white; padding:20px; border-radius:12px; max-width:500px; width:100%; max-height:80vh; overflow-y:auto; }
     </style>
 </head>
 <body>
@@ -50,7 +52,7 @@
         <div class="table-container">
             <table id="leaderboard">
                 <thead>
-                    <tr><th>Participante</th><th>Total</th><th>Pase<br>(1pt)</th><th>Rdo<br>(2pt)</th><th>Marc<br>(3pt)</th></tr>
+                    <tr><th>Participante</th><th>Total</th><th>Pase</th><th>Rdo</th><th>Marc</th><th>Acción</th></tr>
                 </thead>
                 <tbody></tbody>
             </table>
@@ -73,6 +75,15 @@
     </div>
 </div>
 
+<!-- Modal para ver pronósticos -->
+<div id="modal">
+    <div class="modal-content">
+        <h2 id="modal-title" style="margin-bottom:15px;">Pronósticos</h2>
+        <div id="modal-body"></div>
+        <button class="submit-btn" style="background:#ef4444;" onclick="closeModal()">Cerrar</button>
+    </div>
+</div>
+
 <script>
     const matches = [
         {id:1, home:"Paraguay", away:"Francia"},
@@ -85,7 +96,7 @@
         {id:8, home:"Suiza", away:"Colombia"}
     ];
 
-   let participants = JSON.parse(localStorage.getItem('q_cuartos_players')) || [
+let participants = JSON.parse(localStorage.getItem('q_cuartos_players')) || [
     {
         "name": "PRUEBA",
         "predictions": {
@@ -123,37 +134,26 @@
         document.getElementById('admin-matches-container').innerHTML = admHTML;
     }
 
-  function validateAndSave() {
+    function validateAndSave() {
         for (let m of matches) {
             let hInput = document.getElementById('home-' + m.id).value;
             let aInput = document.getElementById('away-' + m.id).value;
             let res = document.getElementById('rdo-' + m.id).value;
             let adv = document.getElementById('pass-' + m.id).value;
 
-            // 1. Validar que no estén vacíos
-            if (hInput === "" || aInput === "") {
-                return alert(`¡Error en ${m.home} vs ${m.away}! Debes llenar ambos marcadores.`);
-            }
+            if (hInput === "" || aInput === "") continue; // Permite saltar vacíos si se desea
 
             let hScore = parseInt(hInput);
             let aScore = parseInt(aInput);
 
-            // 2. Validar que sean números positivos
-            if (isNaN(hScore) || isNaN(aScore) || hScore < 0 || aScore < 0) {
-                return alert(`¡Error en ${m.home} vs ${m.away}! Debes ingresar números positivos.`);
-            }
-
-            // 3. Validar congruencia Marcador vs Resultado (L/E/V)
-            if (res === 'L' && hScore <= aScore) return alert(`¡Incongruencia en ${m.home} vs ${m.away}! Elegiste Local, pero el marcador no refleja victoria local.`);
-            if (res === 'V' && aScore <= hScore) return alert(`¡Incongruencia en ${m.home} vs ${m.away}! Elegiste Visita, pero el marcador no refleja victoria visitante.`);
-            if (res === 'E' && hScore !== aScore) return alert(`¡Incongruencia en ${m.home} vs ${m.away}! Elegiste Empate, pero el marcador no es igual.`);
-
-            // 4. Validar consistencia con el equipo que avanza
-            if (res === 'L' && adv !== m.home) return alert(`¡Error! Elegiste Local (L) pero ${adv} no es el local.`);
-            if (res === 'V' && adv !== m.away) return alert(`¡Error! Elegiste Visita (V) pero ${adv} no es el visitante.`);
+            if (isNaN(hScore) || isNaN(aScore) || hScore < 0 || aScore < 0) return alert(`¡Error en ${m.home} vs ${m.away}!`);
+            if (res === 'L' && hScore <= aScore) return alert(`Incongruencia L en ${m.home} vs ${m.away}`);
+            if (res === 'V' && aScore <= hScore) return alert(`Incongruencia V en ${m.home} vs ${m.away}`);
+            if (res === 'E' && hScore !== aScore) return alert(`Incongruencia E en ${m.home} vs ${m.away}`);
         }
         savePrediction();
     }
+
     function calculateScore(p) {
         let scores = { total: 0, advance: 0, outcome: 0, scoreline: 0 };
         matches.forEach(m => {
@@ -171,23 +171,56 @@
     function renderLeaderboard() {
         const tbody = document.querySelector('#leaderboard tbody');
         tbody.innerHTML = '';
-        participants.forEach(p => {
+        participants.forEach((p, index) => {
             let s = calculateScore(p);
-            tbody.innerHTML += `<tr><td>${p.name}</td><td><b>${s.total}</b></td><td class="${s.advance > 0 ? 'hit' : ''}">${s.advance}</td><td class="${s.outcome > 0 ? 'hit' : ''}">${s.outcome}</td><td class="${s.scoreline > 0 ? 'hit' : ''}">${s.scoreline}</td></tr>`;
+            tbody.innerHTML += `<tr>
+                <td>${p.name}</td><td><b>${s.total}</b></td>
+                <td class="${s.advance > 0 ? 'hit' : ''}">${s.advance}</td>
+                <td class="${s.outcome > 0 ? 'hit' : ''}">${s.outcome}</td>
+                <td class="${s.scoreline > 0 ? 'hit' : ''}">${s.scoreline}</td>
+                <td><button class="btn-view" onclick="viewDetails(${index})">Ver</button></td>
+            </tr>`;
         });
     }
+
+    function viewDetails(index) {
+        const p = participants[index];
+        const modal = document.getElementById('modal');
+        const body = document.getElementById('modal-body');
+        document.getElementById('modal-title').innerText = "Pronósticos de " + p.name;
+        
+        let html = '<div style="font-size:14px;">';
+        matches.forEach(m => {
+            let pred = p.predictions[m.id];
+            if(pred) {
+                html += `<div style="padding:5px 0; border-bottom:1px solid #eee;">
+                    <b>${m.home} ${pred.homeScore}-${pred.awayScore} ${m.away}</b><br>
+                    Rdo: ${pred.result} | Pase: ${pred.advance}
+                </div>`;
+            }
+        });
+        html += '</div>';
+        body.innerHTML = html;
+        modal.style.display = 'flex';
+    }
+
+    function closeModal() { document.getElementById('modal').style.display = 'none'; }
 
     function savePrediction() {
         const name = document.getElementById('player-name').value;
         if(!name) return alert('Pon tu nombre');
         let preds = {};
         matches.forEach(m => {
-            preds[m.id] = {
-                homeScore: parseInt(document.getElementById('home-'+m.id).value),
-                awayScore: parseInt(document.getElementById('away-'+m.id).value),
-                result: document.getElementById('rdo-'+m.id).value,
-                advance: document.getElementById('pass-'+m.id).value
-            };
+            let h = document.getElementById('home-'+m.id).value;
+            let a = document.getElementById('away-'+m.id).value;
+            if(h !== "" && a !== "") {
+                preds[m.id] = {
+                    homeScore: parseInt(h),
+                    awayScore: parseInt(a),
+                    result: document.getElementById('rdo-'+m.id).value,
+                    advance: document.getElementById('pass-'+m.id).value
+                };
+            }
         });
         let data = btoa(JSON.stringify({name, predictions: preds}));
         window.open(`https://api.whatsapp.com/send?phone=5215546879724&text=Mi código es: ${data}`);
