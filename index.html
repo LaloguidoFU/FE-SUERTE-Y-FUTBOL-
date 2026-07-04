@@ -192,7 +192,10 @@
             let res = document.getElementById('rdo-' + m.id).value;
             let adv = document.getElementById('pass-' + m.id).value;
 
-            if (hInput === "" || aInput === "") continue; 
+           if (hInput === "" || aInput === "") {
+    alert(`Te falta llenar el partido ${m.home} vs ${m.away}`);
+    return; // Detiene el proceso y no envía nada
+}
 
             let hScore = parseInt(hInput);
             let aScore = parseInt(aInput);
