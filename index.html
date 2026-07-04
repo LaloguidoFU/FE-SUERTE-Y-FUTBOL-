@@ -109,25 +109,37 @@
         document.getElementById('admin-matches-container').innerHTML = admHTML;
     }
 
-    function validateAndSave() {
+  function validateAndSave() {
         for (let m of matches) {
+            let hInput = document.getElementById('home-' + m.id).value;
+            let aInput = document.getElementById('away-' + m.id).value;
             let res = document.getElementById('rdo-' + m.id).value;
             let adv = document.getElementById('pass-' + m.id).value;
-            let hScore = parseInt(document.getElementById('home-' + m.id).value);
-            let aScore = parseInt(document.getElementById('away-' + m.id).value);
 
-            if (isNaN(hScore) || isNaN(aScore) || hScore < 0 || aScore < 0) {
-                return alert(`¡Error en ${m.home} vs ${m.away}! Debes poner marcadores válidos.`);
+            // 1. Validar que no estén vacíos
+            if (hInput === "" || aInput === "") {
+                return alert(`¡Error en ${m.home} vs ${m.away}! Debes llenar ambos marcadores.`);
             }
+
+            let hScore = parseInt(hInput);
+            let aScore = parseInt(aInput);
+
+            // 2. Validar que sean números positivos
+            if (isNaN(hScore) || isNaN(aScore) || hScore < 0 || aScore < 0) {
+                return alert(`¡Error en ${m.home} vs ${m.away}! Debes ingresar números positivos.`);
+            }
+
+            // 3. Validar congruencia Marcador vs Resultado (L/E/V)
             if (res === 'L' && hScore <= aScore) return alert(`¡Incongruencia en ${m.home} vs ${m.away}! Elegiste Local, pero el marcador no refleja victoria local.`);
             if (res === 'V' && aScore <= hScore) return alert(`¡Incongruencia en ${m.home} vs ${m.away}! Elegiste Visita, pero el marcador no refleja victoria visitante.`);
             if (res === 'E' && hScore !== aScore) return alert(`¡Incongruencia en ${m.home} vs ${m.away}! Elegiste Empate, pero el marcador no es igual.`);
+
+            // 4. Validar consistencia con el equipo que avanza
             if (res === 'L' && adv !== m.home) return alert(`¡Error! Elegiste Local (L) pero ${adv} no es el local.`);
             if (res === 'V' && adv !== m.away) return alert(`¡Error! Elegiste Visita (V) pero ${adv} no es el visitante.`);
         }
         savePrediction();
     }
-
     function calculateScore(p) {
         let scores = { total: 0, advance: 0, outcome: 0, scoreline: 0 };
         matches.forEach(m => {
