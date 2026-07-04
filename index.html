@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -33,7 +32,6 @@
         
         .submit-btn { width: 100%; padding: 15px; background: var(--green); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px; margin-top: 10px; }
 
-        /* Modal Styles */
         #modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:1000; padding:20px; align-items:center; justify-content:center; }
         .modal-content { background:white; padding:20px; border-radius:12px; max-width:500px; width:100%; max-height:80vh; overflow-y:auto; }
     </style>
@@ -72,6 +70,16 @@
         <button class="submit-btn" onclick="validateAndSave()">Enviar WhatsApp</button>
     </div>
 
+    <div id="panel-reglas" class="panel">
+        <h3>Reglas de la Quiniela</h3>
+        <ul style="padding: 20px; line-height: 1.8;">
+            <li><b>Costo de inscripción:</b> $150 MXN.</li>
+            <li><b>Ganador:</b> El participante con más puntos acumulados al finalizar los partidos.</li>
+            <li><b>Empates:</b> En caso de haber más de un participante empatado en el primer lugar, el premio total se repartirá equitativamente entre ellos.</li>
+            <li><b>Validación:</b> Todos los marcadores deben ser números positivos y congruentes con el resultado seleccionado.</li>
+        </ul>
+    </div>
+
     <div id="panel-admin" class="panel">
         <input type="password" id="admin-pass" placeholder="Contraseña..." style="width:100%; padding:10px; margin-bottom:10px;">
         <button onclick="verifyAdmin()" style="width:100%; padding:10px;">Verificar</button>
@@ -82,7 +90,6 @@
     </div>
 </div>
 
-<!-- Modal para ver pronósticos -->
 <div id="modal">
     <div class="modal-content">
         <h2 id="modal-title" style="margin-bottom:15px;">Pronósticos</h2>
@@ -103,21 +110,7 @@
         {id:8, home:"Suiza", away:"Colombia"}
     ];
 
-let participants = JSON.parse(localStorage.getItem('q_cuartos_players')) || [
-    {
-        "name": "PRUEBA",
-        "predictions": {
-            "1": {"homeScore": 1, "awayScore": 2, "result": "V", "advance": "Francia"},
-            "2": {"homeScore": 1, "awayScore": 2, "result": "V", "advance": "Marruecos"},
-            "3": {"homeScore": 1, "awayScore": 2, "result": "V", "advance": "Noruega"},
-            "4": {"homeScore": 2, "awayScore": 1, "result": "L", "advance": "México"},
-            "5": {"homeScore": 1, "awayScore": 2, "result": "V", "advance": "España"},
-            "6": {"homeScore": 1, "awayScore": 2, "result": "V", "advance": "Bélgica"},
-            "7": {"homeScore": 1, "awayScore": 2, "result": "V", "advance": "Egipto"},
-            "8": {"homeScore": 1, "awayScore": 2, "result": "V", "advance": "Colombia"}
-        }
-    }
-];
+    let participants = JSON.parse(localStorage.getItem('q_cuartos_players')) || [];
     let officialResults = JSON.parse(localStorage.getItem('q_cuartos_official')) || {};
 
     window.onload = () => { initForms(); renderLeaderboard(); };
@@ -148,7 +141,7 @@ let participants = JSON.parse(localStorage.getItem('q_cuartos_players')) || [
             let res = document.getElementById('rdo-' + m.id).value;
             let adv = document.getElementById('pass-' + m.id).value;
 
-            if (hInput === "" || aInput === "") continue; // Permite saltar vacíos si se desea
+            if (hInput === "" || aInput === "") continue; 
 
             let hScore = parseInt(hInput);
             let aScore = parseInt(aInput);
@@ -214,12 +207,8 @@ let participants = JSON.parse(localStorage.getItem('q_cuartos_players')) || [
     function closeModal() { document.getElementById('modal').style.display = 'none'; }
 
     function showRules() {
-        // Desactivar todos los botones de las pestañas
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        // Ocultar todos los paneles
         document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-        
-        // Mostrar el panel de reglas
         document.getElementById('panel-reglas').classList.add('active');
     }
 
