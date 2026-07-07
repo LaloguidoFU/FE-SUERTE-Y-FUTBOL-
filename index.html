@@ -31,6 +31,13 @@
         .match-played {
     background-color: #cfe2f3 !important; /* Azul claro */
     font-weight: bold;
+    
+    /* Estilos para el popup del ganador */
+.winner-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; justify-content: center; align-items: center; }
+.winner-card { background: white; padding: 30px; border-radius: 20px; text-align: center; box-shadow: 0 0 20px rgba(0,0,0,0.5); max-width: 350px; width: 90%; }
+.winner-card h1 { color: #1e3a8a; margin: 15px 0; }
+.btn-close { background: #22c55e; color: white; border: none; padding: 10px 25px; border-radius: 8px; cursor: pointer; font-weight: bold; }
+
 }
 
 .result-badge {
@@ -623,7 +630,8 @@ let participants = JSON.parse(localStorage.getItem('q_cuartos_players_v2')) || [
         "4": {"homeScore": 2, "awayScore": 3, "result": "V", "advance": "Inglaterra"},
        "5": {"homeScore": 0, "awayScore": 1, "result": "V", "advance": "España"},
        "6": {"homeScore": 1, "awayScore": 4, "result": "V", "advance": "Bélgica"},
-      "7": {"homeScore": 3, "awayScore": 2, "result": "L", "advance": "Argentina"}
+      "7": {"homeScore": 3, "awayScore": 2, "result": "L", "advance": "Argentina"},
+     "8": {"homeScore": 0, "awayScore": 0, "result": "L", "advance": "Suiza"}
 
 
 
@@ -775,6 +783,24 @@ let participants = JSON.parse(localStorage.getItem('q_cuartos_players_v2')) || [
     }
     
     function verifyAdmin() { if(document.getElementById('admin-pass').value === "1234") document.getElementById('admin-content').style.display = 'block'; }
+    
+    // Mostrar mensaje del ganador al cargar
+window.addEventListener('load', () => {
+    setTimeout(() => {
+        document.getElementById('winnerPopup').style.display = 'flex';
+    }, 1000); 
+});
+
 </script>
+
+<div id="winnerPopup" class="winner-overlay">
+    <div class="winner-card">
+        <h2>🏆 ¡HABEMUS GANADOR! 🏆</h2>
+        <p>El campeón de esta quiniela es:</p>
+        <h1>ARELLANO</h1>
+        <button class="btn-close" onclick="document.getElementById('winnerPopup').style.display='none'">¡Felicidades!</button>
+    </div>
+</div>
+
 </body>
 </html>
