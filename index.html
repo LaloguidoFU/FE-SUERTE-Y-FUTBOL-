@@ -1,806 +1,106 @@
-
-
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Quiniela Pro - Cuartos</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiniela Final</title>
     <style>
-        :root { --primary: #1e3a8a; --primary-light: #3b82f6; --bg: #f8fafc; --green: #22c55e; --border: #e2e8f0; }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-        body { background-color: var(--bg); padding: 10px; font-size: 16px; }
-        .container { width: 100%; max-width: 600px; margin: 0 auto; }
-        header { text-align: center; margin-bottom: 20px; padding: 15px; background: var(--primary); color: white; border-radius: 12px; }
-        
-        .tabs { display: flex; gap: 5px; margin-bottom: 15px; }
-        .tab-btn { flex: 1; padding: 12px; border: none; border-radius: 8px; background: #cbd5e1; cursor: pointer; font-weight: bold; font-size: 14px; }
-        .tab-btn.active { background: var(--primary-light); color: white; }
-
-        .panel { display: none; background: white; padding: 15px; border-radius: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .panel.active { display: block; }
-
-        .table-container { width: 100%; overflow-x: auto; }
-        table { width: 100%; font-size: 13px; border-collapse: collapse; margin-top: 10px; min-width: 400px; }
-        th, td { padding: 10px 5px; text-align: center; border-bottom: 1px solid var(--border); }
-        .hit { background-color: #dcfce7; color: #166534; font-weight: bold; }
-        .miss { background-color: #fee2e2; color: #991b1b; }
-        .btn-view { background: var(--primary); color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; }
-        
-        .match-played {
-    background-color: #cfe2f3 !important; /* Azul claro */
-    font-weight: bold;
-    
-    /* Estilos para el popup del ganador */
-.winner-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; justify-content: center; align-items: center; }
-.winner-card { background: white; padding: 30px; border-radius: 20px; text-align: center; box-shadow: 0 0 20px rgba(0,0,0,0.5); max-width: 350px; width: 90%; }
-.winner-card h1 { color: #1e3a8a; margin: 15px 0; }
-.btn-close { background: #22c55e; color: white; border: none; padding: 10px 25px; border-radius: 8px; cursor: pointer; font-weight: bold; }
-
-}
-
-.result-badge {
-    background-color: #0d6efd;
-    color: white;
-    padding: 2px 5px;
-    border-radius: 4px;
-    font-size: 0.8em;
-    margin-left: 5px;
-}
-
-
-        .match-card { padding: 15px; border: 1px solid var(--border); border-radius: 12px; margin-bottom: 15px; background: #fff; }
-        .teams-row { display: flex; justify-content: space-between; font-weight: bold; margin-bottom: 10px; font-size: 15px; }
-        .controls-row { display: flex; gap: 5px; flex-wrap: wrap; justify-content: center; align-items: center; }
-        .score-input { width: 50px; padding: 10px; text-align: center; border: 1px solid #ccc; border-radius: 6px; font-size: 16px; }
-        select { padding: 10px; border-radius: 6px; font-size: 14px; border: 1px solid #ccc; }
-        
-        .submit-btn { width: 100%; padding: 15px; background: var(--green); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px; margin-top: 10px; }
-
-        #modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:1000; padding:20px; align-items:center; justify-content:center; }
-        .modal-content { background:white; padding:20px; border-radius:12px; max-width:500px; width:100%; max-height:80vh; overflow-y:auto; }
+        :root { --primary: #1e3a8a; --green: #22c55e; --error: #dc2626; --bg: #f8fafc; }
+        body { font-family: sans-serif; background: var(--bg); padding: 10px; }
+        .container { max-width: 600px; margin: 0 auto; background: white; padding: 20px; border-radius: 12px; }
+        .question { margin-bottom: 20px; padding: 15px; border: 1px solid #e2e8f0; border-radius: 8px; }
+        .btn-submit { width: 100%; padding: 15px; background: var(--green); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        table { width: 100%; font-size: 12px; border-collapse: collapse; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+        .hit { background: #dcfce7; }
+        .miss { background: #fee2e2; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <header>
-        <h1>🏆 Quiniela: Cuartos</h1>
-       
-    </header>
-
-    <div class="tabs">
-        <button class="tab-btn active" onclick="switchTab(this, 'tabla')">📊 Tabla</button>
-        <button class="tab-btn" onclick="switchTab(this, 'registro')">📝 Registro</button>
-        <button class="tab-btn" onclick="switchTab(this, 'admin')">⚙️ Admin</button>
-    </div>
-
-    <div style="background: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
-    <h3 style="margin-bottom: 15px; color: #1e3a8a; text-align: center;">📜 Reglas de la Quiniela</h3>
-    <ul style="padding-left: 20px; line-height: 1.6;">
-        <li style="margin-bottom: 10px;"><strong>💰 Inscripción:</strong> El costo es de <strong>$150 MXN</strong> por participante.</li>
-        
-        <li style="margin-bottom: 10px;"><strong>🎯 Sistema de Puntos:</strong>
-            <ul style="padding-left: 20px; margin-top: 5px; color: #475569;">
-                <li>+1 punto por acertar el equipo que clasifica.</li>
-                <li>+2 puntos por acertar el resultado en tiempo regular (Local, Empate o Visita).</li>
-                <li>+3 puntos por acertar el marcador exacto (tiempo regular).</li>
-            </ul>
-        </li>
-
-        <li style="margin-bottom: 10px;"><strong>🏆 Desempate:</strong> En caso de empate en el primer lugar, el premio se repartirá equitativamente entre los ganadores.</li>
-        
-        <li style="margin-bottom: 10px;"><strong>⚠️ Validación:</strong> Los marcadores deben ser números positivos y congruentes con el resultado seleccionado.</li>
-    </ul>
-</div>
-
-    <div id="panel-tabla" class="panel active">
-        <div class="table-container">
-            <table id="leaderboard">
-                <thead>
-                    <tr><th>Participante</th><th>Total</th><th>Clasifica 4tos</th><th>Resultado 90'</th><th>Marcador 90'</th><th>Acción</th></tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-        </div>
-    </div>
-
-    <div id="panel-registro" class="panel">
-        <input type="text" id="player-name" placeholder="Tu nombre..." style="width:100%; padding:12px; margin-bottom:15px; font-size:16px; border:1px solid #ccc; border-radius:8px;">
-        <div id="matches-form-container"></div>
-        <button class="submit-btn" onclick="validateAndSave()">Enviar WhatsApp</button>
-    </div>
-
-    <div id="panel-reglas" class="panel">
-        <h3>Reglas de la Quiniela</h3>
-        <ul style="padding: 20px; line-height: 1.8;">
-            <li><b>Costo de inscripción:</b> $150 MXN.</li>
-            <li><b>Ganador:</b> El participante con más puntos acumulados al finalizar los partidos.</li>
-            <li><b>Empates:</b> En caso de haber más de un participante empatado en el primer lugar, el premio total se repartirá equitativamente entre ellos.</li>
-            <li><b>Validación:</b> Todos los marcadores deben ser números positivos y congruentes con el resultado seleccionado.</li>
-        </ul>
-    </div>
-
-    <div id="panel-admin" class="panel">
-        <input type="password" id="admin-pass" placeholder="Contraseña..." style="width:100%; padding:10px; margin-bottom:10px;">
-        <button onclick="verifyAdmin()" style="width:100%; padding:10px;">Verificar</button>
-        <div id="admin-content" style="display:none; margin-top:15px;">
-            <div id="admin-matches-container"></div>
-            <button class="submit-btn" onclick="saveOfficialResults()">Guardar Resultados</button>
-        </div>
-    </div>
-</div>
-
-<div id="modal">
-    <div class="modal-content">
-        <h2 id="modal-title" style="margin-bottom:15px;">Pronósticos</h2>
-        <div id="modal-body"></div>
-        <button class="submit-btn" style="background:#ef4444;" onclick="closeModal()">Cerrar</button>
-    </div>
+    <h1>🏆 Quiniela Final</h1>
+    <div id="form-container"></div>
+    <button class="btn-submit" onclick="submitQuiniela()">Enviar WhatsApp</button>
 </div>
 
 <script>
-    const matches = [
-        {id:1, home:"Paraguay", away:"Francia"},
-        {id:2, home:"Canadá", away:"Marruecos"},
-        {id:3, home:"Brasil", away:"Noruega"},
-        {id:4, home:"México", away:"Inglaterra"},
-        {id:5, home:"Portugal", away:"España"},
-        {id:6, home:"Estados Unidos", away:"Bélgica"},
-        {id:7, home:"Argentina", away:"Egipto"},
-        {id:8, home:"Suiza", away:"Colombia"}
-    ];
+// Estructura de preguntas
+const questions = [
+    {id: 1, text: "Resultado Francia vs Marruecos", type: "select", options: ["Francia", "Empate", "Marruecos"]},
+    {id: 2, text: "Marcador Francia vs Marruecos (ej: 1-0)", type: "text"},
+    {id: 3, text: "Mbappe Anotará", type: "select", options: ["Si", "No"]},
+    {id: 4, text: "Resultado España vs Belgica", type: "select", options: ["España", "Empate", "Belgica"]},
+    {id: 5, text: "Marcador España vs Belgica", type: "text"},
+    {id: 6, text: "Lamine Yamal Anotará", type: "select", options: ["Si", "No"]},
+    {id: 7, text: "Resultado Inglaterra vs Noruega", type: "select", options: ["Inglaterra", "Empate", "Noruega"]},
+    {id: 8, text: "Marcador Inglaterra vs Noruega", type: "text"},
+    {id: 9, text: "Harry Kane Anotará", type: "select", options: ["Si", "No"]},
+    {id: 10, text: "Haland Anotará", type: "select", options: ["Si", "No"]},
+    {id: 11, text: "Resultado Argentina vs Suiza", type: "select", options: ["Argentina", "Empate", "Suiza"]},
+    {id: 12, text: "Marcador Argentina vs Suiza", type: "text"},
+    {id: 13, text: "Messi Anotará", type: "select", options: ["Si", "No"]},
+    {id: 14, text: "1er equipo que avanza (Semi)", type: "select", options: ["Francia", "Marruecos"]},
+    {id: 15, text: "2do equipo que avanza (Semi)", type: "select", options: ["España", "Belgica"]},
+    {id: 16, text: "3er equipo que avanza (Semi)", type: "select", options: ["Inglaterra", "Noruega"]},
+    {id: 17, text: "4to equipo que avanza (Semi)", type: "select", options: ["Argentina", "Suiza"]},
+    {id: 18, text: "Partido 1ra Semifinal", type: "select", options: ["Francia vs Belgica", "Francia vs España", "Marruecos vs España", "Marruecos vs Belgica"]},
+    {id: 19, text: "Partido 2da Semifinal", type: "select", options: ["Inglaterra vs Argentina", "Inglaterra vs Suiza", "Noruega vs Argentina", "Noruega vs Suiza"]},
+    {id: 20, text: "1er Finalista", type: "select", options: ["Francia", "Marruecos", "España", "Belgica"]},
+    {id: 21, text: "2do Finalista", type: "select", options: ["Inglaterra", "Noruega", "Argentina", "Suiza"]},
+    {id: 22, text: "Partido Final", type: "select", options: ["Francia vs Noruega", "Francia vs Argentina", "Marruecos vs Suiza", "etc..."]}, // Abreviado para el ejemplo
+    {id: 23, text: "1er 3er Lugar", type: "select", options: ["Francia", "Marruecos", "España", "Belgica"]},
+    {id: 24, text: "2do 3er Lugar", type: "select", options: ["Inglaterra", "Noruega", "Argentina", "Suiza"]},
+    {id: 25, text: "Partido 3er Lugar", type: "select", options: ["Francia vs Noruega", "Francia vs Argentina", "Marruecos vs Suiza"]},
+    {id: 26, text: "Campeón", type: "select", options: ["Francia", "Marruecos", "España", "Belgica", "Inglaterra", "Noruega", "Argentina", "Suiza"]},
+    {id: 27, text: "Subcampeón", type: "select", options: ["Francia", "Marruecos", "España", "Belgica", "Inglaterra", "Noruega", "Argentina", "Suiza"]},
+    {id: 28, text: "3er Lugar", type: "select", options: ["Francia", "Marruecos", "España", "Belgica", "Inglaterra", "Noruega", "Argentina", "Suiza"]},
+    {id: 29, text: "Máximo Goleador", type: "select", options: ["Messi", "Mbappe", "Haaland", "Kane", "Dembele", "Oyarzabal", "Otro"]}
+];
 
-let participants = JSON.parse(localStorage.getItem('q_cuartos_players_v2')) || [
-    {
-        "name": "Ols",
-        "predictions": {
-            "1": {"homeScore": 0, "awayScore": 2, "result": "V", "advance": "Francia"},
-            "2": {"homeScore": 0, "awayScore": 2, "result": "V", "advance": "Marruecos"},
-            "3": {"homeScore": 2, "awayScore": 1, "result": "L", "advance": "Brasil"},
-            "4": {"homeScore": 2, "awayScore": 0, "result": "L", "advance": "México"},
-            "5": {"homeScore": 2, "awayScore": 1, "result": "L", "advance": "Portugal"},
-            "6": {"homeScore": 2, "awayScore": 2, "result": "E", "advance": "Estados Unidos"},
-            "7": {"homeScore": 1, "awayScore": 1, "result": "E", "advance": "Argentina"},
-            "8": {"homeScore": 0, "awayScore": 3, "result": "V", "advance": "Colombia"}
-        }
-    },
-    {
-        "name": "Luis Carrasco",
-        "predictions": {
-            "1": {"homeScore": 0, "awayScore": 3, "result": "V", "advance": "Francia"},
-            "2": {"homeScore": 1, "awayScore": 2, "result": "V", "advance": "Marruecos"},
-            "3": {"homeScore": 3, "awayScore": 1, "result": "L", "advance": "Brasil"},
-            "4": {"homeScore": 2, "awayScore": 1, "result": "L", "advance": "México"},
-            "5": {"homeScore": 2, "awayScore": 2, "result": "E", "advance": "España"},
-            "6": {"homeScore": 3, "awayScore": 1, "result": "L", "advance": "Estados Unidos"},
-            "7": {"homeScore": 1, "awayScore": 1, "result": "E", "advance": "Egipto"},
-            "8": {"homeScore": 1, "awayScore": 3, "result": "V", "advance": "Colombia"}
-        }
-    },
-    {
-        "name": "Widris",
-        "predictions": {
-            "1": {"homeScore": 0, "awayScore": 2, "result": "V", "advance": "Francia"},
-            "2": {"homeScore": 1, "awayScore": 1, "result": "E", "advance": "Marruecos"},
-            "3": {"homeScore": 2, "awayScore": 1, "result": "L", "advance": "Brasil"},
-            "4": {"homeScore": 1, "awayScore": 1, "result": "E", "advance": "México"},
-            "5": {"homeScore": 1, "awayScore": 2, "result": "V", "advance": "España"},
-            "6": {"homeScore": 2, "awayScore": 0, "result": "L", "advance": "Estados Unidos"},
-            "7": {"homeScore": 2, "awayScore": 0, "result": "L", "advance": "Argentina"},
-            "8": {"homeScore": 0, "awayScore": 1, "result": "V", "advance": "Colombia"}
-        }
-    },
-    {
-        "name": "Daniela",
-        "predictions": {
-            "1": {"homeScore": 1, "awayScore": 4, "result": "V", "advance": "Francia"},
-            "2": {"homeScore": 2, "awayScore": 3, "result": "V", "advance": "Marruecos"},
-            "3": {"homeScore": 2, "awayScore": 2, "result": "E", "advance": "Noruega"},
-            "4": {"homeScore": 3, "awayScore": 2, "result": "L", "advance": "México"},
-            "5": {"homeScore": 2, "awayScore": 2, "result": "E", "advance": "Portugal"},
-            "6": {"homeScore": 2, "awayScore": 3, "result": "V", "advance": "Bélgica"},
-            "7": {"homeScore": 4, "awayScore": 2, "result": "L", "advance": "Argentina"},
-            "8": {"homeScore": 2, "awayScore": 1, "result": "L", "advance": "Suiza"}
-        }
-    },
-        {
-        "name": "Zaid Goodman",
-        "predictions": {
-            "1": {"homeScore": 1, "awayScore": 3, "result": "V", "advance": "Francia"},
-            "2": {"homeScore": 1, "awayScore": 2, "result": "V", "advance": "Marruecos"},
-            "3": {"homeScore": 2, "awayScore": 2, "result": "E", "advance": "Brasil"},
-            "4": {"homeScore": 2, "awayScore": 1, "result": "L", "advance": "México"},
-            "5": {"homeScore": 2, "awayScore": 2, "result": "E", "advance": "Portugal"},
-            "6": {"homeScore": 2, "awayScore": 1, "result": "L", "advance": "Estados Unidos"},
-            "7": {"homeScore": 2, "awayScore": 1, "result": "L", "advance": "Argentina"},
-            "8": {"homeScore": 1, "awayScore": 2, "result": "V", "advance": "Colombia"}
-        }
-    },
-    
-        {
-        "name": "Oliver Atom",
-        "predictions": {
-            "1": {"homeScore": 0, "awayScore": 3, "result": "V", "advance": "Francia"},
-            "2": {"homeScore": 0, "awayScore": 2, "result": "V", "advance": "Marruecos"},
-            "3": {"homeScore": 2, "awayScore": 2, "result": "E", "advance": "Noruega"},
-            "4": {"homeScore": 3, "awayScore": 1, "result": "L", "advance": "México"},
-            "5": {"homeScore": 1, "awayScore": 1, "result": "E", "advance": "Portugal"},
-            "6": {"homeScore": 1, "awayScore": 1, "result": "E", "advance": "Estados Unidos"},
-            "7": {"homeScore": 2, "awayScore": 1, "result": "L", "advance": "Argentina"},
-            "8": {"homeScore": 1, "awayScore": 1, "result": "E", "advance": "Suiza"}
-        }
-    },
-    
-      {
-  "name": "ARELLANO",
-  "predictions": {
-    "1": {
-      "homeScore": 1,
-      "awayScore": 2,
-      "result": "V",
-      "advance": "Francia"
-    },
-    "2": {
-      "homeScore": 2,
-      "awayScore": 1,
-      "result": "L",
-      "advance": "Canadá"
-    },
-    "3": {
-      "homeScore": 2,
-      "awayScore": 3,
-      "result": "V",
-      "advance": "Noruega"
-    },
-    "4": {
-      "homeScore": 2,
-      "awayScore": 3,
-      "result": "V",
-      "advance": "Inglaterra"
-    },
-    "5": {
-      "homeScore": 1,
-      "awayScore": 2,
-      "result": "V",
-      "advance": "España"
-    },
-    "6": {
-      "homeScore": 1,
-      "awayScore": 2,
-      "result": "V",
-      "advance": "Bélgica"
-    },
-    "7": {
-      "homeScore": 2,
-      "awayScore": 1,
-      "result": "L",
-      "advance": "Argentina"
-    },
-    "8": {
-      "homeScore": 3,
-      "awayScore": 2,
-      "result": "L",
-      "advance": "Suiza"
+// Generar Formulario
+const container = document.getElementById('form-container');
+container.innerHTML = `<input type="text" id="username" placeholder="Tu Nombre" style="width:100%; padding:10px; margin-bottom:10px;">`;
+
+questions.forEach(q => {
+    let html = `<div class="question"><label>${q.id}. ${q.text}</label><br>`;
+    if(q.type === 'select') {
+        html += `<select id="q${q.id}"><option value="">Selecciona...</option>`;
+        q.options.forEach(opt => html += `<option value="${opt}">${opt}</option>`);
+        html += `</select>`;
+    } else {
+        html += `<input type="text" id="q${q.id}" placeholder="ej: 1-1">`;
     }
-  }
-},
-{
-  "name": "Mike",
-  "predictions": {
-    "1": {
-      "homeScore": 0,
-      "awayScore": 3,
-      "result": "V",
-      "advance": "Francia"
-    },
-    "2": {
-      "homeScore": 1,
-      "awayScore": 3,
-      "result": "V",
-      "advance": "Marruecos"
-    },
-    "3": {
-      "homeScore": 2,
-      "awayScore": 2,
-      "result": "E",
-      "advance": "Brasil"
-    },
-    "4": {
-      "homeScore": 1,
-      "awayScore": 1,
-      "result": "E",
-      "advance": "México"
-    },
-    "5": {
-      "homeScore": 2,
-      "awayScore": 2,
-      "result": "E",
-      "advance": "Portugal"
-    },
-    "6": {
-      "homeScore": 2,
-      "awayScore": 3,
-      "result": "V",
-      "advance": "Bélgica"
-    },
-    "7": {
-      "homeScore": 3,
-      "awayScore": 0,
-      "result": "L",
-      "advance": "Argentina"
-    },
-    "8": {
-      "homeScore": 1,
-      "awayScore": 2,
-      "result": "V",
-      "advance": "Colombia"
-    }
-  }
-},
-{
-  "name": "Reyna",
-  "predictions": {
-    "1": {
-      "homeScore": 1,
-      "awayScore": 3,
-      "result": "V",
-      "advance": "Francia"
-    },
-    "2": {
-      "homeScore": 1,
-      "awayScore": 2,
-      "result": "V",
-      "advance": "Marruecos"
-    },
-    "3": {
-      "homeScore": 2,
-      "awayScore": 2,
-      "result": "E",
-      "advance": "Brasil"
-    },
-    "4": {
-      "homeScore": 2,
-      "awayScore": 1,
-      "result": "L",
-      "advance": "México"
-    },
-    "5": {
-      "homeScore": 2,
-      "awayScore": 3,
-      "result": "V",
-      "advance": "España"
-    },
-    "6": {
-      "homeScore": 2,
-      "awayScore": 3,
-      "result": "V",
-      "advance": "Bélgica"
-    },
-    "7": {
-      "homeScore": 3,
-      "awayScore": 1,
-      "result": "L",
-      "advance": "Argentina"
-    },
-    "8": {
-      "homeScore": 2,
-      "awayScore": 1,
-      "result": "L",
-      "advance": "Suiza"
-    }
-  }
-},
-
-
-{
-  "name": "Zangas ",
-  "predictions": {
-    "1": {
-      "homeScore": 0,
-      "awayScore": 3,
-      "result": "V",
-      "advance": "Francia"
-    },
-    "2": {
-      "homeScore": 1,
-      "awayScore": 1,
-      "result": "E",
-      "advance": "Canadá"
-    },
-    "3": {
-      "homeScore": 2,
-      "awayScore": 1,
-      "result": "L",
-      "advance": "Brasil"
-    },
-    "4": {
-      "homeScore": 2,
-      "awayScore": 1,
-      "result": "L",
-      "advance": "México"
-    },
-    "5": {
-      "homeScore": 1,
-      "awayScore": 1,
-      "result": "E",
-      "advance": "Portugal"
-    },
-    "6": {
-      "homeScore": 2,
-      "awayScore": 1,
-      "result": "L",
-      "advance": "Estados Unidos"
-    },
-    "7": {
-      "homeScore": 2,
-      "awayScore": 0,
-      "result": "L",
-      "advance": "Argentina"
-    },
-    "8": {
-      "homeScore": 1,
-      "awayScore": 1,
-      "result": "E",
-      "advance": "Suiza"
-    }
-  }
-},
-
-
-{
-  "name": "Gina campeona ",
-  "predictions": {
-    "1": {
-      "homeScore": 2,
-      "awayScore": 3,
-      "result": "V",
-      "advance": "Francia"
-    },
-    "2": {
-      "homeScore": 1,
-      "awayScore": 2,
-      "result": "V",
-      "advance": "Marruecos"
-    },
-    "3": {
-      "homeScore": 1,
-      "awayScore": 2,
-      "result": "V",
-      "advance": "Noruega"
-    },
-    "4": {
-      "homeScore": 1,
-      "awayScore": 1,
-      "result": "E",
-      "advance": "México"
-    },
-    "5": {
-      "homeScore": 2,
-      "awayScore": 1,
-      "result": "L",
-      "advance": "Portugal"
-    },
-    "6": {
-      "homeScore": 2,
-      "awayScore": 1,
-      "result": "L",
-      "advance": "Estados Unidos"
-    },
-    "7": {
-      "homeScore": 2,
-      "awayScore": 1,
-      "result": "L",
-      "advance": "Argentina"
-    },
-    "8": {
-      "homeScore": 0,
-      "awayScore": 1,
-      "result": "V",
-      "advance": "Colombia"
-    }
-  }
-},
-
-
-    
-        {
-        "name": "Chuma",
-        "predictions": {
-            "1": {"homeScore": 0, "awayScore": 2, "result": "V", "advance": "Francia"},
-            "2": {"homeScore": 1, "awayScore": 2, "result": "V", "advance": "Marruecos"},
-            "3": {"homeScore": 2, "awayScore": 2, "result": "E", "advance": "Noruega"},
-            "4": {"homeScore": 2, "awayScore": 1, "result": "L", "advance": "México"},
-            "5": {"homeScore": 2, "awayScore": 3, "result": "V", "advance": "España"},
-            "6": {"homeScore": 1, "awayScore": 2, "result": "V", "advance": "Bélgica"},
-            "7": {"homeScore": 3, "awayScore": 1, "result": "L", "advance": "Argentina"},
-            "8": {"homeScore": 1, "awayScore": 1, "result": "E", "advance": "Colombia"}
-        }
-    },
-        {
-        "name": "Alejandra",
-        "predictions": {
-            "1": {"homeScore": 2, "awayScore": 3, "result": "V", "advance": "Francia"},
-            "2": {"homeScore": 1, "awayScore": 1, "result": "E", "advance": "Marruecos"},
-            "3": {"homeScore": 1, "awayScore": 2, "result": "V", "advance": "Noruega"},
-            "4": {"homeScore": 2, "awayScore": 1, "result": "L", "advance": "México"},
-            "5": {"homeScore": 1, "awayScore": 2, "result": "V", "advance": "España"},
-            "6": {"homeScore": 2, "awayScore": 1, "result": "L", "advance": "Estados Unidos"},
-            "7": {"homeScore": 2, "awayScore": 2, "result": "E", "advance": "Egipto"},
-            "8": {"homeScore": 2, "awayScore": 2, "result": "E", "advance": "Colombia"}
-        }
-    },
-    
-    {
-        "name": "Becerro",
-        "predictions": {
-            "1": {"homeScore": 0, "awayScore": 3, "result": "V", "advance": "Francia"},
-            "2": {"homeScore": 1, "awayScore": 2, "result": "V", "advance": "Marruecos"},
-            "3": {"homeScore": 2, "awayScore": 0, "result": "L", "advance": "Noruega"},
-            "4": {"homeScore": 1, "awayScore": 0, "result": "L", "advance": "México"},
-            "5": {"homeScore": 1, "awayScore": 1, "result": "E", "advance": "Portugal"},
-            "6": {"homeScore": 1, "awayScore": 2, "result": "V", "advance": "Bélgica"},
-            "7": {"homeScore": 3, "awayScore": 0, "result": "L", "advance": "Argentina"},
-            "8": {"homeScore": 0, "awayScore": 1, "result": "V", "advance": "Colombia"}
-        }
-    },
-        {
-        "name": "Cachus",
-        "predictions": {
-            "1": {"homeScore": 0, "awayScore": 2, "result": "V", "advance": "Francia"},
-            "2": {"homeScore": 2, "awayScore": 1, "result": "L", "advance": "Canadá"},
-            "3": {"homeScore": 2, "awayScore": 1, "result": "L", "advance": "Brasil"},
-            "4": {"homeScore": 2, "awayScore": 0, "result": "L", "advance": "México"},
-            "5": {"homeScore": 1, "awayScore": 2, "result": "V", "advance": "España"},
-            "6": {"homeScore": 1, "awayScore": 2, "result": "V", "advance": "Bélgica"},
-            "7": {"homeScore": 2, "awayScore": 1, "result": "L", "advance": "Argentina"},
-            "8": {"homeScore": 1, "awayScore": 2, "result": "V", "advance": "Colombia"}
-        }
-    },
-    
-        {
-        "name": "Cokirris",
-        "predictions": {
-            "1": {"homeScore": 1, "awayScore": 2, "result": "V", "advance": "Francia"},
-            "2": {"homeScore": 1, "awayScore": 2, "result": "V", "advance": "Marruecos"},
-            "3": {"homeScore": 2, "awayScore": 3, "result": "V", "advance": "Noruega"},
-            "4": {"homeScore": 2, "awayScore": 1, "result": "L", "advance": "México"},
-            "5": {"homeScore": 2, "awayScore": 1, "result": "L", "advance": "Portugal"},
-            "6": {"homeScore": 2, "awayScore": 0, "result": "L", "advance": "Estados Unidos"},
-            "7": {"homeScore": 2, "awayScore": 2, "result": "E", "advance": "Argentina"},
-            "8": {"homeScore": 2, "awayScore": 2, "result": "E", "advance": "Colombia"}
-        }
-    },
-    
-        {
-        "name": "OSA MAYORA ",
-        "predictions": {
-            "1": {"homeScore": 1, "awayScore": 2, "result": "V", "advance": "Francia"},
-            "2": {"homeScore": 2, "awayScore": 2, "result": "E", "advance": "Canadá"},
-            "3": {"homeScore": 1, "awayScore": 3, "result": "V", "advance": "Noruega"},
-            "4": {"homeScore": 1, "awayScore": 0, "result": "L", "advance": "México"},
-            "5": {"homeScore": 3, "awayScore": 1, "result": "L", "advance": "Portugal"},
-            "6": {"homeScore": 2, "awayScore": 1, "result": "L", "advance": "Estados Unidos"},
-            "7": {"homeScore": 2, "awayScore": 1, "result": "L", "advance": "Argentina"},
-            "8": {"homeScore": 2, "awayScore": 2, "result": "E", "advance": "Colombia"}
-        }
-    },
-    
-        {
-        "name": "Miriam ",
-        "predictions": {
-            "1": {"homeScore": 1, "awayScore": 3, "result": "V", "advance": "Francia"},
-            "2": {"homeScore": 1, "awayScore": 2, "result": "V", "advance": "Marruecos"},
-            "3": {"homeScore": 2, "awayScore": 2, "result": "E", "advance": "Brasil"},
-            "4": {"homeScore": 2, "awayScore": 1, "result": "L", "advance": "México"},
-            "5": {"homeScore": 1, "awayScore": 3, "result": "V", "advance": "España"},
-            "6": {"homeScore": 2, "awayScore": 0, "result": "L", "advance": "Estados Unidos"},
-            "7": {"homeScore": 3, "awayScore": 1, "result": "L", "advance": "Argentina"},
-            "8": {"homeScore": 1, "awayScore": 1, "result": "E", "advance": "Colombia"}
-        }
-    },
-        {
-        "name": "Cristian Dior ",
-        "predictions": {
-            "1": {"homeScore": 0, "awayScore": 4, "result": "V", "advance": "Francia"},
-            "2": {"homeScore": 1, "awayScore": 3, "result": "V", "advance": "Marruecos"},
-            "3": {"homeScore": 1, "awayScore": 2, "result": "V", "advance": "Noruega"},
-            "4": {"homeScore": 2, "awayScore": 1, "result": "L", "advance": "México"},
-            "5": {"homeScore": 0, "awayScore": 2, "result": "V", "advance": "España"},
-            "6": {"homeScore": 0, "awayScore": 2, "result": "V", "advance": "Bélgica"},
-            "7": {"homeScore": 3, "awayScore": 1, "result": "L", "advance": "Argentina"},
-            "8": {"homeScore": 0, "awayScore": 2, "result": "V", "advance": "Colombia"}
-        }
-    }
-
-
-
-
-
-
-
-
-
-
-];    let officialResults = JSON.parse(localStorage.getItem('q_cuartos_official')) || {
-        "1": {"homeScore": 0, "awayScore": 1, "result": "V", "advance": "Francia"},
-        "2": {"homeScore": 0, "awayScore": 3, "result": "V", "advance": "Marruecos"},
-        "3": {"homeScore": 1, "awayScore": 2, "result": "V", "advance": "Noruega"},
-        "4": {"homeScore": 2, "awayScore": 3, "result": "V", "advance": "Inglaterra"},
-       "5": {"homeScore": 0, "awayScore": 1, "result": "V", "advance": "España"},
-       "6": {"homeScore": 1, "awayScore": 4, "result": "V", "advance": "Bélgica"},
-      "7": {"homeScore": 3, "awayScore": 2, "result": "L", "advance": "Argentina"},
-     "8": {"homeScore": 0, "awayScore": 0, "result": "L", "advance": "Suiza"}
-
-
-
-
-        
-    };
-
-    window.onload = () => { initForms(); renderLeaderboard(); };
-
-    function initForms() {
-        let regHTML = '', admHTML = '';
-        matches.forEach(m => {
-            regHTML += `
-                <div class="match-card">
-                    <div class="teams-row"><span>${m.home}</span> vs <span>${m.away}</span></div>
-                    <div class="controls-row">
-                        <input type="number" class="score-input" id="home-${m.id}" placeholder="-" min="0">
-                        <input type="number" class="score-input" id="away-${m.id}" placeholder="-" min="0">
-                        <select id="rdo-${m.id}"><option value="L">Local</option><option value="E">Empate</option><option value="V">Visita</option></select>
-                        <select id="pass-${m.id}"><option value="${m.home}">${m.home}</option><option value="${m.away}">${m.away}</option></select>
-                    </div>
-                </div>`;
-            admHTML += `<div class="match-card">${m.home} vs ${m.away} <br> <input type="number" id="adm-home-${m.id}" style="width:40px;"> - <input type="number" id="adm-away-${m.id}" style="width:40px;"> <select id="adm-rdo-${m.id}"><option value="L">L</option><option value="E">E</option><option value="V">V</option></select> <select id="adm-pass-${m.id}"><option value="${m.home}">${m.home}</option><option value="${m.away}">${m.away}</option></select></div>`;
-        });
-        document.getElementById('matches-form-container').innerHTML = regHTML;
-        document.getElementById('admin-matches-container').innerHTML = admHTML;
-    }
-
-    function validateAndSave() {
-        for (let m of matches) {
-            let hInput = document.getElementById('home-' + m.id).value;
-            let aInput = document.getElementById('away-' + m.id).value;
-            let res = document.getElementById('rdo-' + m.id).value;
-            let adv = document.getElementById('pass-' + m.id).value;
-
-           if (hInput === "" || aInput === "") {
-    alert(`Te falta llenar el partido ${m.home} vs ${m.away}`);
-    return; // Detiene el proceso y no envía nada
-}
-
-            let hScore = parseInt(hInput);
-            let aScore = parseInt(aInput);
-
-            if (isNaN(hScore) || isNaN(aScore) || hScore < 0 || aScore < 0) return alert(`¡Error en ${m.home} vs ${m.away}!`);
-            if (res === 'L' && hScore <= aScore) return alert(`Incongruencia L en ${m.home} vs ${m.away}`);
-            if (res === 'V' && aScore <= hScore) return alert(`Incongruencia V en ${m.home} vs ${m.away}`);
-            if (res === 'E' && hScore !== aScore) return alert(`Incongruencia E en ${m.home} vs ${m.away}`);
-        }
-        savePrediction();
-    }
-
-    function calculateScore(p) {
-        let scores = { total: 0, advance: 0, outcome: 0, scoreline: 0 };
-        matches.forEach(m => {
-            let o = officialResults[m.id];
-            let pred = p.predictions[m.id];
-            if (!o || !pred) return;
-            if(pred.advance === o.advance) scores.advance += 1;
-            if(pred.result === o.result) scores.outcome += 2;
-            if(pred.homeScore === o.homeScore && pred.awayScore === o.awayScore) scores.scoreline += 3;
-        });
-        scores.total = scores.advance + scores.outcome + scores.scoreline;
-        return scores;
-    }
-
-    function renderLeaderboard() {
-        const tbody = document.querySelector('#leaderboard tbody');
-        tbody.innerHTML = '';
-        participants.forEach((p, index) => {
-            let s = calculateScore(p);
-            tbody.innerHTML += `<tr>
-                <td>${p.name}</td><td><b>${s.total}</b></td>
-               <td class="${s.advance > 0 ? 'hit' : 'miss'}">${s.advance}</td>
-<td class="${s.outcome > 0 ? 'hit' : 'miss'}">${s.outcome}</td>
-<td class="${s.scoreline > 0 ? 'hit' : 'miss'}">${s.scoreline}</td>
-                <td><button class="btn-view" onclick="viewDetails(${index})">Ver</button></td>
-            </tr>`;
-        });
-    }
-
-    function viewDetails(index) {
-        const p = participants[index];
-        const modal = document.getElementById('modal');
-        const body = document.getElementById('modal-body');
-        document.getElementById('modal-title').innerText = "Pronósticos de " + p.name;
-        
-        let html = '<div style="font-size:14px;">';
-        matches.forEach(m => {
-            let pred = p.predictions[m.id];
-            if(pred) {
-                html += `<div style="padding:5px 0; border-bottom:1px solid #eee;">
-                    <b>${m.home} ${pred.homeScore}-${pred.awayScore} ${m.away}</b><br>
-                    Resultado : ${pred.result} | Pase: ${pred.advance}
-                </div>`;
-            }
-        });
-        html += '</div>';
-        body.innerHTML = html;
-        modal.style.display = 'flex';
-    }
-
-    function closeModal() { document.getElementById('modal').style.display = 'none'; }
-
-    function showRules() {
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-        document.getElementById('panel-reglas').classList.add('active');
-    }
-
-    function savePrediction() {
-        const name = document.getElementById('player-name').value;
-        if(!name) return alert('Pon tu nombre');
-        let preds = {};
-        matches.forEach(m => {
-            let h = document.getElementById('home-'+m.id).value;
-            let a = document.getElementById('away-'+m.id).value;
-            if(h !== "" && a !== "") {
-                preds[m.id] = {
-                    homeScore: parseInt(h),
-                    awayScore: parseInt(a),
-                    result: document.getElementById('rdo-'+m.id).value,
-                    advance: document.getElementById('pass-'+m.id).value
-                };
-            }
-        });
-        let data = btoa(JSON.stringify({name, predictions: preds}));
-        window.open(`https://api.whatsapp.com/send?phone=5215546879724&text=Mi código es: ${data}`);
-    }
-
-    function saveOfficialResults() {
-        matches.forEach(m => {
-            officialResults[m.id] = {
-                homeScore: parseInt(document.getElementById('adm-home-'+m.id).value) || 0,
-                awayScore: parseInt(document.getElementById('adm-away-'+m.id).value) || 0,
-                result: document.getElementById('adm-rdo-'+m.id).value,
-                advance: document.getElementById('adm-pass-'+m.id).value
-            };
-        });
-        localStorage.setItem('q_cuartos_official', JSON.stringify(officialResults));
-        renderLeaderboard();
-        alert('Resultados guardados');
-    }
-
-    function switchTab(btn, t) {
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-        document.getElementById(`panel-${t}`).classList.add('active');
-    }
-    
-    function verifyAdmin() { if(document.getElementById('admin-pass').value === "1234") document.getElementById('admin-content').style.display = 'block'; }
-    
-    // Mostrar mensaje del ganador al cargar
-window.addEventListener('load', () => {
-    setTimeout(() => {
-        document.getElementById('winnerPopup').style.display = 'flex';
-    }, 1000); 
+    html += `</div>`;
+    container.innerHTML += html;
 });
 
+function validateLogic(answers) {
+    // Ejemplo de validación: Congruencia de Semifinalistas (Q14 debe coincidir con Q1)
+    // Esto es un ejemplo, debes expandir esta lógica según tus requerimientos exactos
+    if(answers.q1 === "Francia" && answers.q14 !== "Francia" && answers.q14 !== "Marruecos") {
+         // Lógica simplificada
+    }
+    // Retorna true si es válido
+    return true; 
+}
+
+function submitQuiniela() {
+    let answers = { name: document.getElementById('username').value };
+    if(!answers.name) return alert("Pon tu nombre");
+    
+    questions.forEach(q => {
+        answers['q'+q.id] = document.getElementById('q'+q.id).value;
+    });
+
+    if(!validateLogic(answers)) {
+        alert("Hay incongruencia en tus pronósticos, revisa las reglas de los equipos que avanzan.");
+        return;
+    }
+
+    let data = btoa(JSON.stringify(answers));
+    window.open(`https://api.whatsapp.com/send?phone=5215546879724&text=Mis pronósticos: ${data}`);
+}
 </script>
-
-<div id="winnerPopup" class="winner-overlay">
-    <div class="winner-card">
-        <h2>🏆 ¡HABEMUS GANADOR! 🏆</h2>
-        <p>El campeón de esta quiniela es:</p>
-        <h1>ARELLANO</h1>
-        <button class="btn-close" onclick="document.getElementById('winnerPopup').style.display='none'">¡Felicidades!</button>
-    </div>
-</div>
-
 </body>
 </html>
