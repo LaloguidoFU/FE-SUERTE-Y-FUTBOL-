@@ -46,14 +46,11 @@
 
 <script>
 /* --- AQUÍ ES DONDE REGISTRAS LOS RESULTADOS MANUALMENTE --- */
-/* Solo tienes que editar este objeto con los resultados oficiales al terminar los partidos */
 const resultadosReales = {
     // Ejemplo: "q1": "Francia", "q2": "1-1"
-    // Cuando termine un partido, escribe el resultado aquí abajo:
-    // "q1": "Francia" 
 };
 
-/* --- BASE DE DATOS (NO TOCAR) --- */
+/* --- BASE DE DATOS --- */
 const baseDeDatos = [
     {
         "name": "Prueba 1",
@@ -73,7 +70,8 @@ const qList = [
     {id: 2, label: "Marcador Francia vs Marruecos", type: "score"},
     {id: 3, label: "Mbappe Anotará", type: "select", opts: ["Si", "No"]},
     {id: 4, label: "España vs Belgica", type: "select", opts: ["España", "Empate", "Belgica"]},
-    {id: 5, label: "Marcador España vs Bélgica: "select", opts: ["Si", "No"]},
+    {id: 5, label: "Marcador España vs Bélgica", type: "score"},
+    {id: 6, label: "Yamal Anotará", type: "select", opts: ["Si", "No"]},
     {id: 7, label: "Inglaterra vs Noruega", type: "select", opts: ["Inglaterra", "Empate", "Noruega"]},
     {id: 8, label: "Marcador Inglaterra vs Noruega", type: "score"},
     {id: 9, label: "Kane Anotará", type: "select", opts: ["Si", "No"]},
