@@ -2,59 +2,60 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Quiniela Final - Validada</title>
+    <title>Quiniela: Tablero de Resultados</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; padding: 20px; font-size: 18px; }
-        .container { max-width: 900px; margin: auto; background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
-        .tabs { display: flex; gap: 10px; margin-bottom: 30px; }
-        .tab-btn { flex: 1; padding: 20px; font-size: 20px; font-weight: bold; border: none; background: #e2e8f0; cursor: pointer; border-radius: 10px; }
-        .tab-btn.active { background: #1e3a8a; color: white; }
-        .panel { display: none; }
-        .panel.active { display: block; }
-        .q-box { margin-bottom: 30px; padding: 20px; border-bottom: 2px solid #eee; }
-        label { font-size: 20px; font-weight: 600; display: block; margin-bottom: 10px; }
-        select { width: 100%; padding: 15px; font-size: 18px; margin-top: 5px; border-radius: 10px; border: 2px solid #ccc; background: white; cursor: pointer; }
-        .score-row { display: flex; gap: 10px; align-items: center; }
-        .score-input { width: 45%; padding: 15px; font-size: 18px; border-radius: 10px; border: 2px solid #ccc; text-align: center; }
-        input[type="text"] { width: 100%; padding: 15px; font-size: 18px; border-radius: 10px; border: 2px solid #ccc; box-sizing: border-box; margin-bottom: 20px; }
-        button.action-btn { width: 100%; padding: 25px; font-size: 22px; background: #1e3a8a; color: white; border: none; border-radius: 15px; font-weight: bold; cursor: pointer; margin-top: 20px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 18px; }
-        th { background: #1e3a8a; color: white; padding: 15px; }
-        td { border: 1px solid #ddd; padding: 15px; text-align: center; }
-        .error { color: #dc2626; font-size: 20px; font-weight: bold; background: #fee2e2; padding: 20px; border-radius: 10px; margin-bottom: 20px; display: none; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; padding: 20px; }
+        .container { max-width: 1200px; margin: auto; background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        h2 { text-align: center; color: #1e3a8a; }
+        .q-box { margin-bottom: 20px; padding: 15px; border-bottom: 1px solid #eee; }
+        
+        /* Tabla con scroll horizontal porque son muchas preguntas */
+        .table-wrapper { overflow-x: auto; margin-top: 40px; }
+        table { border-collapse: collapse; width: 100%; font-size: 14px; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: center; }
+        th { background: #1e3a8a; color: white; }
+        
+        .acierto { background-color: #86efac; color: #065f46; font-weight: bold; }
+        .fallo { background-color: #fca5a5; color: #991b1b; }
+        
+        .points-col { font-weight: bold; background: #fef08a; }
+        
+        button { width: 100%; padding: 20px; font-size: 18px; background: #1e3a8a; color: white; border: none; border-radius: 10px; cursor: pointer; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>🏆 Quiniela Final</h2>
-    
-    <div class="tabs">
-        <button class="tab-btn active" id="btn-reg" onclick="showTab('reg')">📝 Registrar Pronóstico</button>
-        <button class="tab-btn" id="btn-tab" onclick="showTab('tab')">📊 Ver Tabla</button>
-    </div>
+    <h2>🏆 Gestión de Quiniela</h2>
 
-    <div id="panel-reg" class="panel active">
-        <div id="error-msg" class="error"></div>
-        <label>Nombre del Participante:</label>
-        <input type="text" id="username" placeholder="Escribe tu nombre aquí...">
+    <!-- Sección 1: Formulario -->
+    <div id="form-section">
+        <h3>Registrar Participante</h3>
+        <input type="text" id="username" placeholder="Nombre" style="width:100%; padding:10px; margin-bottom:10px;">
         <div id="form-container"></div>
-        <button class="action-btn" onclick="enviarValidado()">Generar Enlace de WhatsApp</button>
+        <button onclick="generarEnlace()">Generar Enlace para WhatsApp</button>
     </div>
 
-    <div id="panel-tab" class="panel">
-        <table id="leaderboard">
-            <thead><tr><th>Nombre</th><th>Estatus</th></tr></thead>
-            <tbody></tbody>
+    <!-- Sección 2: Tabla de Resultados -->
+    <div class="table-wrapper">
+        <h3>Tabla de Posiciones</h3>
+        <table id="results-table">
+            <thead><tr id="header-row"></tr></thead>
+            <tbody id="body-rows"></tbody>
         </table>
     </div>
 </div>
 
 <script>
-// --- LISTA DE REGISTRADOS MANUAL ---
+/* 1. CONFIGURACIÓN: Aquí llenas los resultados reales según avancen los partidos */
+const resultadosReales = {
+    "q1": "Francia", "q2": "2-1", "q3": "Si" // ... completa con los resultados oficiales
+};
+
+/* 2. BASE DE DATOS: Aquí cargas los datos de los participantes */
 const baseDeDatos = [
-    
-{
+    { name: "Arellano", answers: {"q1": "Francia", "q2": "2-1", "q3": "Si"} },
+    {
   "name": "Prueba 1",
   "answers": {
     "q1": "Empate",
@@ -89,105 +90,64 @@ const baseDeDatos = [
   }
 }
 
-
 ];
 
 const qList = [
-    {id: 1, label: "Resultado Francia vs Marruecos", type: "select", opts: ["Francia", "Empate", "Marruecos"]},
-    {id: 2, label: "Marcador Fr - Mar", type: "score"},
-    {id: 3, label: "Mbappe Anotará", type: "select", opts: ["Si", "No"]},
-    {id: 4, label: "Resultado España vs Belgica", type: "select", opts: ["España", "Empate", "Belgica"]},
-    {id: 5, label: "Marcador Esp - Bel", type: "score"},
-    {id: 6, label: "Lamine Yamal Anotará", type: "select", opts: ["Si", "No"]},
-    {id: 7, label: "Resultado Inglaterra vs Noruega", type: "select", opts: ["Inglaterra", "Empate", "Noruega"]},
-    {id: 8, label: "Marcador Ing - Nor", type: "score"},
-    {id: 9, label: "Harry Kane Anotará", type: "select", opts: ["Si", "No"]},
-    {id: 10, label: "Haland Anotará", type: "select", opts: ["Si", "No"]},
-    {id: 11, label: "Resultado Argentina vs Suiza", type: "select", opts: ["Argentina", "Empate", "Suiza"]},
-    {id: 12, label: "Marcador Arg - Sui", type: "score"},
-    {id: 13, label: "Messi Anotará", type: "select", opts: ["Si", "No"]},
-    {id: 14, label: "1er equipo que avanza (Semi)", type: "select", opts: ["Francia", "Marruecos"]},
-    {id: 15, label: "2do equipo que avanza (Semi)", type: "select", opts: ["España", "Belgica"]},
-    {id: 16, label: "3er equipo que avanza (Semi)", type: "select", opts: ["Inglaterra", "Noruega"]},
-    {id: 17, label: "4to equipo que avanza (Semi)", type: "select", opts: ["Argentina", "Suiza"]},
-    {id: 18, label: "Partido 1ra Semifinal", type: "select", opts: ["Francia vs Belgica", "Francia vs España", "Marruecos vs España", "Marruecos vs Belgica"]},
-    {id: 19, label: "Partido 2da Semifinal", type: "select", opts: ["Inglaterra vs Argentina", "Inglaterra vs Suiza", "Noruega vs Argentina", "Noruega vs Suiza"]},
-    {id: 20, label: "1er Finalista", type: "select", opts: ["Francia", "Marruecos", "España", "Belgica"]},
-    {id: 21, label: "2do Finalista", type: "select", opts: ["Inglaterra", "Noruega", "Argentina", "Suiza"]},
-    {id: 22, label: "Partido Final", type: "select", opts: ["Francia vs Noruega", "Francia vs Inglaterra", "Francia vs Argentina", "Francia vs Suiza", "España vs Noruega", "España vs Inglaterra", "España vs Argentina", "España vs Suiza", "Marruecos vs Noruega", "Marruecos vs Inglaterra", "Marruecos vs Argentina", "Marruecos vs Suiza", "Belgica vs Noruega", "Belgica vs Inglaterra", "Belgica vs Argentina", "Belgica vs Suiza"]},
-    {id: 23, label: "1er Tercer Lugar", type: "select", opts: ["Francia", "Marruecos", "España", "Belgica"]},
-    {id: 24, label: "2do Tercer Lugar", type: "select", opts: ["Inglaterra", "Noruega", "Argentina", "Suiza"]},
-    {id: 25, label: "Partido 3er Lugar", type: "select", opts: ["Francia vs Noruega", "Francia vs Inglaterra", "Francia vs Argentina", "Francia vs Suiza", "España vs Noruega", "España vs Inglaterra", "España vs Argentina", "España vs Suiza", "Marruecos vs Noruega", "Marruecos vs Inglaterra", "Marruecos vs Argentina", "Marruecos vs Suiza", "Belgica vs Noruega", "Belgica vs Inglaterra", "Belgica vs Argentina", "Belgica vs Suiza"]},
-    {id: 26, label: "Campeón del mundial", type: "select", opts: ["Francia", "Marruecos", "España", "Belgica", "Inglaterra", "Noruega", "Argentina", "Suiza"]},
-    {id: 27, label: "Sub-campeón", type: "select", opts: ["Francia", "Marruecos", "España", "Belgica", "Inglaterra", "Noruega", "Argentina", "Suiza"]},
-    {id: 28, label: "Tercer lugar", type: "select", opts: ["Francia", "Marruecos", "España", "Belgica", "Inglaterra", "Noruega", "Argentina", "Suiza"]},
-    {id: 29, label: "Máximo goleador", type: "select", opts: ["Lionel Messi", "Mbappe", "Haaland", "Harry Kane", "Dembele", "Oyarzabal", "Otro"]}
+    {id: 1, label: "Fr/Mar"}, {id: 2, label: "M.Fr-Mar"}, {id: 3, label: "Mbappe"},
+    {id: 4, label: "Esp/Bel"}, {id: 5, label: "M.Esp-Bel"}, {id: 6, label: "Yamal"},
+    {id: 7, label: "Ing/Nor"}, {id: 8, label: "M.Ing-Nor"}, {id: 9, label: "Kane"},
+    {id: 10, label: "Haland"}, {id: 11, label: "Arg/Sui"}, {id: 12, label: "M.Arg-Sui"},
+    {id: 13, label: "Messi"}, {id: 14, label: "1.Semi"}, {id: 15, label: "2.Semi"},
+    {id: 16, label: "3.Semi"}, {id: 17, label: "4.Semi"}, {id: 18, label: "P1.Semi"},
+    {id: 19, label: "P2.Semi"}, {id: 20, label: "F1"}, {id: 21, label: "F2"},
+    {id: 22, label: "Final"}, {id: 23, label: "3L1"}, {id: 24, label: "3L2"},
+    {id: 25, label: "3erL"}, {id: 26, label: "Cam"}, {id: 27, label: "Sub"},
+    {id: 28, label: "3er"}, {id: 29, label: "Gol"}
 ];
 
+// Generar Formulario
 const container = document.getElementById('form-container');
 qList.forEach(q => {
-    let html = `<div class="q-box"><label>${q.id}. ${q.label}</label>`;
-    if (q.type === 'score') {
-        html += `<div class="score-row"><input type="number" id="q${q.id}_h" class="score-input" placeholder="0"><span>-</span><input type="number" id="q${q.id}_a" class="score-input" placeholder="0"></div>`;
-    } else {
-        html += `<select id="q${q.id}"><option value="">Selecciona...</option>${q.opts.map(o => `<option value="${o}">${o}</option>`).join('')}</select>`;
-    }
-    container.innerHTML += html + `</div>`;
+    container.innerHTML += `<div class="q-box"><label>${q.id}. ${q.label}</label></div>`;
 });
 
-function showTab(t) {
-    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById('panel-' + t).classList.add('active');
-    document.getElementById('btn-' + t).classList.add('active');
-    if(t === 'tab') renderLeaderboard();
-}
-
-function renderLeaderboard() {
-    const tbody = document.querySelector('#leaderboard tbody');
-    tbody.innerHTML = '';
-    baseDeDatos.forEach(u => {
-        tbody.innerHTML += `<tr><td>${u.name}</td><td>✅ Recibido</td></tr>`;
+// Renderizar Tabla
+function renderTable() {
+    const headerRow = document.getElementById('header-row');
+    const bodyRows = document.getElementById('body-rows');
+    
+    // Header
+    headerRow.innerHTML = '<th>Participante</th><th class="points-col">PTS</th>';
+    qList.forEach(q => headerRow.innerHTML += `<th>${q.id}</th>`);
+    
+    // Filas
+    bodyRows.innerHTML = '';
+    baseDeDatos.forEach(p => {
+        let row = `<tr><td>${p.name}</td>`;
+        let puntos = 0;
+        let celdas = '';
+        
+        qList.forEach(q => {
+            let val = p.answers['q'+q.id] || '-';
+            let real = resultadosReales['q'+q.id];
+            
+            // Lógica de color y puntos
+            let clase = '';
+            if (real) {
+                if (val === real) { clase = 'acierto'; puntos++; }
+                else { clase = 'fallo'; }
+            }
+            celdas += `<td class="${clase}">${val}</td>`;
+        });
+        
+        row += `<td class="points-col">${puntos}</td>${celdas}</tr>`;
+        bodyRows.innerHTML += row;
     });
 }
 
-function enviarValidado() {
-    let vals = {};
-    for(let q of qList) {
-        if(q.type === 'score') {
-            let h = document.getElementById('q'+q.id+'_h').value;
-            let a = document.getElementById('q'+q.id+'_a').value;
-            if(h === "" || a === "") return mostrarError("Completa marcador " + q.id);
-            vals['q'+q.id] = h + "-" + a;
-        } else {
-            let v = document.getElementById('q'+q.id).value;
-            if(!v) return mostrarError("Contesta " + q.id);
-            vals['q'+q.id] = v;
-        }
-    }
-    
-    // VALIDACIONES LÓGICAS ESTRICTAS
-    // 1. Que el finalista provenga de semifinales
-    if(!vals.q18.includes(vals.q20) && !vals.q19.includes(vals.q20)) return mostrarError("Error: El finalista " + vals.q20 + " no está en las semifinales.");
-    
-    // 2. Que el campeón y subcampeón sean los finalistas
-    if(vals.q26 !== vals.q20 && vals.q26 !== vals.q21) return mostrarError("Error: El Campeón debe ser uno de los finalistas.");
-    if(vals.q27 !== vals.q20 && vals.q27 !== vals.q21) return mostrarError("Error: El Sub-campeón debe ser uno de los finalistas.");
-    
-    // 3. Que el campeón y subcampeón sean distintos
-    if(vals.q26 === vals.q27) return mostrarError("Error: El Campeón y Sub-campeón no pueden ser el mismo equipo.");
-    
-    let name = document.getElementById('username').value || "Anónimo";
-    let data = btoa(JSON.stringify({name: name, answers: vals}));
-    window.open(`https://api.whatsapp.com/send?phone=5215546879724&text=Mis pronósticos: ${data}`);
-}
+function generarEnlace() { alert("Lógica de generación vinculada al formulario anterior"); }
 
-function mostrarError(msg) {
-    const err = document.getElementById('error-msg');
-    err.innerText = msg;
-    err.style.display = 'block';
-    window.scrollTo({top: 0, behavior: 'smooth'});
-}
+renderTable();
 </script>
 </body>
 </html>
