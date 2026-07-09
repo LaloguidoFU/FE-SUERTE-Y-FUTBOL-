@@ -2,24 +2,22 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Quiniela Final - Sistema Grande</title>
+    <title>Quiniela Final</title>
     <style>
-        /* Diseño ampliado */
         body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; padding: 40px; font-size: 22px; }
         .container { max-width: 1400px; margin: auto; background: white; padding: 50px; border-radius: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
         h2 { text-align: center; color: #1e3a8a; font-size: 40px; }
-        
+        .reference-box { background: #eef2ff; padding: 25px; border-radius: 15px; margin-bottom: 40px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px; border: 1px solid #c7d2fe; }
+        .reference-box div { font-size: 16px; color: #333; }
         .q-box { margin-bottom: 40px; padding: 20px; border-bottom: 2px solid #eee; }
         label { font-size: 24px; font-weight: 600; display: block; margin-bottom: 15px; }
         select { width: 100%; padding: 20px; border-radius: 12px; border: 2px solid #ccc; font-size: 20px; }
         .score-row { display: flex; gap: 15px; align-items: center; }
         .score-input { width: 80px; padding: 20px; text-align: center; border-radius: 10px; border: 2px solid #ccc; font-size: 20px; }
-        
         .table-wrapper { overflow-x: auto; margin-top: 60px; }
         table { border-collapse: collapse; width: 100%; font-size: 18px; }
         th, td { border: 2px solid #ddd; padding: 20px; text-align: center; min-width: 100px; }
         th { background: #1e3a8a; color: white; font-size: 20px; }
-        
         .acierto { background-color: #86efac; color: #065f46; font-weight: bold; }
         .fallo { background-color: #fca5a5; color: #991b1b; }
         .points-col { font-weight: bold; background: #fef08a; font-size: 24px; }
@@ -27,15 +25,14 @@
     </style>
 </head>
 <body>
-
 <div class="container">
     <h2>🏆 Quiniela: Registro y Marcador</h2>
-    
     <div id="form-container"></div>
     <input type="text" id="username" placeholder="Nombre del participante" style="width:100%; padding:20px; margin-bottom:30px; border-radius:12px; border: 2px solid #ccc; font-size: 20px;">
-    <button class="btn-main" onclick="enviarValidado()">Generar WhatsApp</button>
-
+    <button class="btn-main" onclick="alert('Funcionalidad de WhatsApp pendiente')">Generar WhatsApp</button>
     <div class="table-wrapper">
+        <h3>📊 Guía de Preguntas</h3>
+        <div id="q-ref-container" class="reference-box"></div>
         <h3>📊 Tabla de Resultados</h3>
         <table id="results-table">
             <thead><tr id="header-row"></tr></thead>
@@ -43,41 +40,22 @@
         </table>
     </div>
 </div>
-
 <script>
-/* --- AQUÍ ES DONDE REGISTRAS LOS RESULTADOS MANUALMENTE --- */
-const resultadosReales = {
-    // Ejemplo: "q1": "Francia", "q2": "1-1"
-};
-
-/* --- BASE DE DATOS --- */
-const baseDeDatos = [
-    {
-        "name": "Prueba 1",
-        "answers": {
-            "q1": "Empate", "q2": "1-1", "q3": "No", "q4": "España", "q5": "1-0",
-            "q6": "No", "q7": "Noruega", "q8": "1-2", "q9": "No", "q10": "Si",
-            "q11": "Argentina", "q12": "2-0", "q13": "Si", "q14": "Marruecos", "q15": "España",
-            "q16": "Noruega", "q17": "Argentina", "q18": "Marruecos vs España", "q19": "Inglaterra vs Argentina", "q20": "Marruecos",
-            "q21": "Noruega", "q22": "Marruecos vs Noruega", "q23": "España", "q24": "Argentina", "q25": "España vs Argentina",
-            "q26": "Marruecos", "q27": "Inglaterra", "q28": "Noruega", "q29": "Otro"
-        }
-    }
-];
-
+const resultadosReales = {};
+const baseDeDatos = [{ "name": "Prueba 1", "answers": { "q1": "Empate", "q2": "1-1", "q3": "No", "q4": "España", "q5": "1-0", "q6": "No", "q7": "Noruega", "q8": "1-2", "q9": "No", "q10": "Si", "q11": "Argentina", "q12": "2-0", "q13": "Si", "q14": "Marruecos", "q15": "España", "q16": "Noruega", "q17": "Argentina", "q18": "Marruecos vs España", "q19": "Inglaterra vs Argentina", "q20": "Marruecos", "q21": "Noruega", "q22": "Marruecos vs Noruega", "q23": "España", "q24": "Argentina", "q25": "España vs Argentina", "q26": "Marruecos", "q27": "Inglaterra", "q28": "Noruega", "q29": "Otro" } }];
 const qList = [
     {id: 1, label: "Francia vs Marruecos", type: "select", opts: ["Francia", "Empate", "Marruecos"]},
-    {id: 2, label: "Marcador Francia vs Marruecos", type: "score"},
+    {id: 2, label: "Marcador Fr-Mar", type: "score"},
     {id: 3, label: "Mbappe Anotará", type: "select", opts: ["Si", "No"]},
     {id: 4, label: "España vs Belgica", type: "select", opts: ["España", "Empate", "Belgica"]},
-    {id: 5, label: "Marcador España vs Bélgica", type: "score"},
+    {id: 5, label: "Marcador Esp-Bel", type: "score"},
     {id: 6, label: "Yamal Anotará", type: "select", opts: ["Si", "No"]},
     {id: 7, label: "Inglaterra vs Noruega", type: "select", opts: ["Inglaterra", "Empate", "Noruega"]},
-    {id: 8, label: "Marcador Inglaterra vs Noruega", type: "score"},
+    {id: 8, label: "Marcador Ing-Nor", type: "score"},
     {id: 9, label: "Kane Anotará", type: "select", opts: ["Si", "No"]},
     {id: 10, label: "Haland Anotará", type: "select", opts: ["Si", "No"]},
     {id: 11, label: "Argentina vs Suiza", type: "select", opts: ["Argentina", "Empate", "Suiza"]},
-    {id: 12, label: "Marcador Argentina vs Suiza", type: "score"},
+    {id: 12, label: "Marcador Arg-Sui", type: "score"},
     {id: 13, label: "Messi Anotará", type: "select", opts: ["Si", "No"]},
     {id: 14, label: "1er equipo que avanza (Semi)", type: "select", opts: ["Francia", "Marruecos"]},
     {id: 15, label: "2do equipo que avanza (Semi)", type: "select", opts: ["España", "Belgica"]},
@@ -96,49 +74,33 @@ const qList = [
     {id: 28, label: "Tercer lugar", type: "select", opts: ["Francia", "Marruecos", "España", "Belgica", "Inglaterra", "Noruega", "Argentina", "Suiza"]},
     {id: 29, label: "Máximo goleador", type: "select", opts: ["Lionel Messi", "Mbappe", "Haaland", "Harry Kane", "Dembele", "Oyarzabal", "Otro"]}
 ];
-
-// Generar Formulario
 const container = document.getElementById('form-container');
 qList.forEach(q => {
     let html = `<div class="q-box"><label>${q.id}. ${q.label}</label>`;
-    if (q.type === 'score') {
-        html += `<div class="score-row"><input type="number" id="q${q.id}_h" class="score-input" placeholder="0"><span>-</span><input type="number" id="q${q.id}_a" class="score-input" placeholder="0"></div>`;
-    } else {
-        html += `<select id="q${q.id}"><option value="">Selecciona...</option>${q.opts.map(o => `<option value="${o}">${o}</option>`).join('')}</select>`;
-    }
+    if (q.type === 'score') { html += `<div class="score-row"><input type="number" id="q${q.id}_h" class="score-input" placeholder="0"><span>-</span><input type="number" id="q${q.id}_a" class="score-input" placeholder="0"></div>`; } else { html += `<select id="q${q.id}"><option value="">Selecciona...</option>${q.opts.map(o => `<option value="${o}">${o}</option>`).join('')}</select>`; }
     container.innerHTML += html + `</div>`;
 });
-
-// Renderizar Tabla
+const refContainer = document.getElementById('q-ref-container');
+qList.forEach(q => { refContainer.innerHTML += `<div><strong>${q.id}.</strong> ${q.label}</div>`; });
 function renderTable() {
     const headerRow = document.getElementById('header-row');
     const bodyRows = document.getElementById('body-rows');
     headerRow.innerHTML = '<th>Participante</th><th class="points-col">PTS</th>';
     qList.forEach(q => headerRow.innerHTML += `<th>${q.id}</th>`);
-    
     baseDeDatos.forEach(p => {
         let row = `<tr><td>${p.name}</td>`;
-        let puntos = 0;
-        let celdas = '';
+        let puntos = 0, celdas = '';
         qList.forEach(q => {
             let val = p.answers['q'+q.id] || '-';
             let real = resultadosReales['q'+q.id];
-            let clase = '';
-            if (real) {
-                if (val === real) { clase = 'acierto'; puntos++; }
-                else { clase = 'fallo'; }
-            }
+            let clase = real ? (val === real ? 'acierto' : 'fallo') : '';
+            if (real && val === real) puntos++;
             celdas += `<td class="${clase}">${val}</td>`;
         });
         row += `<td class="points-col">${puntos}</td>${celdas}</tr>`;
         bodyRows.innerHTML += row;
     });
 }
-
-function enviarValidado() {
-    alert("Revisa la consola (F12) o implementa tu lógica de envío aquí.");
-}
-
 renderTable();
 </script>
 </body>
