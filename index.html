@@ -41,13 +41,18 @@
     </div>
 </div>
 <script>
-/* Resultados oficiales (Editar aquí para actualizar tabla) */
-const resultadosReales = {
-    // "q1": "Francia" 
-};
-
-const baseDeDatos = [{ "name": "Prueba 1", "answers": { "q1": "Empate", "q2": "1-1", "q3": "No", "q4": "España", "q5": "1-0", "q6": "No", "q7": "Noruega", "q8": "1-2", "q9": "No", "q10": "Si", "q11": "Argentina", "q12": "2-0", "q13": "Si", "q14": "Marruecos", "q15": "España", "q16": "Noruega", "q17": "Argentina", "q18": "Marruecos vs España", "q19": "Inglaterra vs Argentina", "q20": "Marruecos", "q21": "Noruega", "q22": "Marruecos vs Noruega", "q23": "España", "q24": "Argentina", "q25": "España vs Argentina", "q26": "Marruecos", "q27": "Inglaterra", "q28": "Noruega", "q29": "Otro" } }];
-
+const resultadosReales = {};
+const baseDeDatos = [{ 
+    "name": "Prueba 1", 
+    "answers": { 
+        "q1": "Empate", "q2": "1-1", "q3": "No", "q4": "España", "q5": "1-0", 
+        "q6": "No", "q7": "Noruega", "q8": "1-2", "q9": "No", "q10": "Si", 
+        "q11": "Argentina", "q12": "2-0", "q13": "Si", "q14": "Marruecos", "q15": "España", 
+        "q16": "Noruega", "q17": "Argentina", "q18": "Marruecos vs España", "q19": "Inglaterra vs Argentina", "q20": "Marruecos", 
+        "q21": "Noruega", "q22": "Marruecos vs Noruega", "q23": "España", "q24": "Argentina", "q25": "España vs Argentina", 
+        "q26": "Marruecos", "q27": "Inglaterra", "q28": "Noruega", "q29": "Otro" 
+    } 
+}];
 const qList = [
     {id: 1, label: "Francia vs Marruecos (1pts)", points: 1, type: "select", opts: ["Francia", "Empate", "Marruecos"]},
     {id: 2, label: "Marcador Francia vs Marruecos (2pts)", points: 2, type: "score"},
@@ -58,4 +63,58 @@ const qList = [
     {id: 7, label: "Inglaterra vs Noruega (1pts)", points: 1, type: "select", opts: ["Inglaterra", "Empate", "Noruega"]},
     {id: 8, label: "Marcador Inglaterra vs Noruega (2pts)", points: 2, type: "score"},
     {id: 9, label: "Kane Anotará (1pts)", points: 1, type: "select", opts: ["Si", "No"]},
-    {id: 10, label: "Haland Anotará (1pts)", points: 1, type: "select", opts: ["Si", "No
+    {id: 10, label: "Haland Anotará (1pts)", points: 1, type: "select", opts: ["Si", "No"]},
+    {id: 11, label: "Argentina vs Suiza (1pts)", points: 1, type: "select", opts: ["Argentina", "Empate", "Suiza"]},
+    {id: 12, label: "Marcador Argentina vs Suiza (2pts)", points: 2, type: "score"},
+    {id: 13, label: "Messi Anotará (1pts)", points: 1, type: "select", opts: ["Si", "No"]},
+    {id: 14, label: "1er equipo que avanza (Semi) (1pts)", points: 1, type: "select", opts: ["Francia", "Marruecos"]},
+    {id: 15, label: "2do equipo que avanza (Semi) (1pts)", points: 1, type: "select", opts: ["España", "Belgica"]},
+    {id: 16, label: "3er equipo que avanza (Semi) (1pts)", points: 1, type: "select", opts: ["Inglaterra", "Noruega"]},
+    {id: 17, label: "4to equipo que avanza (Semi) (1pts)", points: 1, type: "select", opts: ["Argentina", "Suiza"]},
+    {id: 18, label: "Partido 1ra Semifinal (1pts)", points: 1, type: "select", opts: ["Francia vs Belgica", "Francia vs España", "Marruecos vs España", "Marruecos vs Belgica"]},
+    {id: 19, label: "Partido 2da Semifinal (1pts)", points: 1, type: "select", opts: ["Inglaterra vs Argentina", "Inglaterra vs Suiza", "Noruega vs Argentina", "Noruega vs Suiza"]},
+    {id: 20, label: "1er Finalista (1pts)", points: 1, type: "select", opts: ["Francia", "Marruecos", "España", "Belgica"]},
+    {id: 21, label: "2do Finalista (1pts)", points: 1, type: "select", opts: ["Inglaterra", "Noruega", "Argentina", "Suiza"]},
+    {id: 22, label: "Partido Final (2pts)", points: 2, type: "select", opts: ["Francia vs Noruega", "Francia vs Inglaterra", "Francia vs Argentina", "Francia vs Suiza", "España vs Noruega", "España vs Inglaterra", "España vs Argentina", "España vs Suiza", "Marruecos vs Noruega", "Marruecos vs Inglaterra", "Marruecos vs Argentina", "Marruecos vs Suiza", "Belgica vs Noruega", "Belgica vs Inglaterra", "Belgica vs Argentina", "Belgica vs Suiza"]},
+    {id: 23, label: "1er Tercer Lugar (1pts)", points: 1, type: "select", opts: ["Francia", "Marruecos", "España", "Belgica"]},
+    {id: 24, label: "2do Tercer Lugar (1pts)", points: 1, type: "select", opts: ["Inglaterra", "Noruega", "Argentina", "Suiza"]},
+    {id: 25, label: "Partido 3er Lugar (1pts)", points: 1, type: "select", opts: ["Francia vs Noruega", "Francia vs Inglaterra", "Francia vs Argentina", "Francia vs Suiza", "España vs Noruega", "España vs Inglaterra", "España vs Argentina", "España vs Suiza", "Marruecos vs Noruega", "Marruecos vs Inglaterra", "Marruecos vs Argentina", "Marruecos vs Suiza", "Belgica vs Noruega", "Belgica vs Inglaterra", "Belgica vs Argentina", "Belgica vs Suiza"]},
+    {id: 26, label: "Campeón del mundial (2pts)", points: 2, type: "select", opts: ["Francia", "Marruecos", "España", "Belgica", "Inglaterra", "Noruega", "Argentina", "Suiza"]},
+    {id: 27, label: "Sub-campeón (1pts)", points: 1, type: "select", opts: ["Francia", "Marruecos", "España", "Belgica", "Inglaterra", "Noruega", "Argentina", "Suiza"]},
+    {id: 28, label: "Tercer lugar (2pts)", points: 2, type: "select", opts: ["Francia", "Marruecos", "España", "Belgica", "Inglaterra", "Noruega", "Argentina", "Suiza"]},
+    {id: 29, label: "Máximo goleador (2pts)", points: 2, type: "select", opts: ["Lionel Messi", "Mbappe", "Haaland", "Harry Kane", "Dembele", "Oyarzabal", "Otro"]}
+];
+const container = document.getElementById('form-container');
+qList.forEach(q => {
+    let html = `<div class="q-box"><label>${q.id}. ${q.label}</label>`;
+    if (q.type === 'score') { html += `<div class="score-row"><input type="number" id="q${q.id}_h" class="score-input" placeholder="0"><span>-</span><input type="number" id="q${q.id}_a" class="score-input" placeholder="0"></div>`; } else { html += `<select id="q${q.id}"><option value="">Selecciona...</option>${q.opts.map(o => `<option value="${o}">${o}</option>`).join('')}</select>`; }
+    container.innerHTML += html + `</div>`;
+});
+const refContainer = document.getElementById('q-ref-container');
+qList.forEach(q => { refContainer.innerHTML += `<div><strong>${q.id}.</strong> ${q.label}</div>`; });
+function renderTable() {
+    const headerRow = document.getElementById('header-row');
+    const bodyRows = document.getElementById('body-rows');
+    headerRow.innerHTML = '<th>Participante</th><th class="points-col">PTS</th>';
+    qList.forEach(q => headerRow.innerHTML += `<th>${q.id}</th>`);
+    baseDeDatos.forEach(p => {
+        let row = `<tr><td>${p.name}</td>`;
+        let totalPuntos = 0, celdas = '';
+        qList.forEach(q => {
+            let val = p.answers['q'+q.id] || '-';
+            let real = resultadosReales['q'+q.id];
+            let clase = '';
+            if (real) {
+                if (val === real) { clase = 'acierto'; totalPuntos += q.points; }
+                else { clase = 'fallo'; }
+            }
+            celdas += `<td class="${clase}">${val}</td>`;
+        });
+        row += `<td class="points-col">${totalPuntos}</td>${celdas}</tr>`;
+        bodyRows.innerHTML += row;
+    });
+}
+renderTable();
+</script>
+</body>
+</html>
