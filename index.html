@@ -5,13 +5,13 @@
     <title>Quiniela Final</title>
     <style>
         .bracket-img { 
-    display: block; 
-    margin: 20px auto; /* Esto es lo que centra el elemento */
-    max-width: 800px;  /* Tamaño máximo */
-    width: 90%;        /* Ocupa el 90% del ancho, pero nunca más de 800px */
-    border-radius: 15px; 
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2); 
-}
+            display: block; 
+            margin: 20px auto; 
+            max-width: 800px;  
+            width: 90%;        
+            border-radius: 15px; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2); 
+        }
         body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; padding: 40px; font-size: 22px; }
         .container { max-width: 1400px; margin: auto; background: white; padding: 50px; border-radius: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
         h2 { text-align: center; color: #1e3a8a; font-size: 40px; }
@@ -38,7 +38,7 @@
     <img src="cuartosfifa.png" alt="Cuadro de Torneo" class="bracket-img">
     <div id="form-container"></div>
     <input type="text" id="username" placeholder="Nombre del participante" style="width:100%; padding:20px; margin-bottom:30px; border-radius:12px; border: 2px solid #ccc; font-size: 20px;">
-    <button class="btn-main" onclick="alert('Funcionalidad de WhatsApp pendiente')">Generar WhatsApp</button>
+    <button class="btn-main" onclick="enviarWhatsApp()">Generar WhatsApp</button>
     <div class="table-wrapper">
         <h3>📊 Guía de Preguntas</h3>
         <div id="q-ref-container" class="reference-box"></div>
@@ -93,6 +93,30 @@ const qList = [
     {id: 28, label: "Tercer lugar (2pts)", points: 2, type: "select", opts: ["Francia", "Marruecos", "España", "Belgica", "Inglaterra", "Noruega", "Argentina", "Suiza"]},
     {id: 29, label: "Máximo goleador (2pts)", points: 2, type: "select", opts: ["Lionel Messi", "Mbappe", "Haaland", "Harry Kane", "Dembele", "Oyarzabal", "Otro"]}
 ];
+
+function enviarWhatsApp() {
+    const nombre = document.getElementById('username').value;
+    if (!nombre) {
+        alert("Por favor, escribe tu nombre primero.");
+        return;
+    }
+    let mensaje = `*Quiniela de ${nombre}*%0A%0A`;
+    qList.forEach(q => {
+        let valor = "";
+        if (q.type === 'score') {
+            const h = document.getElementById('q' + q.id + '_h').value || '0';
+            const a = document.getElementById('q' + q.id + '_a').value || '0';
+            valor = `${h}-${a}`;
+        } else {
+            valor = document.getElementById('q' + q.id).value || "Sin responder";
+        }
+        mensaje += `*Q${q.id}:* ${valor}%0A`;
+    });
+    const numeroTelefono = "525546879724"; 
+    const url = `https://wa.me/${numeroTelefono}?text=${mensaje}`;
+    window.open(url, '_blank');
+}
+
 const container = document.getElementById('form-container');
 qList.forEach(q => {
     let html = `<div class="q-box"><label>${q.id}. ${q.label}</label>`;
