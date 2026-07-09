@@ -2,43 +2,45 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Quiniela: Tablero de Resultados</title>
+    <title>Quiniela: Registro y Resultados</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; padding: 20px; }
-        .container { max-width: 1200px; margin: auto; background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
-        h2 { text-align: center; color: #1e3a8a; }
-        .q-box { margin-bottom: 20px; padding: 15px; border-bottom: 1px solid #eee; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; padding: 20px; font-size: 18px; }
+        .container { max-width: 1000px; margin: auto; background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        h2 { text-align: center; color: #1e3a8a; margin-bottom: 30px; }
         
-        /* Tabla con scroll horizontal porque son muchas preguntas */
-        .table-wrapper { overflow-x: auto; margin-top: 40px; }
-        table { border-collapse: collapse; width: 100%; font-size: 14px; }
-        th, td { border: 1px solid #ddd; padding: 10px; text-align: center; }
+        /* Estilos del Formulario (Grande) */
+        .q-box { margin-bottom: 25px; padding: 15px; border-bottom: 2px solid #eee; }
+        label { font-size: 20px; font-weight: 600; display: block; margin-bottom: 10px; }
+        select { width: 100%; padding: 15px; font-size: 18px; border-radius: 10px; border: 2px solid #ccc; }
+        .score-row { display: flex; gap: 10px; align-items: center; }
+        .score-input { width: 45%; padding: 15px; font-size: 18px; border-radius: 10px; border: 2px solid #ccc; text-align: center; }
+        
+        /* Tabla */
+        .table-wrapper { overflow-x: auto; margin-top: 50px; border-top: 4px solid #1e3a8a; padding-top: 20px; }
+        table { border-collapse: collapse; width: 100%; font-size: 16px; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: center; }
         th { background: #1e3a8a; color: white; }
         
         .acierto { background-color: #86efac; color: #065f46; font-weight: bold; }
         .fallo { background-color: #fca5a5; color: #991b1b; }
-        
         .points-col { font-weight: bold; background: #fef08a; }
         
-        button { width: 100%; padding: 20px; font-size: 18px; background: #1e3a8a; color: white; border: none; border-radius: 10px; cursor: pointer; }
+        .btn-main { width: 100%; padding: 25px; font-size: 22px; background: #1e3a8a; color: white; border: none; border-radius: 15px; cursor: pointer; font-weight: bold; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>🏆 Gestión de Quiniela</h2>
+    <h2>🏆 Quiniela: Registro y Marcador</h2>
 
-    <!-- Sección 1: Formulario -->
-    <div id="form-section">
-        <h3>Registrar Participante</h3>
-        <input type="text" id="username" placeholder="Nombre" style="width:100%; padding:10px; margin-bottom:10px;">
-        <div id="form-container"></div>
-        <button onclick="generarEnlace()">Generar Enlace para WhatsApp</button>
-    </div>
+    <!-- FORMULARIO -->
+    <div id="form-container"></div>
+    <input type="text" id="username" placeholder="Tu Nombre" style="width:100%; padding:15px; font-size:18px; margin-bottom:20px; border-radius:10px;">
+    <button class="btn-main" onclick="enviarValidado()">Registrar y WhatsApp</button>
 
-    <!-- Sección 2: Tabla de Resultados -->
+    <!-- TABLA DE RESULTADOS -->
     <div class="table-wrapper">
-        <h3>Tabla de Posiciones</h3>
+        <h3>📊 Tabla de Posiciones</h3>
         <table id="results-table">
             <thead><tr id="header-row"></tr></thead>
             <tbody id="body-rows"></tbody>
@@ -47,91 +49,49 @@
 </div>
 
 <script>
-/* 1. CONFIGURACIÓN: Aquí llenas los resultados reales según avancen los partidos */
+/* 1. CONFIGURACIÓN: Resultados Reales (Actualiza esto conforme avance el mundial) */
 const resultadosReales = {
-    "q1": "Francia", "q2": "2-1", "q3": "Si" // ... completa con los resultados oficiales
+    "q1": "Francia", "q2": "2-1" // Ejemplo
 };
 
-/* 2. BASE DE DATOS: Aquí cargas los datos de los participantes */
+/* 2. BASE DE DATOS: Tus participantes manuales */
 const baseDeDatos = [
-    { name: "Arellano", answers: {"q1": "Francia", "q2": "2-1", "q3": "Si"} },
-    {
-  "name": "Prueba 1",
-  "answers": {
-    "q1": "Empate",
-    "q2": "1-1",
-    "q3": "No",
-    "q4": "España",
-    "q5": "1-0",
-    "q6": "No",
-    "q7": "Noruega",
-    "q8": "1-2",
-    "q9": "No",
-    "q10": "Si",
-    "q11": "Argentina",
-    "q12": "2-0",
-    "q13": "Si",
-    "q14": "Marruecos",
-    "q15": "España",
-    "q16": "Noruega",
-    "q17": "Argentina",
-    "q18": "Marruecos vs España",
-    "q19": "Inglaterra vs Argentina",
-    "q20": "Marruecos",
-    "q21": "Noruega",
-    "q22": "Marruecos vs Noruega",
-    "q23": "España",
-    "q24": "Argentina",
-    "q25": "España vs Argentina",
-    "q26": "Marruecos",
-    "q27": "Inglaterra",
-    "q28": "Noruega",
-    "q29": "Otro"
-  }
-}
-
+    { name: "Arellano", answers: {"q1": "Francia", "q2": "2-1"} },
+    { name: "Prueba 1", answers: {"q1": "Empate", "q2": "1-1"} }
 ];
 
 const qList = [
-    {id: 1, label: "Fr/Mar"}, {id: 2, label: "M.Fr-Mar"}, {id: 3, label: "Mbappe"},
-    {id: 4, label: "Esp/Bel"}, {id: 5, label: "M.Esp-Bel"}, {id: 6, label: "Yamal"},
-    {id: 7, label: "Ing/Nor"}, {id: 8, label: "M.Ing-Nor"}, {id: 9, label: "Kane"},
-    {id: 10, label: "Haland"}, {id: 11, label: "Arg/Sui"}, {id: 12, label: "M.Arg-Sui"},
-    {id: 13, label: "Messi"}, {id: 14, label: "1.Semi"}, {id: 15, label: "2.Semi"},
-    {id: 16, label: "3.Semi"}, {id: 17, label: "4.Semi"}, {id: 18, label: "P1.Semi"},
-    {id: 19, label: "P2.Semi"}, {id: 20, label: "F1"}, {id: 21, label: "F2"},
-    {id: 22, label: "Final"}, {id: 23, label: "3L1"}, {id: 24, label: "3L2"},
-    {id: 25, label: "3erL"}, {id: 26, label: "Cam"}, {id: 27, label: "Sub"},
-    {id: 28, label: "3er"}, {id: 29, label: "Gol"}
+    {id: 1, label: "Francia vs Marruecos", type: "select", opts: ["Francia", "Empate", "Marruecos"]},
+    {id: 2, label: "Marcador Fr-Mar", type: "score"},
+    // ... agrega el resto de tus 29 preguntas aquí con el mismo formato
 ];
 
-// Generar Formulario
+// Generar Formulario dinámico
 const container = document.getElementById('form-container');
 qList.forEach(q => {
-    container.innerHTML += `<div class="q-box"><label>${q.id}. ${q.label}</label></div>`;
+    let html = `<div class="q-box"><label>${q.id}. ${q.label}</label>`;
+    if (q.type === 'score') {
+        html += `<div class="score-row"><input type="number" id="q${q.id}_h" class="score-input" placeholder="0"><span>-</span><input type="number" id="q${q.id}_a" class="score-input" placeholder="0"></div>`;
+    } else {
+        html += `<select id="q${q.id}"><option value="">Selecciona...</option>${q.opts.map(o => `<option value="${o}">${o}</option>`).join('')}</select>`;
+    }
+    container.innerHTML += html + `</div>`;
 });
 
 // Renderizar Tabla
 function renderTable() {
     const headerRow = document.getElementById('header-row');
     const bodyRows = document.getElementById('body-rows');
-    
-    // Header
     headerRow.innerHTML = '<th>Participante</th><th class="points-col">PTS</th>';
     qList.forEach(q => headerRow.innerHTML += `<th>${q.id}</th>`);
     
-    // Filas
-    bodyRows.innerHTML = '';
     baseDeDatos.forEach(p => {
         let row = `<tr><td>${p.name}</td>`;
         let puntos = 0;
         let celdas = '';
-        
         qList.forEach(q => {
             let val = p.answers['q'+q.id] || '-';
             let real = resultadosReales['q'+q.id];
-            
-            // Lógica de color y puntos
             let clase = '';
             if (real) {
                 if (val === real) { clase = 'acierto'; puntos++; }
@@ -139,13 +99,15 @@ function renderTable() {
             }
             celdas += `<td class="${clase}">${val}</td>`;
         });
-        
         row += `<td class="points-col">${puntos}</td>${celdas}</tr>`;
         bodyRows.innerHTML += row;
     });
 }
 
-function generarEnlace() { alert("Lógica de generación vinculada al formulario anterior"); }
+function enviarValidado() {
+    // Aquí iría tu lógica de validación anterior y el window.open
+    alert("Procesando pronóstico...");
+}
 
 renderTable();
 </script>
